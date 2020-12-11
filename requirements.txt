@@ -1,0 +1,10 @@
+--extra-index-url https://repos.knox.cs.aau.dk/ 
+requests
+numpy
+beautifulsoup4
+pdfminer
+PyMuPDF
+opencv-python
+torch
+torchvision
+knox-source-data-io
