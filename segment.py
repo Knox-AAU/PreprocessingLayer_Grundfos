@@ -60,7 +60,6 @@ def segment_document(file: str, args):
     pages = []
     current_pdf = miner.PDF_file(file, args)
     for page in current_pdf.pages:
-        print(page.image_number)
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
 
