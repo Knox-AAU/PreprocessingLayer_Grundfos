@@ -30,7 +30,7 @@ class Schema_Section():
         self.header = section_header
         self.pages = section_pages
         self.paragraphs = section_paragraphs
-        self.subsections = subsections
+        self.section = subsections
 
 class Schema_Paragraph():
     """
