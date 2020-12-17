@@ -26,3 +26,9 @@ To learn what flags and commands are available run:
 ```python segment.py --help``` or ```python segment.py -h```
 
 For more information about the source code check the wiki ```https://wiki.knox.cs.aau.dk/Preprocessing/GruppeB```
+
+
+
+# Acknowledgement
+
+The wrapper module uses another module created by the Nordjyske preprocessing group. The module and its documentation can be found at https://git.its.aau.dk/Knox/source-data-io. 
