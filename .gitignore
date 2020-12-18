@@ -1,4 +1,3 @@
-# ---> Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -129,3 +128,25 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+#Vscode
+.vscode
+
+#PDF files
+*.pdf
+
+#PDF files
+*.png
+
+#PDF files
+*.jpeg
+
+
+#Ignore extracted text files
+Tools/TextExtraction/PDF_Extract_Multiple_Text/TEXTs*
+Tools/TextExtraction/PDF_Extract_multiple_With_Layout/TEXTs*
+
+#Ignore model
+.pth
+classification/model_196000.pth
+*.zip
+*.json

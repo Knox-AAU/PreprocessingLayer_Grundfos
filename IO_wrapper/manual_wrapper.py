@@ -62,14 +62,15 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     """
     #Create list of text-sections
     pdf_sections = create_sections(segmented_pdf.Sections)
-    
+
     #Create list of tables and images
     pdf_illustrations = create_illustrations(pages)
     pdf_tables = pdf_illustrations[0]
     pdf_images = pdf_illustrations[1]
 
+    published_at = "Data currently unavailable"
     #Create object for JSON
-    export_able_object = Schema_Manual(segmented_pdf.PDFtitle, "Grundfos A/S", "", pdf_sections, pdf_tables, pdf_images)
+    export_able_object = Schema_Manual(segmented_pdf.PDFtitle, "Grundfos A/S", published_at, pdf_sections, pdf_tables, pdf_images)
 
     # Generate
     handler = IOHandler(Generator(app="GrundfosManuals_Handler", generated_at= str(datetime.datetime.now()), version="1.1.0"), schema_path)
@@ -88,26 +89,24 @@ def create_sections(text_sections):
     for section in text_sections:
         visited_section = visit_subsections(section)
         if visited_section is not None: # Do not add the section if it is "null/none"
-            sections.append(visited_section)
+            sections = visited_section
     return sections
 
-def visit_subsections(root: SegmentedPDF.Section):
+def visit_subsections(node: SegmentedPDF.Section):
     """
     Recursive visitor for the sections and their subsections.
     """
-    if root.Sections is not None:
-        schema_section = []
-        for section in root.Sections:
-            paragraph = Schema_Paragraph(section.Text)
+    schema_sections = []
+    if (node.Sections != []):
+        for section in node.Sections:
             if (section.StartingPage == section.EndingPage):
                 page = str(section.StartingPage)
             else:
                 page = str(str(section.StartingPage) + "-" + str(section.EndingPage))
-            schema_section.append(Schema_Section(section.Title, page, paragraph, visit_subsections(section)))
-        if len(schema_section) == 0: #Remove empty lists
-            return None
-        else:
-            return schema_section
+            subsection = visit_subsections(section)
+            if (subsection != []):
+                schema_sections.append(Schema_Section(section.Title, page, Schema_Paragraph(section.Text), subsection))
+        return schema_sections
     return None
 
 def create_illustrations(pages):
