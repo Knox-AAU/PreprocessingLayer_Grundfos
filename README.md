@@ -24,10 +24,19 @@ python segment.py INPUT_FOLDER OUTPUT_FOLDER
 
 The INPUT_FOLDER must include all the PDF files that should be segmented and OUTPUT_FOLDER must exist as it is not created by the program. 
 
+## Flags
+
 To learn what flags and commands are available run:
 ```python segment.py --help``` or ```python segment.py -h```
 
-The source code can be found at https://git.its.aau.dk/Knox/grundfos-preprocessing.
+The flags include the following optional arguments.
+
+1. ``` -a A, --accuraccy A ``` Minimum threshold for the prediction accuracy used by machine intelligence module. Value between 0 and 1. Defult is 0.7.
+2. ``` -m, --machine``` Enable the machine intelligence module when running the program. 
+3. ``` -t, -temporay ``` Keep the temporary files created while running the program. 
+4. ``` -c, --clean ``` CLear the output folder before running the program. 
+5. ``` -s, SCHEMA, --schema SCHEMA ``` Path to the JSON schema. Default is schema/manuals_v1.2.schema.json.
+6. ``` -d, --download ``` Download the Grundfos data set before running the program. 
 
 
 
