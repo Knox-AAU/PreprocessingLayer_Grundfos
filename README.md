@@ -1,5 +1,5 @@
-# KNOX Preprocessing
-This project is part of the KNOX multiproject and is located in layer one. The goal of this module is to extract and segment information from PDF-documents provided by Grundfos.
+# Grundfos Preprocessing
+This project is part of the Knox multiproject and is located in layer one. The goal of this module is to extract and segment information from PDF-documents provided by Grundfos.
 
 The module is able to extract text, titles, images and tables from PDF-files and produce a folder containing the extracted information. The module contains three components in addition to a few utilities:
 - The **Text Segmenter** component recursively scans the document to find and segment text into their correct sections or subsections.
@@ -24,9 +24,6 @@ python segment.py INPUT_FOLDER OUTPUT_FOLDER
 
 To learn what flags and commands are available run:
 ```python segment.py --help``` or ```python segment.py -h```
-
-For more information about the source code check the wiki ```https://wiki.knox.cs.aau.dk/Preprocessing/GruppeB```
-
 
 
 # Acknowledgement
