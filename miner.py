@@ -177,14 +177,13 @@ def convert_to_datastructure(object_list: list, desired_object: object):
     	
     return result_obj_list
 
-def check_if_line(x0, y0, x1, y1):
+def check_if_line(x0, y0, x1, y1, threshold = 5):
     """
     Checks if a object actually is a line based on the objects coordinates.
     """
     x = abs(x1 - x0)
     y = abs(y1 - y0)
-    threshold = 5
-
+    
     if(y < threshold): #horizontal line
         return 1
 
@@ -321,7 +320,7 @@ def on_segment(Line_element, dictionary):
     """
     This function determines if a line intersects another line at one point.
     """
-    offset = 1 #I made this up, but it works
+    offset = 1 
     for key, value in dictionary.items():
         if(len(value) > 0):
             for element in value:  

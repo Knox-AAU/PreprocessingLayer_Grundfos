@@ -147,11 +147,10 @@ def merge_pages(page1: datastructures.Page, page2: datastructures.Page) -> datas
     result.add_from_page(page2_cpy)
     return result
 
-def remove_duplicates_from_list(list1: list):
+def remove_duplicates_from_list(list1: list, threshold = 30):
     """
     Removes elements that reside in other elements.
     """
-    threshold = 30
     for object1 in list1:
             for object2 in list1:
                 if(object1 != object2):
@@ -162,14 +161,13 @@ def remove_duplicates_from_list(list1: list):
                         object2.coordinates.y1 <= object1.coordinates.y1 + threshold):
                         list1.remove(object2)
 
-def produce_data_from_coords(page, image_path, output_path):
+def produce_data_from_coords(page, image_path, output_path, area_treshold = 14400):
     """
     Produces matrixes that represent seperate images for all tables and figures on the page.
     """
     table_list_copy = copy.copy(page.tables)
     image_list_copy = copy.copy(page.images)
-
-    area_treshold = 120 * 120
+    
     image = cv2.imread(image_path)
     for table_number in range(len(table_list_copy)):
         if table_list_copy[table_number].coordinates.area() > area_treshold and ((table_list_copy[table_number].coordinates.is_negative() is False)):
