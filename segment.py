@@ -118,9 +118,6 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
             else:
                 continue
 
-            image = cv2.imread(image_path)
-            extract_area.extract_area_from_matrix(image, image_path.split(".png")[0] + label + str(idx) + ".png", area)
-
     return page_data
 
 def convert2coords(image, area: list) -> datastructures.Coordinates:
