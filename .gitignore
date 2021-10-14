@@ -140,6 +140,7 @@ dmypy.json
 #PDF files
 *.jpeg
 
+*.idea
 
 #Ignore extracted text files
 Tools/TextExtraction/PDF_Extract_Multiple_Text/TEXTs*
