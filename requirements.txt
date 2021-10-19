@@ -1,10 +1,9 @@
---extra-index-url https://repos.knox.cs.aau.dk/ 
+--extra-index-url https://repos.knox.cs.aau.dk/
 requests
-numpy
-beautifulsoup4
-pdfminer
-PyMuPDF
-opencv-python
-torch
-torchvision
+numpy===1.21.2
+beautifulsoup4===4.10.0
+pdfminer===20191125
+PyMuPDF===1.18.19
+opencv-python==4.5.3.56
+ghostscript===0.7
 knox-source-data-io
