@@ -199,8 +199,8 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold = 1440
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
-    argparser.add_argument("input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
-    argparser.add_argument("output",type=str, action="store", metavar="OUTPUT", help="Path to output folder.")
+    argparser.add_argument("-i", "--input", type=str, action="store", default="/srv/data/grundfosarchive/", metavar="INPUT", help="Path to input folder.")
+    argparser.add_argument("-o", "--output", type=str, action="store", default="/srv/data/processed/grundfos/", metavar="INPUT", help="Path to output folder.")
     argparser.add_argument("-a", "--accuracy", type=float, default=0.7, metavar="A", help="Minimum threshold for the prediction accuracy. Value between 0 to 1.")
     argparser.add_argument("-m", "--machine", action="store_true", help="Enable machine intelligence crossreferencing.") #NOTE: Could be merged with accuracy arg
     argparser.add_argument("-t", "--temporary", action="store_true", default=False, help="Keep temporary files")
