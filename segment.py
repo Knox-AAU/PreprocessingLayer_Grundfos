@@ -18,6 +18,7 @@ import utils.pdf2png as pdf2png
 import utils.extract_area as extract_area
 import datastructure.datastructure as datastructures
 import IO_wrapper.manual_wrapper as wrapper
+import time
 
 def segment_documents(args: str):
     """
@@ -30,12 +31,12 @@ def segment_documents(args: str):
     for file in os.listdir(args.input):
         if file.endswith('.pdf'):
             try:
-                
                 segment_document(file, args)
             except Exception as ex:
                 #The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 try:
                     print(ex)
+                    #print(file + " could not be opened and has been skipped!")
                 except:
                     pass
 
@@ -57,7 +58,16 @@ def segment_document(file: str, args):
     textline_pages = []
     pages = []
     current_pdf = miner.PDF_file(file, args)
-    for page in current_pdf.pages:
+
+    start_time = time.time() #starts timer 
+
+    for page in current_pdf.pages: 
+
+        print ("took " + str(time.time() - start_time) + " to run") 
+        if(time.time() - start_time > 1): #checks timer each page, if total time is greater than max allowable, skip pdf
+            print(file + " took too long and has been skipped!")
+            return
+
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
         if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
@@ -86,6 +96,7 @@ def segment_document(file: str, args):
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
 
+    
     #Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
 
