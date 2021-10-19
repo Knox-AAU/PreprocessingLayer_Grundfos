@@ -17,7 +17,7 @@ def convert_to_file(file: str, out_dir: str):
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
     """
-
+    print("Converting " + file + "...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -36,7 +36,7 @@ def convert_to_file(file: str, out_dir: str):
         print(e)
     
     if VERBOSE is True:
-        print("  Converted " + file)
+        print("Finished converting " + file + ".")
 
 def convert_dir_to_files(in_dir: str, out_dir: str):
     """
@@ -68,7 +68,7 @@ def convert_to_matrix(file: str):
     """
     Converts a PDF file to image matrices and return a list containing a matrix for each page.
     """
-
+    print("Converting " + file + " to image matrices...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -89,6 +89,7 @@ def convert_to_matrix(file: str):
         cv2_image = np.array(pil_image)
         result.append(cv2_image)
 
+    print("Finished converting " + file + ".")
     return result
 
 #TODO: List could be substituted with dictionary and have filenames as keys
@@ -121,9 +122,11 @@ if __name__ == "__main__":
     if not os.path.isdir(argv.output):
         print("Output directory must be a correct existing path.")
 
+    if VERBOSE is True:
+        print("Creating PNG files...")
+
     if os.path.isfile(argv.input):
         if argv.input.endswith(".pdf"):
-            print("Converting " + argv.input)
             convert_to_file(argv.input, argv.output)
         else:
             print("Input file must be a PDF file.")
@@ -131,13 +134,14 @@ if __name__ == "__main__":
         # Print the number of files to be converted.
         num_files = len([f for f in os.listdir(argv.input)if os.path.isfile(os.path.join(argv.input, f))])
         if VERBOSE is True:
-            print("Converting " + str(num_files) + " PDF's")
+            print("Converting " + str(num_files) + " PDF files...")
 
         # Convert all pdfs.
         if argv.multithreaded is True:
             multi_convert_dir_to_files(argv.input, argv.output)
         else:
             convert_dir_to_files(argv.input, argv.output)
+        print("Finished converting" + str(num_files) + " PDF files.")
     else:
         print("Could not find input file/directory.")
         exit()
@@ -145,5 +149,5 @@ if __name__ == "__main__":
     # Print number of files created.
     num_files = len([f for f in os.listdir(argv.output)if os.path.isfile(os.path.join(argv.output, f))])
     if VERBOSE is True:
-        print("Created " + str(num_files) + " PNG's")
+        print("Created " + str(num_files) + " PNG files.")
     exit()

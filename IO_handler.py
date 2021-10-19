@@ -12,8 +12,11 @@ def folder_prep(output:str = "tmp", clean:bool = False):
         shutil.rmtree(output)
         os.mkdir(output)
     # raise IOError in case an output already excists in the selected directory and a clean run is not selected
-    elif os.path.exists(tmp_folder):
-        shutil.rmtree(tmp_folder)
+    elif os.path.exists(output):
+        if os.path.exists(tmp_folder):
+            shutil.rmtree(tmp_folder)
+    else:
+        os.mkdir(output)
     # make new directories and print time
     mkdirs(tmp_folder)
 

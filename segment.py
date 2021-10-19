@@ -23,6 +23,7 @@ def segment_documents(args: str):
     """
     Does document segmentation of a pdf file and produces a json file with the information found.
     """
+    print("Beginning segmentation of " + str(len(os.listdir(args.input))) + " documents...")
     tmp_folder = os.path.join(args.output, "tmp")
     IO_handler.folder_prep(args.output, args.clean)
     pdf2png.multi_convert_dir_to_files(args.input, os.path.join(tmp_folder, 'images'))  
@@ -30,7 +31,6 @@ def segment_documents(args: str):
     for file in os.listdir(args.input):
         if file.endswith('.pdf'):
             try:
-                
                 segment_document(file, args)
             except Exception as ex:
                 #The file loaded was probably not a pdf and cant be segmented (with pdfminer)
@@ -42,17 +42,23 @@ def segment_documents(args: str):
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
 
+    print("Segmentation of " + str(len(os.listdir(args.input))) + " documents finished.")
+
 def segment_document(file: str, args):
     """
     Segments a pdf document
     """
+    print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
-    os.mkdir(output_path)
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
 
     #Create output folders
-    os.mkdir(os.path.join(output_path, "tables"))
-    os.mkdir(os.path.join(output_path, "images"))
+    if not os.path.exists(os.path.join(output_path, "tables")):
+        os.mkdir(os.path.join(output_path, "tables"))
+    if not os.path.exists(os.path.join(output_path, "images")):
+        os.mkdir(os.path.join(output_path, "images"))
 
     textline_pages = []
     pages = []
@@ -89,12 +95,13 @@ def segment_document(file: str, args):
     #Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
 
-
+    print("Segmentation of " + file + "finished.")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
     Acquires tables and figures from MI-inference of documents.
     """
+    print("Acquiring tables and figures from MI-inference of documents...")
     #TODO: Make split more unique, so that files that naturally include "_page" do not fail
     page_data = datastructures.Page(int(os.path.basename(image_path).split("_page")[1].replace('.png','')))
     image = cv2.imread(image_path)
@@ -117,7 +124,7 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
                 page_data.images.append(figure)
             else:
                 continue
-
+    print("Finished acquiring images and tables from MI-inference of documents.")
     return page_data
 
 def convert2coords(image, area: list) -> datastructures.Coordinates:
