@@ -19,6 +19,8 @@ import utils.extract_area as extract_area
 import datastructure.datastructure as datastructures
 import IO_wrapper.manual_wrapper as wrapper
 import time
+import multiprocessing
+import shutil
 
 def segment_documents(args: str):
     """
@@ -31,12 +33,27 @@ def segment_documents(args: str):
     for file in os.listdir(args.input):
         if file.endswith('.pdf'):
             try:
-                segment_document(file, args)
+                output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
+                seg_doc_process = multiprocessing.Process(target=segment_document, name = "Segment_document", args=(file, args, output_path)) # creates new process that segments file
+                seg_doc_process.start()
+                
+                current_pdf = miner.PDF_file(file, args)
+                estimated_per_page = 1 # max time to process each page
+                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+
+                while seg_doc_process.is_alive():
+                    time.sleep(0.01) # how often to check timer
+                    if(time.time() > max_time):
+                        seg_doc_process.terminate()
+                        print("Process: " + file + " terminated due to excessive time")
+                        shutil.rmtree(output_path)
+                        seg_doc_process.join()
+
             except Exception as ex:
                 #The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 try:
                     print(ex)
-                    #print(file + " could not be opened and has been skipped!")
+                    print(file + " could not be opened and has been skipped!")
                 except:
                     pass
 
