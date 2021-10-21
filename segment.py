@@ -34,11 +34,11 @@ def segment_documents(args: str):
         if file.endswith('.pdf'):
             try:
                 output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
-                seg_doc_process = multiprocessing.Process(target=segment_document, name = "Segment_document", args=(file, args, output_path)) # creates new thread that segments file
+                seg_doc_process = multiprocessing.Process(target=segment_document, name = "Segment_document", args=(file, args, output_path)) # creates new process that segments file
                 seg_doc_process.start()
                 
                 current_pdf = miner.PDF_file(file, args)
-                estimated_per_page = 1 # max time per to process each page
+                estimated_per_page = 10 # max time to process each page
                 max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
 
                 while seg_doc_process.is_alive():
@@ -78,7 +78,7 @@ def segment_document(file: str, args, output_path):
     current_pdf = miner.PDF_file(file, args)
 
     for page in current_pdf.pages: 
- 
+        
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
         if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
