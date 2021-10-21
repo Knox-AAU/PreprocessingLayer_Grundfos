@@ -60,12 +60,11 @@ def segment_documents(args: str):
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
 
-def segment_document(file: str, args):
+def segment_document(file: str, args, output_path):
     """
     Segments a pdf document
     """
     schema_path = args.schema
-    output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
     os.mkdir(output_path)
 
     #Create output folders
