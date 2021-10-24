@@ -59,6 +59,11 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     out_dirs = []
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
+
+            files.append(os.path.join(in_dir,file))
+            out_dirs.append(out_dir)
+            
+        '''
             print(file)
             try:
                 ar = ["-sDEVICE=pdfwrite","-dQUIET", "-dBATCH", "-dNOPAUSE", "-dPDFSETTINGS=/printer","-sOutputFile=" + in_dir + "/" + file, in_dir + "/" +file]
@@ -66,9 +71,9 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
             except Exception:
-                os.remove(in_dir + "/" + file)
+                #os.remove(in_dir + "/" + file)
                 print("Removed " + file + " due to corruption")
-
+        '''
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
 

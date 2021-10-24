@@ -1,0 +1,294 @@
+{
+    "@context": {
+        "gfs": "https://grundfos.com/model/",
+        "gfs:ean": {
+            "@type": "xsd:integer"
+        },
+        "gfs:level": {
+            "@type": "xsd:integer"
+        },
+        "gfs:link": {
+            "@type": "@id"
+        },
+        "gfs:productFamily": {
+            "@type": "@id"
+        },
+        "gfs:typecode": {
+            "@type": "xsd:string"
+        },
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "skos": "http://www.w3.org/2004/02/skos/core#",
+        "skos:broader": {
+            "@type": "@id"
+        },
+        "skos:narrower": {
+            "@type": "@id"
+        },
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "@graph": [
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/1",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/UPA000",
+                "https://grundfos.com/concept/productFamily/ALPFAM",
+                "https://grundfos.com/concept/productFamily/UPEFAM",
+                "https://grundfos.com/concept/productFamily/COMB1",
+                "https://grundfos.com/concept/productFamily/S200FAM",
+                "https://grundfos.com/concept/productFamily/UPOEM",
+                "https://grundfos.com/concept/productFamily/S100FAM"
+            ],
+            "rdfs:comment": "Circulator pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Circulator pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/2",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/NKFAM",
+                "https://grundfos.com/concept/productFamily/NKGFAM"
+            ],
+            "rdfs:comment": "Endsuction long coupled single stage",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Endsuction long coupled single stage"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/3",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/JPFAM",
+                "https://grundfos.com/concept/productFamily/PF000",
+                "https://grundfos.com/concept/productFamily/NSFAM",
+                "https://grundfos.com/concept/productFamily/NBFAM",
+                "https://grundfos.com/concept/productFamily/NBGFAM"
+            ],
+            "rdfs:comment": "Endsuction close coupled single stage",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Endsuction close coupled single stage"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/4",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/CMFAM"
+            ],
+            "rdfs:comment": "Endsuction close coupled multistage",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Endsuction close coupled multistage"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/6",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/MTBFAM"
+            ],
+            "rdfs:comment": "Endsuction machine tool pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Endsuction machine tool pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/7",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/BMHP00",
+                "https://grundfos.com/concept/productFamily/BMFAM"
+            ],
+            "rdfs:comment": "Encapsulated pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Encapsulated pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/8",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/KPC00",
+                "https://grundfos.com/concept/productFamily/SESLFAM",
+                "https://grundfos.com/concept/productFamily/DWK000",
+                "https://grundfos.com/concept/productFamily/DPK000",
+                "https://grundfos.com/concept/productFamily/APFAM",
+                "https://grundfos.com/concept/productFamily/CCFAM",
+                "https://grundfos.com/concept/productFamily/DPFAM",
+                "https://grundfos.com/concept/productFamily/EFFAM",
+                "https://grundfos.com/concept/productFamily/SLFAM",
+                "https://grundfos.com/concept/productFamily/SEGFAM",
+                "https://grundfos.com/concept/productFamily/SEFAM",
+                "https://grundfos.com/concept/productFamily/APUFAM",
+                "https://grundfos.com/concept/productFamily/SFAM",
+                "https://grundfos.com/concept/productFamily/KP000"
+            ],
+            "rdfs:comment": "Submersible wastewater pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Submersible wastewater pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/9",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/SBFAM",
+                "https://grundfos.com/concept/productFamily/SQCFAM",
+                "https://grundfos.com/concept/productFamily/SQECFAM",
+                "https://grundfos.com/concept/productFamily/SQFFAM",
+                "https://grundfos.com/concept/productFamily/SPNEFAM",
+                "https://grundfos.com/concept/productFamily/SPRANGE"
+            ],
+            "rdfs:comment": "Submersible groundwater pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Submersible groundwater pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/10",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/LSFAM",
+                "https://grundfos.com/concept/productFamily/HSPFAM"
+            ],
+            "rdfs:comment": "Horizontal split case pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Horizontal split case pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/11",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/MTRANGE"
+            ],
+            "rdfs:comment": "Immersible pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Immersible pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/13",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/TPFAM"
+            ],
+            "rdfs:comment": "Inline single stage pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Inline single stage pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/14",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/CRFLEX",
+                "https://grundfos.com/concept/productFamily/CRRANGE"
+            ],
+            "rdfs:comment": "Inline multi stage pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Inline multi stage pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/15",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/JPB00",
+                "https://grundfos.com/concept/productFamily/SCALA",
+                "https://grundfos.com/concept/productFamily/HYMULE",
+                "https://grundfos.com/concept/productFamily/CMBFAM",
+                "https://grundfos.com/concept/productFamily/HY100",
+                "https://grundfos.com/concept/productFamily/HMONOE",
+                "https://grundfos.com/concept/productFamily/HYMULS",
+                "https://grundfos.com/concept/productFamily/HYMPC"
+            ],
+            "rdfs:comment": "Booster set",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Booster set"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/16",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/BMPFAM"
+            ],
+            "rdfs:comment": "Piston pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Piston pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/17",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/DOSSYFAM",
+                "https://grundfos.com/concept/productFamily/DOSFAM"
+            ],
+            "rdfs:comment": "Diaphragm pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Diaphragm pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/18",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/BMSFAM"
+            ],
+            "rdfs:comment": "Horizontal multistage pumps",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Horizontal multistage pumps"
+        },
+        {
+            "@id": "https://grundfos.com/concept/pumpDesign/19",
+            "@type": [
+                "gfs:PumpDesign",
+                "skos:Concept"
+            ],
+            "gfs:productFamily": [
+                "https://grundfos.com/concept/productFamily/SOLOLIF2",
+                "https://grundfos.com/concept/productFamily/LIFFAM"
+            ],
+            "rdfs:comment": "Lifting stations",
+            "skos:inScheme": "https://grundfos.com/concept/pumpDesign",
+            "skos:prefLabel": "Lifting stations"
+        }
+    ]
+}

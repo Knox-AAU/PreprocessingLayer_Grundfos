@@ -38,22 +38,26 @@ def segment_documents(args: str):
                 seg_doc_process.start()
                 
                 current_pdf = miner.PDF_file(file, args)
-                estimated_per_page = 1 # max time to process each page
-                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                estimated_per_page =0.15 # max time to process each page
+                print("PDF PAGES "+str(len(current_pdf.pages)))
+                #max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                max_time = time.time() + 5
 
                 while seg_doc_process.is_alive():
                     time.sleep(0.01) # how often to check timer
                     if(time.time() > max_time):
                         seg_doc_process.terminate()
+                        seg_doc_process.join()
                         print("Process: " + file + " terminated due to excessive time")
                         shutil.rmtree(output_path)
-                        seg_doc_process.join()
+                        
 
             except Exception as ex:
                 #The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 try:
                     print(ex)
                     print(file + " could not be opened and has been skipped!")
+                    shutil.rmtree(output_path)
                 except:
                     pass
 
@@ -78,11 +82,6 @@ def segment_document(file: str, args, output_path):
     start_time = time.time() #starts timer 
 
     for page in current_pdf.pages: 
-
-        print ("took " + str(time.time() - start_time) + " to run") 
-        if(time.time() - start_time > 1): #checks timer each page, if total time is greater than max allowable, skip pdf
-            print(file + " took too long and has been skipped!")
-            return
 
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
@@ -115,6 +114,7 @@ def segment_document(file: str, args, output_path):
     
     #Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
+    print("Finished extracting" + file)
 
 
 
