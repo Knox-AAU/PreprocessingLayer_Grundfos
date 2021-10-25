@@ -14,6 +14,8 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LAParams, LTTextBox, LTTextLine, LTText, LTChar, LTFigure, LTImage, LTRect, LTCurve, LTLine
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
+import config_data
+from config_data import config
 
 FIGURES = os.path.join("tmp", "figures")
 IMAGES = os.path.join("tmp", "images")
@@ -21,6 +23,16 @@ ANNOTATED = os.path.join("tmp", "images_annotated")
 LINES = os.path.join("tmp", "line_cords")
 
 start_time = time.time()
+
+# This function is nessesary if agruments are used insted of enviroment variables
+# because enviroment varaibles created from os.environ can't be seen across Tasks
+def initz_paths(args):
+    if args.input:
+        os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(args.input))
+    if args.output:
+        os.environ["GRUNDFOS_OUTPUT_FOLDER"] = str(os.path.abspath(args.output))
+    config_data.check_config(["GRUNDFOS_INPUT_FOLDER",
+                                             "GRUNDFOS_OUTPUT_FOLDER"])
 
 class PDF_file:
     """
@@ -55,7 +67,7 @@ class PDF_page:
         #Prerequisites for image processing
         self.image_name = owner.file_name.replace(".pdf", "_page") + str(len(owner.pages) + 1) + ".png"
         self.image_number = len(owner.pages)+1
-        self.first_image = cv2.imread(os.path.join(os.path.join(args.output, IMAGES), self.image_name))
+        self.first_image = cv2.imread(os.path.join(os.path.join(config["OUTPUT_FOLDER"], IMAGES), self.image_name))
         self.height, self.width = self.first_image.shape[:2]
 
         self.actualHeightModifier = self.height/self.PDFfile_height
@@ -65,7 +77,7 @@ def init_file(args, fileName):
     """
     This function initializes PDFMiner
     """
-    fp = open(os.path.join(args.input, fileName), 'rb')
+    fp = open(os.path.join(config["INPUT_FOLDER"], fileName), 'rb')
     rsrcmgr = PDFResourceManager()
     laparams = LAParams(detect_vertical=False)
     device = PDFPageAggregator(rsrcmgr, laparams=laparams)
@@ -202,7 +214,7 @@ def save_figure(lobj, page, figureIndex, args):
     if(file_extension != None):
         figureName = page.image_name.replace(".png", "") + str(figureIndex) + file_extension
 
-        file_obj = open(os.path.join(os.path.join(args.output, FIGURES), figureName), 'wb')
+        file_obj = open(os.path.join(os.path.join(config["OUTPUT_FOLDER"], FIGURES), figureName), 'wb')
         file_obj.write(lobj.stream.get_rawdata())
         file_obj.close()
 
@@ -262,7 +274,7 @@ def paint_pngs(page, args):
     image = paint(image, page, page.LTTextLineList, colorBlack, thickness)    
     print(page.image_name)
 
-    cv2.imwrite(os.path.join(args.output, ANNOTATED, page.image_name), image) #save picture
+    cv2.imwrite(os.path.join(config["OUTPUT_FOLDER"], ANNOTATED, page.image_name), image) #save picture
 
 def paint(image, page, objectList, color, thickness):
     """

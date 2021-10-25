@@ -21,19 +21,21 @@ import IO_wrapper.manual_wrapper as wrapper
 import time
 import multiprocessing
 import shutil
+import config_data
+from config_data import config
 
 def segment_documents(args: str):
     """
     Does document segmentation of a pdf file and produces a json file with the information found.
     """
-    tmp_folder = os.path.join(args.output, "tmp")
-    IO_handler.folder_prep(args.output, args.clean)
-    pdf2png.multi_convert_dir_to_files(args.input, os.path.join(tmp_folder, 'images'))  
+    tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
+    IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
+    pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))  
 
-    for file in os.listdir(args.input):
+    for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith('.pdf'):
             try:
-                output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
+                output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"], os.path.basename(file).replace(".pdf", ""))
                 seg_doc_process = multiprocessing.Process(target=segment_document, name = "Segment_document", args=(file, args, output_path)) # creates new process that segments file
                 seg_doc_process.start()
                 
@@ -68,6 +70,10 @@ def segment_document(file: str, args, output_path):
     """
     Segments a pdf document
     """
+
+    # Have to run every time as it is in another task, in case of enviroment variables not set
+    miner.initz_paths(args)
+
     schema_path = args.schema
     os.mkdir(output_path)
 
@@ -89,7 +95,7 @@ def segment_document(file: str, args, output_path):
             #Only pages without a COLLOSAL amount of lines will be grouped. 
             #Otherwise the segmentation will take too long.
             miner.look_through_LTRectLine_list(page, args)
-        image_path = os.path.join(args.output, "tmp", 'images', page.image_name)
+        image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
         mined_page = miner.make_page(page)
 
         if args.machine is True:
@@ -215,8 +221,9 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold = 1440
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
-    argparser.add_argument("-i", "--input", type=str, action="store", default="/srv/data/grundfosarchive/", metavar="INPUT", help="Path to input folder.")
-    argparser.add_argument("-o", "--output", type=str, action="store", default="/srv/data/processed/grundfos/", metavar="INPUT", help="Path to output folder.")
+    argparser.add_argument("-i", "--input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
+    argparser.add_argument("-o", "--output", type=str, action="store", metavar="OUTPUT", help="Path to output folder.")
+    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT", help="Path to invalid input folder.")
     argparser.add_argument("-a", "--accuracy", type=float, default=0.7, metavar="A", help="Minimum threshold for the prediction accuracy. Value between 0 to 1.")
     argparser.add_argument("-m", "--machine", action="store_true", help="Enable machine intelligence crossreferencing.") #NOTE: Could be merged with accuracy arg
     argparser.add_argument("-t", "--temporary", action="store_true", default=False, help="Keep temporary files")
@@ -225,7 +232,21 @@ if __name__ == "__main__":
     argparser.add_argument("-d", "--download", action="store_true", default=False, help="Downloads Grundfos data to input folder.")
     argv = argparser.parse_args()
 
+    # Overwrite enviroment varibles for this session, if argument exists.
+    if argv.input:
+        os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(argv.input))
+    if argv.invalid_input:
+        os.environ["GRUNDFOS_INVALID_INPUT_FOLDER"] = str(os.path.abspath(argv.invalid_input))
+    if argv.output:
+        os.environ["GRUNDFOS_OUTPUT_FOLDER"] = str(os.path.abspath(argv.output))
+    config_data.set_config_data_from_envs()
+    config_data.check_config(["GRUNDFOS_INPUT_FOLDER",
+                              "GRUNDFOS_OUTPUT_FOLDER"])
+
+    for item in config:
+        print(item, ": ", config[item])
+
     if argv.download is True:
-        downloader.download_data(argv.input)
+        downloader.download_data(config["INPUT_FOLDER"])
 
     segment_documents(argv)
