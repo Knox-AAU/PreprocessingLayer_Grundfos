@@ -168,7 +168,7 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold = 1440
     image = cv2.imread(image_path)
     for table_number in range(len(table_list_copy)):
         if table_list_copy[table_number].coordinates.area() > area_treshold and ((table_list_copy[table_number].coordinates.is_negative() is False)):
-            try: #TODO: Finish try-excepts
+            try: # TODO: Finish try-excepts
                 table_list_copy[table_number].path = os.path.join(output_path, "tables", os.path.basename(image_path).replace(".png", "_table" + str(table_number) + ".png"))
                 extract_area.extract_area_from_matrix(image, table_list_copy[table_number].path, table_list_copy[table_number].coordinates)
             except Exception as x:
