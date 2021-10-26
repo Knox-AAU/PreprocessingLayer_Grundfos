@@ -75,14 +75,9 @@ def segment_document(file: str, args, output_path):
     pages = []
     current_pdf = miner.PDF_file(file, args)
 
-    start_time = time.time() #starts timer 
 
     for page in current_pdf.pages: 
 
-        print ("took " + str(time.time() - start_time) + " to run") 
-        if(time.time() - start_time > 1): #checks timer each page, if total time is greater than max allowable, skip pdf
-            print(file + " took too long and has been skipped!")
-            return
 
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
