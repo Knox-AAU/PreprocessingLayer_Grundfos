@@ -25,7 +25,7 @@ LINES = os.path.join("tmp", "line_cords")
 start_time = time.time()
 
 # This function is nessesary if agruments are used insted of enviroment variables
-# because enviroment varaibles created from os.environ can't be seen across Tasks
+# because enviroment varaibles created from os.environ can't be seen across Processes
 def initz_paths(args):
     if args.input:
         os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(args.input))
