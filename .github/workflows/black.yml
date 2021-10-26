@@ -7,7 +7,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: psf/black@stable
-      - name: Reformat Code-base
+      - uses: ./
+        id: black_format
+        with:
+          fail_on_error: "false"
+      - name: Check if code is left untouched (not formatted)
         run: |
-          black .
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+          else
+            echo "Changes detected!"
+            exit 1
+          fi
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.black_format.outputs.is_formatted }}
+          if [[ ${formatted} != "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
