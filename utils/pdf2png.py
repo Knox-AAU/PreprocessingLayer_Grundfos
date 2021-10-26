@@ -25,7 +25,7 @@ def convert_to_file(file: str, out_dir: str):
     try:
         doc = fitz.open(file)
         number_of_pages = doc.pageCount
-    
+
         # Convert each page to an image
         for page_number in range(number_of_pages):
             page = doc.loadPage(page_number)
@@ -34,7 +34,8 @@ def convert_to_file(file: str, out_dir: str):
             pix.writePNG(os.path.join(out_dir, output_name))
 
     except Exception as e:
-        print(e)
+        os.remove(file)
+        print("Removed file because of fitz error")
     
     if VERBOSE is True:
         print("  Converted " + file)
@@ -53,19 +54,19 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     Convert a directory of PDF files and writes each page as a PNG image in the 'out_dir' directory.
     Multi-processed.
     """
-
     # Go through every file in the input dir and append to list.
     files = []
     out_dirs = []
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
-            print(file)
+            print("processing " + file)
             try:
-                ar = ["-sDEVICE=pdfwrite","-dQUIET", "-dBATCH", "-dNOPAUSE", "-dPDFSETTINGS=/printer","-sOutputFile=" + in_dir + "/" + file, in_dir + "/" +file]
+                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress","-dQUIET", "-dBATCH", "-dNOPAUSE", "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/"+ file, "-dPDFSETTINGS=/prepress"]
                 ghostscript.Ghostscript(*ar)
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
-            except Exception:
+            except RuntimeError:
+                print("GhostScript Error")
                 os.remove(in_dir + "/" + file)
                 print("Removed " + file + " due to corruption")
 
