@@ -60,7 +60,7 @@ def segment_document(file: str, args):
     for page in current_pdf.pages:
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
-        if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
+        ifq(len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
             #Only pages without a COLLOSAL amount of lines will be grouped. 
             #Otherwise the segmentation will take too long.
             miner.look_through_LTRectLine_list(page, args)
