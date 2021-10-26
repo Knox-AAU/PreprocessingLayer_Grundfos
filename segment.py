@@ -18,6 +18,9 @@ import utils.pdf2png as pdf2png
 import utils.extract_area as extract_area
 import datastructure.datastructure as datastructures
 import IO_wrapper.manual_wrapper as wrapper
+import time
+import multiprocessing
+import shutil
 
 def segment_documents(args: str):
     """
@@ -31,26 +34,40 @@ def segment_documents(args: str):
     for file in os.listdir(args.input):
         if file.endswith('.pdf'):
             try:
-                segment_document(file, args)
+                output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
+                seg_doc_process = multiprocessing.Process(target=segment_document, name = "Segment_document", args=(file, args, output_path)) # creates new process that segments file
+                seg_doc_process.start()
+                
+                current_pdf = miner.PDF_file(file, args)
+                estimated_per_page = 1 # max time to process each page
+                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+
+                while seg_doc_process.is_alive():
+                    time.sleep(0.01) # how often to check timer
+                    if(time.time() > max_time):
+                        seg_doc_process.terminate()
+                        print("Process: " + file + " terminated due to excessive time")
+                        shutil.rmtree(output_path)
+                        seg_doc_process.join()
+
             except Exception as ex:
                 #The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 try:
                     print(ex)
+                    print(file + " could not be opened and has been skipped!")
                 except:
                     pass
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
 
-    print("Segmentation of " + str(len(os.listdir(args.input))) + " documents finished.")
 
-def segment_document(file: str, args):
+def segment_document(file: str, args, output_path):
     """
     Segments a pdf document
     """
     print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
-    output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
     os.mkdir(output_path)
 
     #Create output folders
@@ -62,7 +79,11 @@ def segment_document(file: str, args):
     textline_pages = []
     pages = []
     current_pdf = miner.PDF_file(file, args)
-    for page in current_pdf.pages:
+
+
+    for page in current_pdf.pages: 
+
+
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
         if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
@@ -91,6 +112,7 @@ def segment_document(file: str, args):
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
 
+    
     #Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
 
@@ -194,8 +216,8 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold = 1440
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
-    argparser.add_argument("input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
-    argparser.add_argument("output",type=str, action="store", metavar="OUTPUT", help="Path to output folder.")
+    argparser.add_argument("-i", "--input", type=str, action="store", default="/srv/data/grundfosarchive/", metavar="INPUT", help="Path to input folder.")
+    argparser.add_argument("-o", "--output", type=str, action="store", default="/srv/data/processed/grundfos/", metavar="INPUT", help="Path to output folder.")
     argparser.add_argument("-a", "--accuracy", type=float, default=0.7, metavar="A", help="Minimum threshold for the prediction accuracy. Value between 0 to 1.")
     argparser.add_argument("-m", "--machine", action="store_true", help="Enable machine intelligence crossreferencing.") #NOTE: Could be merged with accuracy arg
     argparser.add_argument("-t", "--temporary", action="store_true", default=False, help="Keep temporary files")

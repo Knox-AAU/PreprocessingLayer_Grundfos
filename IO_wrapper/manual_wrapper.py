@@ -1,6 +1,6 @@
 """
 Module responsible for making the output of the segmentation. 
-More specifically it is preparing data for the actural wrapper used (https://git.its.aau.dk/Knox/source-data-io)
+More specifically it is preparing data for the actual wrapper used (https://git.its.aau.dk/Knox/source-data-io)
 """
 
 from knox_source_data_io.io_handler import *
@@ -14,10 +14,11 @@ class Schema_Manual(Model):
     """
     Data structure for manuals.
     """
-    def __init__(self, pdf_title, publisher, published_at, pdf_sections, pdf_tables, pdf_images):
+    def __init__(self, pdf_title, publisher, published_at, extracted_from, pdf_sections, pdf_tables, pdf_images):
         self.title = pdf_title
         self.publisher = publisher
         self.published_at = published_at #Can we get this information??
+        self.extracted_from = extracted_from
         self.sections = pdf_sections
         self.table_list = pdf_tables
         self.image_list = pdf_images
@@ -73,15 +74,16 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     pdf_images = pdf_illustrations[1]
 
     published_at = "Data currently unavailable"
-
+    extracted_from = "/srv/data/grundfosarchive/" + file_name
+    
     #Create object for JSON
     print("\tCreating JSON object...")
-    export_able_object = Schema_Manual(segmented_pdf.PDFtitle, "Grundfos A/S", published_at, pdf_sections, pdf_tables, pdf_images)
+    export_able_object = Schema_Manual(segmented_pdf.PDFtitle, "Grundfos A/S", published_at, extracted_from, pdf_sections, pdf_tables, pdf_images)
 
     # Generate
-    print("\tGenerating JSON from schema...")
-    handler = IOHandler(Generator(app="GrundfosManuals_Handler", generated_at= str(datetime.datetime.now()), version="1.1.0"), schema_path)
     output_name = str(file_name.replace(".pdf", "") + "_output.json")
+    print("\tGenerating JSON from schema...")
+    handler = IOHandler(Generator(app="GrundfosManuals_Handler", generated_at=str(datetime.datetime.now()), version="1.1.0"), schema_path)
     filename = os.path.join(output_path, output_name)
     
     # Serialize object to json

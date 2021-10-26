@@ -5,12 +5,13 @@ import os
 import argparse
 import concurrent.futures as cf
 import fitz
+import ghostscript
 import numpy as np
 from PIL import Image
 
 
 ZOOM = 3
-VERBOSE = False
+VERBOSE = True
 
 
 def convert_to_file(file: str, out_dir: str):
@@ -24,7 +25,7 @@ def convert_to_file(file: str, out_dir: str):
     try:
         doc = fitz.open(file)
         number_of_pages = doc.pageCount
-    
+
         # Convert each page to an image
         for page_number in range(number_of_pages):
             page = doc.loadPage(page_number)
@@ -33,7 +34,8 @@ def convert_to_file(file: str, out_dir: str):
             pix.writePNG(os.path.join(out_dir, output_name))
 
     except Exception as e:
-        print(e)
+        os.remove(file)
+        print("Removed file because of fitz error")
     
     if VERBOSE is True:
         print("Finished converting " + file + ".")
@@ -52,14 +54,21 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     Convert a directory of PDF files and writes each page as a PNG image in the 'out_dir' directory.
     Multi-processed.
     """
-
     # Go through every file in the input dir and append to list.
     files = []
     out_dirs = []
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
-            files.append(os.path.join(in_dir,file))
-            out_dirs.append(out_dir)
+            print("processing " + file)
+            try:
+                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress","-dQUIET", "-dBATCH", "-dNOPAUSE", "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/"+ file, "-dPDFSETTINGS=/prepress"]
+                ghostscript.Ghostscript(*ar)
+                files.append(os.path.join(in_dir, file))
+                out_dirs.append(out_dir)
+            except RuntimeError:
+                print("GhostScript Error")
+                os.remove(in_dir + "/" + file)
+                print("Removed " + file + " due to corruption")
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
