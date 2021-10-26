@@ -201,7 +201,7 @@ if __name__ == "__main__":
     argparser.add_argument("-m", "--machine", action="store_true", help="Enable machine intelligence crossreferencing.") #NOTE: Could be merged with accuracy arg
     argparser.add_argument("-t", "--temporary", action="store_true", default=False, help="Keep temporary files")
     argparser.add_argument("-c", "--clean", action="store_true", default=False, help="Clear output folder before running.")
-    argparser.add_argument("-s", "--schema", type=str, action="store", default="/schema/manuals_v1.1.schema.json", help="Path to json schema.")
+    argparser.add_argument("-s", "--schema", type=str, action="store", default="/schema/manuals_v1.3.schema.json", help="Path to json schema.")
     argparser.add_argument("-d", "--download", action="store_true", default=False, help="Downloads Grundfos data to input folder.")
     argv = argparser.parse_args()
 
