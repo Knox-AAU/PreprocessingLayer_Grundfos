@@ -110,20 +110,21 @@ def visit_subsections(node: SegmentedPDF.Section):
     schema_sections = []
     if (node.Sections != []):
         for section in node.Sections:
-            if (section.StartingPage == section.EndingPage):
+            if section.StartingPage == section.EndingPage:
                 page = str(section.StartingPage)
             else:
                 page = str(str(section.StartingPage) + "-" + str(section.EndingPage))
-            subsection = visit_subsections(section)
-            if (subsection != []):
-                article = Article()
-                article.headline = section.Title
-                article.page = page
-                if section.Text != "":
-                    paragraph = Paragraph()
-                    paragraph.value = section.Text
-                    article.add_paragraph(paragraph)
+            article = Article()
+            article.headline = section.Title
+            article.page = page
+            if section.Text != "":
+                paragraph = Paragraph()
+                paragraph.value = section.Text
+                article.add_paragraph(paragraph)
                 schema_sections.append(article)
+            subsection = visit_subsections(section)
+            if subsection != [] and subsection is not None:
+                schema_sections = schema_sections + subsection
         return schema_sections
     return None
 
