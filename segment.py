@@ -51,8 +51,7 @@ def segment_document(file: str, args):
     print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
-    if not os.path.exists(output_path):
-        os.mkdir(output_path)
+    os.mkdir(output_path)
 
     #Create output folders
     if not os.path.exists(os.path.join(output_path, "tables")):
