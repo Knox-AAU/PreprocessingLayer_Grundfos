@@ -7,6 +7,7 @@ DOMAIN = 'https://www.grundfos.com'
 FOLDER = 'Grundfos_Webcatalog_scrape/'
 
 def main():
+    print("Scraping grundfos website...")
     count = 0
     nextPage = 'https://www.grundfos.com/products/find-product.html'
 
@@ -47,8 +48,8 @@ def main():
             
 
         if nextPage is None:
-            print("done")
-            print("items: " + str(count))
+            print("Finished scraping.")
+            print("Scraped " + str(count) + "items.")
             break
 
 def findNextPage(page_soup):

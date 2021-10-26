@@ -173,7 +173,7 @@ def convert_to_datastructure(object_list: list, desired_object: object):
     """
     result_obj_list = []
     for obj in object_list:
-    	result_obj_list.append(desired_object(obj))
+        result_obj_list.append(desired_object(obj))
     	
     return result_obj_list
 
