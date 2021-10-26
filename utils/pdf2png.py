@@ -59,16 +59,9 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     out_dirs = []
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
-            print("processing " + file)
-            try:
-                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress","-dQUIET", "-dBATCH", "-dNOPAUSE", "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/"+ file, "-dPDFSETTINGS=/prepress"]
-                ghostscript.Ghostscript(*ar)
-                files.append(os.path.join(in_dir, file))
-                out_dirs.append(out_dir)
-            except RuntimeError:
-                print("GhostScript Error")
-                os.remove(in_dir + "/" + file)
-                print("Removed " + file + " due to corruption")
+
+            files.append(os.path.join(in_dir,file))
+            out_dirs.append(out_dir)
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
@@ -101,7 +94,7 @@ def convert_to_matrix(file: str):
     print("Finished converting " + file + ".")
     return result
 
-#TODO: List could be substituted with dictionary and have filenames as keys
+# TODO: List could be substituted with dictionary and have filenames as keys
 def convert_dir_to_matrices(in_dir: str):
     """
     Convert a directory of PDF files to matrices. Returns a list of lists containing matrices.
@@ -121,7 +114,7 @@ if __name__ == "__main__":
     parser.add_argument("output", metavar = "OUT", type = str, help = "Path to output folder.")
     parser.add_argument("-z", "--zoom", metavar = "N", type = int, default = 3, help = "Zoom of the PDF conversion.")
     parser.add_argument("-v", "--verbose", action = "store_true", default = False, help = "Print more information.")
-    parser.add_argument("-m", "--multithreaded", action = "store_true", default = False, help = "Multithread the conversion process. Only for works for folders.")
+    parser.add_argument("-m", "--multithreaded", action = "store_true", default = False, help = "Multithread the conversion process. Only works for folders.")
     argv = parser.parse_args()
 
     ZOOM = argv.zoom

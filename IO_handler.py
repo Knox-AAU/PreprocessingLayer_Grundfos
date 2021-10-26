@@ -31,8 +31,8 @@ def mkdirs(temporary_folder: str):
 def initialize():
     # Arguments
     argparser = argparse.ArgumentParser(description="WIP")
-    argparser.add_argument("-i", "--input", action="store", default=os.path.join(os.getcwd(), 'src'), help="Path to input folder")
-    argparser.add_argument("-o", "--output", action="store", default=os.path.join(os.getcwd(), 'out'), help="Path to output folder")
+    argparser.add_argument("-i", "--input", action="store", help="Path to input folder")
+    argparser.add_argument("-o", "--output", action="store", help="Path to output folder")
     argparser.add_argument("-c", "--clean", action="store", type=bool, default=False, help="Activate nice mode.")
     args = argparser.parse_args()
 
