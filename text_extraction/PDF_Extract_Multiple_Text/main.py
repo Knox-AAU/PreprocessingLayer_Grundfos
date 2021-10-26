@@ -11,7 +11,7 @@ filenum = 1
 for root, dirs, files in os.walk(Path):
     for file in files:
         if file.endswith(".pdf"):
-            print('Prossing file: %d' % filenum)
+            print('Processing file: %d' % filenum)
             filenum += 1
             FileName = os.path.basename(file)
 
@@ -36,4 +36,4 @@ for root, dirs, files in os.walk(Path):
                         Text_file.write(lobj.get_text())
                 PageNum += 1
 
-print("done")
+print("Finished extracting multiple text PDF files.")

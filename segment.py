@@ -28,9 +28,10 @@ def segment_documents(args: str):
     """
     Does document segmentation of a pdf file and produces a json file with the information found.
     """
+    print("Beginning segmentation of " + str(len(os.listdir(args.input))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
-    pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))  
+    pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
 
     for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith('.pdf'):
@@ -42,7 +43,7 @@ def segment_documents(args: str):
                 current_pdf = miner.PDF_file(file, args)
                 estimated_per_page =0.15 # max time to process each page
                 print("PDF PAGES "+str(len(current_pdf.pages)))
-                #max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                # max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
                 max_time = time.time() + 5
 
                 while seg_doc_process.is_alive():
@@ -52,10 +53,10 @@ def segment_documents(args: str):
                         seg_doc_process.join()
                         print("Process: " + file + " terminated due to excessive time")
                         shutil.rmtree(output_path)
-                        
+
 
             except Exception as ex:
-                #The file loaded was probably not a pdf and cant be segmented (with pdfminer)
+                # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 try:
                     print(ex)
                     print(file + " could not be opened and has been skipped!")
@@ -66,41 +67,43 @@ def segment_documents(args: str):
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
 
+
 def segment_document(file: str, args, output_path):
     """
     Segments a pdf document
     """
-
-    # Have to run every time as it is in another task, in case of enviroment variables not set
+    # Has to run every time, as it's from another task, in case of environment variables not being set
     miner.initz_paths(args)
 
+    print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     os.mkdir(output_path)
 
-    #Create output folders
-    os.mkdir(os.path.join(output_path, "tables"))
-    os.mkdir(os.path.join(output_path, "images"))
+    # Create output folders
+    if not os.path.exists(os.path.join(output_path, "tables")):
+        os.mkdir(os.path.join(output_path, "tables"))
+    if not os.path.exists(os.path.join(output_path, "images")):
+        os.mkdir(os.path.join(output_path, "images"))
 
     textline_pages = []
     pages = []
     current_pdf = miner.PDF_file(file, args)
 
-    start_time = time.time() #starts timer 
 
     for page in current_pdf.pages: 
 
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
         if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
-            #Only pages without a COLLOSAL amount of lines will be grouped. 
-            #Otherwise the segmentation will take too long.
+            # Only pages without a COLOSSAL amount of lines will be grouped.
+            # Otherwise the segmentation will take too long.
             miner.look_through_LTRectLine_list(page, args)
         image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
         mined_page = miner.make_page(page)
 
         if args.machine is True:
-            infered_page = infer_page(image_path, args.accuracy)
-            result_page = merge_pages(mined_page, infered_page)
+            inferred_page = infer_page(image_path, args.accuracy)
+            result_page = merge_pages(mined_page, inferred_page)
         else:
             result_page = mined_page
         
@@ -118,17 +121,18 @@ def segment_document(file: str, args, output_path):
     analyzed_text = text_analyser.segment_text()
 
     
-    #Create output
+    # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
     print("Finished extracting" + file)
 
-
+    print("Segmentation of " + file + "finished.")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
     Acquires tables and figures from MI-inference of documents.
     """
-    #TODO: Make split more unique, so that files that naturally include "_page" do not fail
+    print("Acquiring tables and figures from MI-inference of documents...")
+    # TODO: Make split more unique, so that files that naturally include "_page" do not fail
     page_data = datastructures.Page(int(os.path.basename(image_path).split("_page")[1].replace('.png','')))
     image = cv2.imread(image_path)
     prediction = mi.infer_image_from_matrix(image)
@@ -140,7 +144,7 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
             if pred['scores'][idx].item() < min_score:
                 continue
             area = convert2coords(image, list(map(int, pred["boxes"][idx].tolist())))
-            #score = pred["scores"][idx].item()
+            # score = pred["scores"][idx].item()
 
             if label == "table":
                 table = datastructures.TableSegment(area)
@@ -150,7 +154,7 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
                 page_data.images.append(figure)
             else:
                 continue
-
+    print("Finished acquiring images and tables from MI-inference of documents.")
     return page_data
 
 def convert2coords(image, area: list) -> datastructures.Coordinates:
@@ -184,7 +188,7 @@ def remove_duplicates_from_list(list1: list, threshold = 30):
     for object1 in list1:
             for object2 in list1:
                 if(object1 != object2):
-                    #Checks if object 2 is within object 1:
+                    # Checks if object 2 is within object 1:
                     if (object2.coordinates.x0 >= object1.coordinates.x0 - threshold and
                         object2.coordinates.x1 <= object1.coordinates.x1 + threshold and
                         object2.coordinates.y0 >= object1.coordinates.y0 - threshold and
@@ -193,7 +197,7 @@ def remove_duplicates_from_list(list1: list, threshold = 30):
 
 def produce_data_from_coords(page, image_path, output_path, area_treshold = 14400):
     """
-    Produces matrixes that represent seperate images for all tables and figures on the page.
+    Produces matrices that represent separate images for all tables and figures on the page.
     """
     table_list_copy = copy.copy(page.tables)
     image_list_copy = copy.copy(page.images)
@@ -201,7 +205,7 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold = 1440
     image = cv2.imread(image_path)
     for table_number in range(len(table_list_copy)):
         if table_list_copy[table_number].coordinates.area() > area_treshold and ((table_list_copy[table_number].coordinates.is_negative() is False)):
-            try: #TODO: Finish try-excepts
+            try: # TODO: Finish try-excepts
                 table_list_copy[table_number].path = os.path.join(output_path, "tables", os.path.basename(image_path).replace(".png", "_table" + str(table_number) + ".png"))
                 extract_area.extract_area_from_matrix(image, table_list_copy[table_number].path, table_list_copy[table_number].coordinates)
             except Exception as x:
@@ -232,7 +236,7 @@ if __name__ == "__main__":
     argparser.add_argument("-d", "--download", action="store_true", default=False, help="Downloads Grundfos data to input folder.")
     argv = argparser.parse_args()
 
-    # Overwrite enviroment varibles for this session, if argument exists.
+    # Overwrite environment variables for this session, if argument exists.
     if argv.input:
         os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(argv.input))
     if argv.invalid_input:
