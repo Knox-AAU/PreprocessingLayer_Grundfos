@@ -1,6 +1,6 @@
 """
 Module responsible for making the output of the segmentation. 
-More specifically it is preparing data for the actural wrapper used (https://git.its.aau.dk/Knox/source-data-io)
+More specifically it is preparing data for the actual wrapper used (https://git.its.aau.dk/Knox/source-data-io)
 """
 
 from knox_source_data_io.io_handler import *
@@ -18,11 +18,11 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     """
     print("Creating JSON output...")
 
-    #Create list of text-sections
+    # Create list of text-sections
     print("\tCreating text section list...")
     pdf_sections = create_sections(segmented_pdf.Sections)
 
-    #Create object for JSON
+    # Create object for JSON
     print("\tCreating JSON object...")
     export_able_object = Publication()
     export_able_object.publication = file_name.replace(".pdf", "")
@@ -52,7 +52,7 @@ def create_sections(text_sections):
     sections = []
     for section in text_sections:
         visited_section = visit_subsections(section)
-        if visited_section is not None: # Do not add the section if it is "null/none"
+        if visited_section is not None:  # Do not add the section if it is "null/none"
             sections = visited_section
     return sections
 
