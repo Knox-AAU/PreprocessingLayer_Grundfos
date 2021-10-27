@@ -24,6 +24,19 @@ import shutil
 import config_data
 from config_data import config
 import warnings as warn
+from PyPDF2 import PdfFileReader
+
+def checkFile(fullfile):
+    with open(fullfile, 'rb') as f:
+        try:
+            pdf = PdfFileReader(f)
+            info = pdf.getDocumentInfo()
+            if info:
+                return True
+            else:
+                return False
+        except:
+            return False
 
 
 def segment_documents(args: str):
@@ -40,6 +53,11 @@ def segment_documents(args: str):
             try:
                 output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
+                if checkFile(config["INPUT_FOLDER"] + "/" + file) is False:
+                    os.remove(file)
+                    warn.warn("Stupid PDF Shit file dumb ass n*gga gone", RuntimeWarning)
+                    break
+
                 seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
                     file, args, output_path))  # creates new process that segments file
                 seg_doc_process.start()
@@ -48,7 +66,7 @@ def segment_documents(args: str):
                 estimated_per_page = 0.15  # max time to process each page
                 print("PDF PAGES " + str(len(current_pdf.pages)))
                 # max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
-                max_time = time.time() + 5
+                max_time = time.time() + (60*10)
 
                 while seg_doc_process.is_alive():
                     time.sleep(0.01)  # how often to check timer
@@ -110,6 +128,7 @@ def segment_document(file: str, args, output_path):
         mined_page = miner.make_page(page)
 
         if args.machine is True:
+            # Test whether or not it runs as expected (needs MI Fix)
             inferred_page = infer_page(image_path, args.accuracy)
             result_page = merge_pages(mined_page, inferred_page)
         else:
