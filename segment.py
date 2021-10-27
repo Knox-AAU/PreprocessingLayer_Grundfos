@@ -23,13 +23,14 @@ import multiprocessing
 import shutil
 import config_data
 from config_data import config
+import warnings as warn
 
 
 def segment_documents(args: str):
     """
     Does document segmentation of a pdf file and produces a JSON file with the information found.
     """
-    print("Beginning segmentation of " + str(len(os.listdir(args.input))) + " documents...")
+    print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
@@ -54,12 +55,13 @@ def segment_documents(args: str):
                     if (time.time() > max_time):
                         seg_doc_process.terminate()
                         seg_doc_process.join()
-                        print("Process: " + file + " terminated due to excessive time")
+                        warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
                         shutil.rmtree(output_path)
 
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
+                # This except may be obsolete and redundant in the overall process
                 try:
                     print(ex)
                     print(file + " could not be opened and has been skipped!")
@@ -88,6 +90,8 @@ def segment_document(file: str, args, output_path):
     if not os.path.exists(os.path.join(output_path, "images")):
         os.mkdir(os.path.join(output_path, "images"))
 
+    # Check if folders are created
+
     textline_pages = []
     pages = []
     current_pdf = miner.PDF_file(file, args)
@@ -99,7 +103,10 @@ def segment_document(file: str, args, output_path):
         if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
             # Only pages without a COLOSSAL amount of lines will be grouped.
             # Otherwise the segmentation will take too long.
+            # Consider writing a test if a PDF ever give an error on this
             miner.look_through_LTRectLine_list(page, args)
+        else:
+            warn.warn("PDF contains a page with way to many lines", ResourceWarning)
         image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
         mined_page = miner.make_page(page)
 

@@ -4,6 +4,9 @@ This module allows conversion of PDF files to PNG files.
 import os
 import argparse
 import concurrent.futures as cf
+import sys
+import warnings as warn
+
 import fitz
 import ghostscript
 import numpy as np
@@ -33,9 +36,10 @@ def convert_to_file(file: str, out_dir: str):
             output_name = os.path.basename(file).replace(".pdf", "") + "_page" + str(page_number + 1) + ".png"
             pix.writePNG(os.path.join(out_dir, output_name))
 
-    except Exception as e:
+    except Exception:
         os.remove(file)
-        print("Removed file because of fitz error")
+        warn.warn("Corrupt file caught by fitz", RuntimeWarning)
+
     
     if VERBOSE is True:
         print("Finished converting " + file + ".")
@@ -59,9 +63,15 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     out_dirs = []
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
-
-            files.append(os.path.join(in_dir,file))
-            out_dirs.append(out_dir)
+            try:
+                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
+                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress"]
+                ghostscript.Ghostscript(*ar)
+                files.append(os.path.join(in_dir, file))
+                out_dirs.append(out_dir)
+            except RuntimeError:
+                warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
+                os.remove(in_dir + "/" + file)
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
