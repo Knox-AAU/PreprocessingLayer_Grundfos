@@ -11,46 +11,6 @@ import os
 import datetime
 import SegmentedPDF
 
-class Schema_Manual(Model):
-    """
-    Data structure for manuals.
-    """
-    def __init__(self, publisher, pages, pdf_sections):
-        self.publisher = publisher
-        self.pages = pages
-        self.articles = pdf_sections
-
-class Schema_Section():
-    """
-    Data structure for sections in the manuals.
-    """
-    def __init__(self, section_headline, section_paragraphs):
-        self.headline = section_headline
-        self.paragraphs = section_paragraphs
-
-class Schema_Paragraph():
-    """
-    Data structure for text paragraphs in the manuals.
-    """
-    def __init__(self, file_text):
-        self.value = file_text
-
-# class Schema_Image():
-#     """
-#     Data structure for figures in manuals.
-#     """
-#     def __init__(self, page_span, image_value):
-#         self.page_number = page_span
-#         self.value = image_value
-#
-# class Schema_Table():
-#     """
-#     Data structure for the tables in manuals.
-#     """
-#     def __init__(self, page_span, table_value):
-#         self.page_number = page_span
-#         self.value = table_value
-
 
 def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name, schema_path, output_path):
     """
@@ -62,15 +22,8 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     print("\tCreating text section list...")
     pdf_sections = create_sections(segmented_pdf.Sections)
 
-    #Create list of tables and images
-    #print("\tCreating table and image list...")
-    #pdf_illustrations = create_illustrations(pages)
-    #pdf_tables = pdf_illustrations[0]
-    #pdf_images = pdf_illustrations[1]
-
     #Create object for JSON
     print("\tCreating JSON object...")
-    #export_able_object = Schema_Manual("Grundfos A/S", len(pages), pdf_sections)
     export_able_object = Publication()
     export_able_object.publication = file_name.replace(".pdf", "")
     export_able_object.publisher = "Grundfos A/S"
@@ -127,18 +80,3 @@ def visit_subsections(node: SegmentedPDF.Section):
                 schema_sections = schema_sections + subsection
         return schema_sections
     return None
-
-# def create_illustrations(pages):
-#     """
-#     Returns a tuple of lists of the tables and images found on ALL pages in the pdf-file.
-#     """
-#     pdf_tables = []
-#     pdf_images = []
-#     for page in pages:
-#         #Create table-list
-#         for table in page.tables:
-#             pdf_tables.append(Schema_Table(page.page_number, table.path))
-#         #Create image-list
-#         for image in page.images:
-#             pdf_images.append(Schema_Image(page.page_number, image.path))
-#     return (pdf_tables, pdf_images)
