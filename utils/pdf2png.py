@@ -65,11 +65,11 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
         if file.endswith(".pdf"):
             try:
                 ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
-                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress"]
+                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress", in_dir + "/" + file]
                 ghostscript.Ghostscript(*ar)
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
-            except RuntimeError:
+            except Exception:
                 warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
                 os.remove(in_dir + "/" + file)
 
