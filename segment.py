@@ -97,7 +97,6 @@ def segment_document(file: str, args, output_path):
     current_pdf = miner.PDF_file(file, args)
 
     for page in current_pdf.pages:
-
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
         if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
@@ -259,7 +258,7 @@ if __name__ == "__main__":
     argparser.add_argument("-t", "--temporary", action="store_true", default=False, help="Keep temporary files")
     argparser.add_argument("-c", "--clean", action="store_true", default=False,
                            help="Clear output folder before running.")
-    argparser.add_argument("-s", "--schema", type=str, action="store", default="/schema/manuals_v1.1.schema.json",
+    argparser.add_argument("-s", "--schema", type=str, action="store", default="/schema/manuals_v1.3.schema.json",
                            help="Path to json schema.")
     argparser.add_argument("-d", "--download", action="store_true", default=False,
                            help="Downloads Grundfos data to input folder.")
