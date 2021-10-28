@@ -26,7 +26,4 @@ jobs:
 
     - name: Analysing the code with pylint
       run: |
-        pylint `ls -R|grep .py$|xargs`
-
-    - name: Run Black
-      run:
+        pylint `ls -R|grep .py$|xargs
