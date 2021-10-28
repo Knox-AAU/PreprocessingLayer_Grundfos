@@ -4,20 +4,26 @@ This module allows conversion of PDF files to PNG files.
 import os
 import argparse
 import concurrent.futures as cf
+import shutil
 import sys
 import warnings as warn
-
 import fitz
 import ghostscript
 import numpy as np
 from PIL import Image
+import time
+from os.path import exists
+from config_data import config
+import PyPDF2
 
+import psutil
 
 ZOOM = 3
 VERBOSE = True
 
 
 def convert_to_file(file: str, out_dir: str):
+
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
     """
@@ -53,6 +59,25 @@ def convert_dir_to_files(in_dir: str, out_dir: str):
         if file.endswith(".pdf"):
             convert_to_file(os.path.join(in_dir, file), out_dir)
 
+def remove_corrupt_pdf(in_dir: str):
+    path = in_dir
+
+    #i = 0
+    for file in os.listdir(path):
+        filename = path + "/" + file
+        try:
+            pdf = PyPDF2.PdfFileReader(filename)
+            """xreffy = pdf.xref
+            # pagenr = pdf.getNumPages()
+            print("%s : %s" % (i, filename))
+            print("--------------------------------")
+            i = i + 1"""
+        except Exception:
+            #i = i + 1
+            os.remove(filename)
+            print("Corrupted file" + file + " has been removed from " + path)
+
+
 def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     """
     Convert a directory of PDF files and writes each page as a PNG image in the 'out_dir' directory.
@@ -61,18 +86,22 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     # Go through every file in the input dir and append to list.
     files = []
     out_dirs = []
+    path = in_dir
+
     for file in os.listdir(in_dir):
-        if file.endswith(".pdf"):
             try:
                 ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
                       "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress", in_dir + "/" + file]
                 ghostscript.Ghostscript(*ar)
+                ghostscript.exit()
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
             except Exception:
-                warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
-                os.remove(in_dir + "/" + file)
+                if not os.listdir(in_dir):
+                    output_path + "/" + file
 
+                warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
+                output_path = in_dir + "/" + file
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
 
@@ -100,7 +129,7 @@ def convert_to_matrix(file: str):
         #C Convert from PIL format to cv2 format
         cv2_image = np.array(pil_image)
         result.append(cv2_image)
-
+    os.close(doc) # ********************************************************************** <<
     print("Finished converting " + file + ".")
     return result
 

@@ -46,6 +46,7 @@ def segment_documents(args: str):
     print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
+    pdf2png.remove_corrupt_pdf(config["INPUT_FOLDER"])
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
 
     for file in os.listdir(config["INPUT_FOLDER"]):
