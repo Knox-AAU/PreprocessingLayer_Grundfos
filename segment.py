@@ -146,6 +146,7 @@ def segment_document(file: str, args, output_path):
 
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
+    analyzed_text.OriginPath = config["INPUT_FOLDER"] + file
 
     # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)

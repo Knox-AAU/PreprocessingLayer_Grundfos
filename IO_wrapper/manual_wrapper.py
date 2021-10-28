@@ -30,6 +30,7 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     export_able_object.pages = len(pages)
 
     for section in pdf_sections:
+        section.extracted_from = [segmented_pdf.OriginPath]
         export_able_object.add_article(section)
 
     # Generate
