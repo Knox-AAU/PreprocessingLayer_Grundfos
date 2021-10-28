@@ -8,6 +8,7 @@ import fitz
 import ghostscript
 import numpy as np
 from PIL import Image
+from tqdm import tqdm
 
 
 ZOOM = 3
@@ -18,7 +19,7 @@ def convert_to_file(file: str, out_dir: str):
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
     """
-    print("Converting " + file + "...")
+    #print("Converting " + file + "...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -26,19 +27,20 @@ def convert_to_file(file: str, out_dir: str):
         doc = fitz.open(file)
         number_of_pages = doc.pageCount
 
+        pbar = tqdm(total=number_of_pages)
+        pbar.set_description("Converting " + os.path.basename(file))
         # Convert each page to an image
         for page_number in range(number_of_pages):
             page = doc.loadPage(page_number)
             pix = page.getPixmap(matrix=mat)
             output_name = os.path.basename(file).replace(".pdf", "") + "_page" + str(page_number + 1) + ".png"
             pix.writePNG(os.path.join(out_dir, output_name))
+            pbar.update(1)
+        pbar.close()
 
     except Exception as e:
         os.remove(file)
         print("Removed file because of fitz error")
-    
-    if VERBOSE is True:
-        print("Finished converting " + file + ".")
 
 def convert_dir_to_files(in_dir: str, out_dir: str):
     """
@@ -59,7 +61,6 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     out_dirs = []
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
-            print("processing " + file)
             try:
                 ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress","-dQUIET", "-dBATCH", "-dNOPAUSE", "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/"+ file, "-dPDFSETTINGS=/prepress"]
                 ghostscript.Ghostscript(*ar)
@@ -77,7 +78,7 @@ def convert_to_matrix(file: str):
     """
     Converts a PDF file to image matrices and return a list containing a matrix for each page.
     """
-    print("Converting " + file + " to image matrices...")
+    #print("Converting " + file + " to image matrices...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -86,6 +87,8 @@ def convert_to_matrix(file: str):
 
     result = []
 
+    pbar = tqdm(total=number_of_pages)
+    pbar.set_description("Converting " + file + "to image matrices")
     # Convert each page to an image
     for page_number in range(number_of_pages):
         page = doc.loadPage(page_number)
@@ -97,6 +100,8 @@ def convert_to_matrix(file: str):
         #C Convert from PIL format to cv2 format
         cv2_image = np.array(pil_image)
         result.append(cv2_image)
+        pbar.update(1)
+    pbar.close()
 
     print("Finished converting " + file + ".")
     return result

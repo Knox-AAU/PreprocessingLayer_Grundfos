@@ -10,3 +10,4 @@ torch
 torchvision
 torchaudio
 knox-source-data-io
+tqdm===4.62.3

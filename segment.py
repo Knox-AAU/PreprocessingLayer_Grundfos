@@ -21,6 +21,7 @@ import IO_wrapper.manual_wrapper as wrapper
 import time
 import multiprocessing
 import shutil
+from tqdm import tqdm
 
 def segment_documents(args: str):
     """
@@ -29,7 +30,7 @@ def segment_documents(args: str):
     print("Beginning segmentation of " + str(len(os.listdir(args.input))) + " documents...")
     tmp_folder = os.path.join(args.output, "tmp")
     IO_handler.folder_prep(args.output, args.clean)
-    pdf2png.multi_convert_dir_to_files(args.input, os.path.join(tmp_folder, 'images'))  
+    pdf2png.multi_convert_dir_to_files(args.input, os.path.join(tmp_folder, 'images'))
 
     for file in os.listdir(args.input):
         if file.endswith('.pdf'):
@@ -66,7 +67,7 @@ def segment_document(file: str, args, output_path):
     """
     Segments a pdf document
     """
-    print("Beginning segmentation of " + file + "...")
+    #print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     os.mkdir(output_path)
 
@@ -80,7 +81,8 @@ def segment_document(file: str, args, output_path):
     pages = []
     current_pdf = miner.PDF_file(file, args)
 
-
+    pbar = tqdm(total=len(current_pdf.pages))
+    pbar.set_description("Segmenting " + file)
     for page in current_pdf.pages: 
 
 
@@ -108,6 +110,9 @@ def segment_document(file: str, args, output_path):
         pages.append(result_page)
 
         textline_pages.append([element.text_Line_Element for element in page.LTTextLineList])
+        pbar.update(1)
+
+    pbar.close()
 
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
@@ -116,13 +121,13 @@ def segment_document(file: str, args, output_path):
     #Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
 
-    print("Segmentation of " + file + "finished.")
+    #print("Segmentation of " + file + "finished.")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
     Acquires tables and figures from MI-inference of documents.
     """
-    print("Acquiring tables and figures from MI-inference of documents...")
+    #print("Acquiring tables and figures from MI-inference of documents...")
     #TODO: Make split more unique, so that files that naturally include "_page" do not fail
     page_data = datastructures.Page(int(os.path.basename(image_path).split("_page")[1].replace('.png','')))
     image = cv2.imread(image_path)
@@ -145,7 +150,7 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
                 page_data.images.append(figure)
             else:
                 continue
-    print("Finished acquiring images and tables from MI-inference of documents.")
+    #print("Finished acquiring images and tables from MI-inference of documents.")
     return page_data
 
 def convert2coords(image, area: list) -> datastructures.Coordinates:
