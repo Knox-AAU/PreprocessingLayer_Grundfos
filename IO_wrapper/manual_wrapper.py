@@ -31,10 +31,10 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
 
     for section in pdf_sections:
         export_able_object.add_article(section)
-
+    extracted_from = "/srv/data/grundfosarchive/" + file_name
     # Generate
     print("\tGenerating JSON from schema...")
-    handler = IOHandler(Generator(app="GrundfosManuals_Handler", generated_at= str(datetime.datetime.now()), version="1.3.0"), schema_path)
+    handler = IOHandler(Generator(app="GrundfosManuals_Handler", generated_at= str(datetime.datetime.now()), version=extracted_from), schema_path)
     output_name = str(file_name.replace(".pdf", "") + "_output.json")
     filename = os.path.join(output_path, output_name)
 
