@@ -8,6 +8,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Black Code Formatter
-        uses: lgeiger/black-action@master
+        uses: psf/black@stable
         with:
           args: ". --check"
