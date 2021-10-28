@@ -67,7 +67,6 @@ def segment_document(file: str, args, output_path):
     """
     Segments a pdf document
     """
-    #print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     os.mkdir(output_path)
 
@@ -121,13 +120,11 @@ def segment_document(file: str, args, output_path):
     #Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
 
-    #print("Segmentation of " + file + "finished.")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
     Acquires tables and figures from MI-inference of documents.
     """
-    #print("Acquiring tables and figures from MI-inference of documents...")
     #TODO: Make split more unique, so that files that naturally include "_page" do not fail
     page_data = datastructures.Page(int(os.path.basename(image_path).split("_page")[1].replace('.png','')))
     image = cv2.imread(image_path)
@@ -150,7 +147,6 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
                 page_data.images.append(figure)
             else:
                 continue
-    #print("Finished acquiring images and tables from MI-inference of documents.")
     return page_data
 
 def convert2coords(image, area: list) -> datastructures.Coordinates:

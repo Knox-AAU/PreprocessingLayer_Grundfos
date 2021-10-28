@@ -19,7 +19,6 @@ def convert_to_file(file: str, out_dir: str):
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
     """
-    #print("Converting " + file + "...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -78,7 +77,6 @@ def convert_to_matrix(file: str):
     """
     Converts a PDF file to image matrices and return a list containing a matrix for each page.
     """
-    #print("Converting " + file + " to image matrices...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -103,7 +101,6 @@ def convert_to_matrix(file: str):
         pbar.update(1)
     pbar.close()
 
-    print("Finished converting " + file + ".")
     return result
 
 #TODO: List could be substituted with dictionary and have filenames as keys
