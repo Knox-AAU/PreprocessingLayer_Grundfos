@@ -38,9 +38,9 @@ def segment_documents(args: str):
                 seg_doc_process.start()
                 
                 current_pdf = miner.PDF_file(file, args)
-                estimated_per_page = 10 # max time to process each page
-                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
-
+                estimated_per_page = 1 # max time to process each page
+                #max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                max_time = 3 #temporary value due to time constraints
                 while seg_doc_process.is_alive():
                     time.sleep(0.01) # how often to check timer
                     if(time.time() > max_time):
