@@ -11,17 +11,19 @@ def folder_prep(output:str = "tmp", clean:bool = False):
     if clean is True:
         shutil.rmtree(output)
         os.mkdir(output)
-    # raise IOError in case an output already excists in the selected directory and a clean run is not selected
-    elif os.path.exists(output):
-        if os.path.exists(tmp_folder):
-            shutil.rmtree(tmp_folder)
-    else:
+    # raise IOError in case an output already exists in the selected directory and a clean run is not selected
+
+    if not os.path.exists(output):
         os.mkdir(output)
-    # make new directories and print time
+    if os.path.exists(tmp_folder):
+        shutil.rmtree(tmp_folder)
+
     mkdirs(tmp_folder)
 
 def mkdirs(temporary_folder: str):
-    # Makes the output directory with sub-folders
+    """
+    Makes tmp directory in output-folder.
+    """
     os.mkdir(temporary_folder)
     os.mkdir(os.path.join(temporary_folder, 'images'))
     os.mkdir(os.path.join(temporary_folder, 'images_annotated'))

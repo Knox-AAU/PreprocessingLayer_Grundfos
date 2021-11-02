@@ -55,7 +55,7 @@ def segment_documents(args: str):
                                            os.path.basename(file).replace(".pdf", ""))
                 if checkFile(config["INPUT_FOLDER"] + "/" + file) is False:
                     os.remove(file)
-                    warn.warn("Stupid PDF Shit file dumb ass n*gga gone", RuntimeWarning)
+                    warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
                     break
 
                 seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
@@ -63,10 +63,10 @@ def segment_documents(args: str):
                 seg_doc_process.start()
 
                 current_pdf = miner.PDF_file(file, args)
-                estimated_per_page = 0.15  # max time to process each page
-                print("PDF PAGES " + str(len(current_pdf.pages)))
-                # max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
-                max_time = time.time() + (60*10)
+                estimated_per_page = float(60)  # max time to process each page
+                print("PDF Pages: " + str(len(current_pdf.pages)))
+                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                # max_time = time.time() + (60*10)
 
                 while seg_doc_process.is_alive():
                     time.sleep(0.01)  # how often to check timer
@@ -97,7 +97,6 @@ def segment_document(file: str, args, output_path):
     """
     # Has to run every time, as it's from another task, in case of environment variables not being set
     miner.initz_paths(args)
-
     print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     os.mkdir(output_path)
@@ -150,10 +149,7 @@ def segment_document(file: str, args, output_path):
 
     # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
-    print("Finished extracting" + file)
-
-    print("Segmentation of " + file + "finished.")
-
+    print("Finished extracting. " + "\n")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
