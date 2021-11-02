@@ -19,11 +19,11 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     print("Creating JSON output...")
 
     # Create list of text-sections
-    print("\tCreating text section list...")
+    print(" Creating text section list...")
     pdf_sections = create_sections(segmented_pdf.Sections)
 
     # Create object for JSON
-    print("\tCreating JSON object...")
+    print(" Creating JSON object...")
     export_able_object = Publication()
     export_able_object.publication = file_name.replace(".pdf", "")
     export_able_object.publisher = "Grundfos A/S"
@@ -34,17 +34,17 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
         export_able_object.add_article(section)
 
     # Generate
-    print("\tGenerating JSON from schema...")
+    print(" Generating JSON from schema...")
     handler = IOHandler(Generator(app="GrundfosManuals_Handler", generated_at= str(datetime.datetime.now()), version="1.3.0"), schema_path)
     output_name = str(file_name.replace(".pdf", "") + "_output.json")
     filename = os.path.join(output_path, output_name)
 
-    # Serialize object to json
-    print("\tSerializing JSON...")
+    # Serialise object to json
+    print(" Serialising JSON...")
     with open(filename, 'w', encoding='utf-16') as outfile:
         handler.write_json(export_able_object, outfile)
 
-    print("JSON output created.")
+    print(".JSON output created.")
 
 def create_sections(text_sections):
     """
