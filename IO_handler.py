@@ -12,8 +12,11 @@ def folder_prep(output:str = "tmp", clean:bool = False):
         shutil.rmtree(output)
         os.mkdir(output)
     # raise IOError in case an output already excists in the selected directory and a clean run is not selected
-    elif os.path.exists(tmp_folder):
-        shutil.rmtree(tmp_folder)
+    elif os.path.exists(output):
+        if os.path.exists(tmp_folder):
+            shutil.rmtree(tmp_folder)
+    else:
+        os.mkdir(output)
     # make new directories and print time
     mkdirs(tmp_folder)
 
@@ -28,8 +31,8 @@ def mkdirs(temporary_folder: str):
 def initialize():
     # Arguments
     argparser = argparse.ArgumentParser(description="WIP")
-    argparser.add_argument("-i", "--input", action="store", default=os.path.join(os.getcwd(), 'src'), help="Path to input folder")
-    argparser.add_argument("-o", "--output", action="store", default=os.path.join(os.getcwd(), 'out'), help="Path to output folder")
+    argparser.add_argument("-i", "--input", action="store", help="Path to input folder")
+    argparser.add_argument("-o", "--output", action="store", help="Path to output folder")
     argparser.add_argument("-c", "--clean", action="store", type=bool, default=False, help="Activate nice mode.")
     args = argparser.parse_args()
 

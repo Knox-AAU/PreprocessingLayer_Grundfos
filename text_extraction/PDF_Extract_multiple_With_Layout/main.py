@@ -26,4 +26,4 @@ for root, dirs, files in os.walk(Path):
                 Text_file.write(page)
                 PageNum += 1
 
-print("done")
+print("Finished extracting multiple PDF files with layout.")

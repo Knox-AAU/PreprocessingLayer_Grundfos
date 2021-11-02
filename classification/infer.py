@@ -46,6 +46,7 @@ def __get_instance_segmentation_model__(num_classes):
     """
     Initializes the MI-model.
     """
+    print("Initializing MI model...")
     model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
     in_features = model.roi_heads.box_predictor.cls_score.in_features
     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
@@ -57,6 +58,7 @@ def __get_instance_segmentation_model__(num_classes):
         hidden_layer,
         num_classes
     )
+    print("MI model initialized.")
     return model
 
 def infer_image_from_matrix(image):
@@ -68,7 +70,11 @@ def infer_image_from_matrix(image):
 
     # Get model and send to GPU
     model = __get_instance_segmentation_model__(num_classes)
-    model.cuda()
+    if torch.cuda.is_available():
+        model.cuda()
+    else:
+        model.cpu()
+
 
     # Assure model exists and prepare it
     assert os.path.exists(CHECKPOINT_PATH)
@@ -87,7 +93,7 @@ def infer_image_from_matrix(image):
 
     # Classify document elements
     with torch.no_grad():
-        prediction = model([image.cuda()])
+        prediction = model([image.cpu()])
 
     return prediction
 
@@ -100,7 +106,10 @@ def infer_image_from_file(image_path):
 
     # Get model and send to GPU
     model = __get_instance_segmentation_model__(num_classes)
-    model.cuda()
+    if torch.cuda.is_available():
+        model.cuda()
+    else:
+        model.cpu()
 
     # Assure model exists and prepare it
     assert os.path.exists(CHECKPOINT_PATH)
@@ -137,7 +146,10 @@ def infer_image_with_mask(image_path: str, output_path: str, minimum_score: floa
 
     # Get model and send to GPU
     model = __get_instance_segmentation_model__(num_classes)
-    model.cuda()
+    if torch.cuda.is_available():
+        model.cuda()
+    else:
+        model.cpu()
 
     # Assure model exists and prepare it
     assert os.path.exists(CHECKPOINT_PATH)

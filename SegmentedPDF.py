@@ -2,6 +2,7 @@ class SegPDF:
     PDFtitle = ""
     PDFSubTitle = ""
     Text = ""
+    OriginalPath = ""
     
     def __init__(self):
         self.Sections = []
