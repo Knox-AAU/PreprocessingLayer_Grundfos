@@ -85,6 +85,9 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
                       "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress", in_dir + "/" + file]
                 ghostscript.Ghostscript(*ar)
+                with ghostscript.Ghostscript(*ar):
+                    print(f"Ran ghostscript on {file}")
+                    ghostscript.cleanup()
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
             except Exception:
