@@ -11,6 +11,9 @@ class UtilsTest(unittest.TestCase):
         file = os.path.join(os.path.abspath(os.curdir), "test_input") + "/Grundfosliterature-1073171.pdf"
         out_dir = os.path.join(os.path.abspath(os.curdir), "test_output")
 
+        os.environ["GRUNDFOS_INVALID_INPUT_FOLDER"] = str(os.path.join(os.path.abspath(os.curdir), "test_invalid"))
+        config_data.set_config_data_from_envs()
+
         with self.assertWarns(RuntimeWarning):
             p2p.convert_to_file(file, out_dir)
 
