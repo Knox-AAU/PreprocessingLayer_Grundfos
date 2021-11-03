@@ -21,6 +21,10 @@ VERBOSE = True
 
 
 def write_invalid_pdf_list(files: list):
+    txtfile = open(os.path.join(config["INVALID_INPUT_FOLDER"], "invalids.txt"), "w")
+    txtfile.write("")
+    txtfile.close()
+
     txtfile = open(os.path.join(config["INVALID_INPUT_FOLDER"], "invalids.txt"), "a")
     for file in files:
         txtfile.write(f"{file} \n")
@@ -86,9 +90,6 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
                       "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress", in_dir + "/" + file]
                 ghostscript.Ghostscript(*ar)
-                with ghostscript.Ghostscript(*ar):
-                    print(f"Ran ghostscript on {file}")
-                    ghostscript.cleanup()
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
             except Exception:
@@ -96,6 +97,10 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 if str(platform.system()).upper() == "WINDOWS":
                     print("Added file to list for later removal.")
                     invalid_files.append(os.path.join(in_dir, file))
+                    try:
+                        files.remove(os.path.join(in_dir, file))
+                    except:
+                        pass
                 else:
                     print("Moved file to the invalid folder.")
                     shutil.move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
