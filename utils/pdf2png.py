@@ -20,12 +20,13 @@ ZOOM = 3
 VERBOSE = True
 
 
-def move_invalid_files_windows(files: list):
+def write_invalid_pdf_list(files: list):
+    txtfile = open(os.path.join(config["INVALID_INPUT_FOLDER"], "invalids.txt"), "a")
     for file in files:
-        shutil.move(file, config["INVALID_INPUT_FOLDER"])
-        print(f"Moved {file} into the invalid folder")
+        txtfile.write(f"{file} \n")
 
-    print("Finishing moving corrupt files into another directory")
+    txtfile.close()
+    print("Finishing writing invalid files to list")
 
 
 def convert_to_file(file: str, out_dir: str):
@@ -56,7 +57,7 @@ def convert_to_file(file: str, out_dir: str):
             print("Moved file to the invalid folder.")
             shutil.move(file, config["INVALID_INPUT_FOLDER"])
 
-    move_invalid_files_windows(invalid_files)
+    write_invalid_pdf_list(invalid_files)
 
     if VERBOSE is True:
         print("Finished converting " + file + ".")
@@ -99,7 +100,7 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                     print("Moved file to the invalid folder.")
                     shutil.move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
 
-    move_invalid_files_windows(invalid_files)
+    write_invalid_pdf_list(invalid_files)
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
