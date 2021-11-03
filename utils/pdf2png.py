@@ -4,6 +4,7 @@ This module allows conversion of PDF files to PNG files.
 import os
 import argparse
 import concurrent.futures as cf
+import shutil
 import sys
 import warnings as warn
 
@@ -11,6 +12,7 @@ import fitz
 import ghostscript
 import numpy as np
 from PIL import Image
+from config_data import config
 
 
 ZOOM = 3
@@ -37,7 +39,8 @@ def convert_to_file(file: str, out_dir: str):
             pix.writePNG(os.path.join(out_dir, output_name))
 
     except Exception:
-        os.remove(file)
+        shutil.move(file, config["INVALID_INPUT_FOLDER"])
+        #os.remove(file)
         warn.warn("Corrupt file caught by fitz", RuntimeWarning)
 
     
@@ -71,7 +74,8 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 out_dirs.append(out_dir)
             except Exception:
                 warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
-                os.remove(in_dir + "/" + file)
+                shutil.move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
+                #os.remove(in_dir + "/" + file)
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
