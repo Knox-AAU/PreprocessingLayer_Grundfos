@@ -1,4 +1,5 @@
 import os
+import platform
 import unittest
 
 import config_data

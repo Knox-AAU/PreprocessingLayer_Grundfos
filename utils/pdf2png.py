@@ -4,6 +4,7 @@ This module allows conversion of PDF files to PNG files.
 import os
 import argparse
 import concurrent.futures as cf
+import platform
 import shutil
 import sys
 import warnings as warn
@@ -19,13 +20,21 @@ ZOOM = 3
 VERBOSE = True
 
 
+def move_invalid_files_windows(files: list):
+    for file in files:
+        shutil.move(file, config["INVALID_INPUT_FOLDER"])
+        print(f"Moved {file} into the invalid folder")
+
+    print("Finishing moving corrupt files into another directory")
+
+
 def convert_to_file(file: str, out_dir: str):
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
     """
     print("Converting " + file + "...")
     mat = fitz.Matrix(ZOOM, ZOOM)
-
+    invalid_files = []
     # Open image and get page count
     try:
         doc = fitz.open(file)
@@ -39,11 +48,16 @@ def convert_to_file(file: str, out_dir: str):
             pix.writePNG(os.path.join(out_dir, output_name))
 
     except Exception:
-        shutil.move(file, config["INVALID_INPUT_FOLDER"])
-        #os.remove(file)
         warn.warn("Corrupt file caught by fitz", RuntimeWarning)
+        if str(platform.system()).upper() == "WINDOWS":
+            print("Added file to list for later removal.")
+            invalid_files.append(file)
+        else:
+            print("Moved file to the invalid folder.")
+            shutil.move(file, config["INVALID_INPUT_FOLDER"])
 
-    
+    move_invalid_files_windows(invalid_files)
+
     if VERBOSE is True:
         print("Finished converting " + file + ".")
 
@@ -62,6 +76,7 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     Multi-processed.
     """
     # Go through every file in the input dir and append to list.
+    invalid_files = []
     files = []
     out_dirs = []
     for file in os.listdir(in_dir):
@@ -74,8 +89,14 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 out_dirs.append(out_dir)
             except Exception:
                 warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
-                shutil.move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
-                #os.remove(in_dir + "/" + file)
+                if str(platform.system()).upper() == "WINDOWS":
+                    print("Added file to list for later removal.")
+                    invalid_files.append(os.path.join(in_dir, file))
+                else:
+                    print("Moved file to the invalid folder.")
+                    shutil.move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
+
+    move_invalid_files_windows(invalid_files)
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
