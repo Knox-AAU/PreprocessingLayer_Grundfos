@@ -25,6 +25,8 @@ import config_data
 from config_data import config
 import warnings as warn
 from PyPDF2 import PdfFileReader
+import psutil
+import gc
 
 def checkFile(fullfile):
     with open(fullfile, 'rb') as f:
@@ -47,45 +49,78 @@ def segment_documents(args: str):
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
+    pages = 0
 
     for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith('.pdf'):
             try:
-                output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
+                output_path = os.path.join(config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
-                if checkFile(config["INPUT_FOLDER"] + "/" + file) is False:
+                if checkFile(os.path.join(config["INPUT_FOLDER"], file)) is False:
                     os.remove(file)
-                    warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
+                    print("WARNING: PDF file deleted.")
+                    #warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
                     break
+                
+                print("\nGathering meta data...")
+                #current_pdf = miner.PDF_file(file, args)
+                #pages = len(current_pdf.pages)
+                #del current_pdf
+                pages = 300
+                gc.collect()
 
+                print("STARTING THREAD")
                 seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
                     file, args, output_path))  # creates new process that segments file
                 seg_doc_process.start()
 
-                current_pdf = miner.PDF_file(file, args)
-                estimated_per_page = 0.15  # max time to process each page
-                print("PDF PAGES " + str(len(current_pdf.pages)))
-                # max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
-                #max_time = time.time() + (60*10)
-                max_time = 5 #temporary value due to time constraints
+                estimated_per_page = float(20)  # max time to process each page
+                print("PDF Pages: " + str(pages))
+                max_time = time.time() + (estimated_per_page * float(pages))
 
-                while seg_doc_process.is_alive():
-                    time.sleep(0.01)  # how often to check timer
+                while True:
+                    if not seg_doc_process.is_alive():
+                        print("Thread done!")
+                        seg_doc_process.terminate()
+                        seg_doc_process.close()
+                        break
+
+                    time.sleep(0.1)  # how often to check timer
                     if (time.time() > max_time):
                         seg_doc_process.terminate()
-                        warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
+                        seg_doc_process.close()
+                        print("Process: " + file + " terminated due to excessive time")
+                        #warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
                         shutil.rmtree(output_path)
-                        seg_doc_process.join()
+                    
+                    # Kills process if memory usage is high
+                    virtual = psutil.virtual_memory()
+                    if (virtual.percent > 90):
+                        seg_doc_process.terminate()
+                        seg_doc_process.close()
+                        print("Memory usage above 90%. PDF file extraction killed")
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 # This except may be obsolete and redundant in the overall process
                 try:
                     print(ex)
+                    print(ex.__suppress_context__)
+                    print(ex.__cause__)
+                    print(ex.__str__)
+                    print(ex.__traceback__)
                     print(file + " could not be opened and has been skipped!")
+
+                    seg_doc_process.terminate()
+                    seg_doc_process.close()
+
                     shutil.rmtree(output_path)
                 except:
                     pass
+            
+            gc.collect()
+
+    print("\nALL pdf files DONE :DDDD")
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
@@ -121,7 +156,8 @@ def segment_document(file: str, args, output_path):
             # Consider writing a test if a PDF ever give an error on this
             miner.look_through_LTRectLine_list(page, args)
         else:
-            warn.warn("PDF contains a page with way to many lines", ResourceWarning)
+            print("PDF contains a page with way to many lines (above 10000)")
+            #warn.warn("PDF contains a page with way to many lines", ResourceWarning)
         image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
         mined_page = miner.make_page(page)
 
@@ -144,11 +180,11 @@ def segment_document(file: str, args, output_path):
 
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
-    analyzed_text.OriginPath = config["INPUT_FOLDER"] + file
+    analyzed_text.OriginPath = os.path.join(config["INPUT_FOLDER"], file)
 
     # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
-    print("Finished extracting. " + "\n")
+    print("Finished extracting. ")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
@@ -241,6 +277,7 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold=14400)
                 extract_area.extract_area_from_matrix(image, table_list_copy[table_number].path,
                                                       table_list_copy[table_number].coordinates)
             except Exception as x:
+                print(x.__traceback__)
                 print(x)
         else:
             page.tables.remove(table_list_copy[table_number])
@@ -255,6 +292,7 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold=14400)
                 extract_area.extract_area_from_matrix(image, image_list_copy[image_number].path,
                                                       image_list_copy[image_number].coordinates)
             except Exception as x:
+                print(x.__traceback__)
                 print(x)
         else:
             page.images.remove(image_list_copy[image_number])
