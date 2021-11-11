@@ -29,9 +29,15 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     export_able_object.publisher = "Grundfos A/S"
     export_able_object.pages = len(pages)
 
+    article = Article()
+    article.headline = file_name.replace(".pdf", "") #TODO rename to manual title for example "pump cu 200"
+    article.page = "1 - " + str(len(pages))
+
     for section in pdf_sections:
         section.extracted_from = [segmented_pdf.OriginPath]
-        export_able_object.add_article(section)
+        article.add_paragraph(section)
+        
+    export_able_object.add_article(article)
 
     # Generate
     print(" Generating JSON from schema...")
@@ -68,14 +74,10 @@ def visit_subsections(node: SegmentedPDF.Section):
                 page = str(section.StartingPage)
             else:
                 page = str(str(section.StartingPage) + "-" + str(section.EndingPage))
-            article = Article()
-            article.headline = section.Title
-            article.page = page
             if section.Text != "":
                 paragraph = Paragraph()
-                paragraph.value = section.Text
-                article.add_paragraph(paragraph)
-                schema_sections.append(article)
+                paragraph.value = section.Title + ". " + section.Text 
+                schema_sections.append(section)
             subsection = visit_subsections(section)
             if subsection != [] and subsection is not None:
                 schema_sections = schema_sections + subsection
