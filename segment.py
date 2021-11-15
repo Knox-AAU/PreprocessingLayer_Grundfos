@@ -32,6 +32,8 @@ def segment_documents(args: str):
     IO_handler.folder_prep(args.output, args.clean)
     pdf2png.multi_convert_dir_to_files(args.input, os.path.join(tmp_folder, 'images'))
 
+    pbar = tqdm(total=len(os.listdir(args.input)))
+    pbar.set_description("Segmenting documents")
     for file in os.listdir(args.input):
         if file.endswith('.pdf'):
             try:
@@ -58,6 +60,8 @@ def segment_documents(args: str):
                     print(file + " could not be opened and has been skipped!")
                 except:
                     pass
+            pbar.update(1)
+    pbar.close()
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
@@ -80,8 +84,6 @@ def segment_document(file: str, args, output_path):
     pages = []
     current_pdf = miner.PDF_file(file, args)
 
-    pbar = tqdm(total=len(current_pdf.pages))
-    pbar.set_description("Segmenting " + file)
     for page in current_pdf.pages: 
 
 
@@ -109,9 +111,7 @@ def segment_document(file: str, args, output_path):
         pages.append(result_page)
 
         textline_pages.append([element.text_Line_Element for element in page.LTTextLineList])
-        pbar.update(1)
 
-    pbar.close()
 
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()

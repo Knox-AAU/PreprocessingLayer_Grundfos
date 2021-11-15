@@ -62,14 +62,10 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
     """
     Creates the output to JSON using knox-source-data-io module: https://git.its.aau.dk/Knox/source-data-io
     """
-    #print("Creating JSON output...")
-    pbar = tqdm(total=5)
-    pbar.set_description("Creating JSON output")
 
     #Create list of text-sections
     #print("\tCreating text section list...")
     pdf_sections = create_sections(segmented_pdf.Sections)
-    pbar.update(1)
 
     #Create list of tables and images
     #print("\tCreating table and image list...")
@@ -79,28 +75,23 @@ def create_output(segmented_pdf: SegmentedPDF.SegPDF, pages: ds.Page, file_name,
 
     published_at = "Data currently unavailable"
     extracted_from = "/srv/data/grundfosarchive/" + file_name
-    pbar.update(1)
     
     #Create object for JSON
     #print("\tCreating JSON object...")
     export_able_object = Schema_Manual(segmented_pdf.PDFtitle, "Grundfos A/S", published_at, extracted_from, pdf_sections, pdf_tables, pdf_images)
-    pbar.update(1)
 
     # Generate
     output_name = str(file_name.replace(".pdf", "") + "_output.json")
     #print("\tGenerating JSON from schema...")
     handler = IOHandler(Generator(app="GrundfosManuals_Handler", generated_at=str(datetime.datetime.now()), version="1.1.0"), schema_path)
     filename = os.path.join(output_path, output_name)
-    pbar.update(1)
     
     # Serialize object to json
     #print("\tSerializing JSON...")
     with open(filename, 'w', encoding='utf-16') as outfile:
         handler.write_json(export_able_object, outfile)
-    pbar.update(1)
 
     #print("JSON output created.")
-    pbar.close()
 
 def create_sections(text_sections):
     """
