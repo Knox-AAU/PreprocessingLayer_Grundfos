@@ -77,7 +77,7 @@ def visit_subsections(node: SegmentedPDF.Section):
             if section.Text != "":
                 paragraph = Paragraph()
                 paragraph.value = section.Title + ". " + section.Text 
-                schema_sections.append(section)
+                schema_sections.append(paragraph)
             subsection = visit_subsections(section)
             if subsection != [] and subsection is not None:
                 schema_sections = schema_sections + subsection

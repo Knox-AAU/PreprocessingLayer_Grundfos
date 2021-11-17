@@ -7,7 +7,7 @@ from knox_source_data_io.io_handler import IOHandler
 from config_data import config
 
 def send_data():
-    output_folder = "srv/data/processed/grundfosE2E"
+    output_folder = "/srv/grundfos-preprocessing/output/"
     for foldername in os.listdir(output_folder):
         id = foldername[len("Grundfosliterature-"):]
         json_file_name = "Grundfosliterature-" + id + "_output.json"
