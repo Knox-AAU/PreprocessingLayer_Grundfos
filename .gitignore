@@ -195,3 +195,5 @@ Tools/TextExtraction/PDF_Extract_multiple_With_Layout/TEXTs*
 classification/model_196000.pth
 *.zip
 *.json
+
+.DS_Store

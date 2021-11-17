@@ -4,6 +4,9 @@ This module allows conversion of PDF files to PNG files.
 import os
 import argparse
 import concurrent.futures as cf
+import sys
+import warnings as warn
+
 import fitz
 import ghostscript
 import numpy as np
@@ -34,7 +37,7 @@ def convert_to_file(file: str, out_dir: str, pbar):
             pix.writePNG(os.path.join(out_dir, output_name))
             pbar.update(1)
 
-    except Exception as e:
+    except Exception:
         os.remove(file)
         tqdm.write("Removed file because of fitz error")
 
@@ -59,15 +62,15 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
             try:
-                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress","-dQUIET", "-dBATCH", "-dNOPAUSE", "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/"+ file, "-dPDFSETTINGS=/prepress"]
+                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
+                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress", in_dir + "/" + file]
                 ghostscript.Ghostscript(*ar)
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
                 pbarTotal += fitz.open(os.path.join(in_dir, file)).pageCount
-            except RuntimeError:
-                print("GhostScript Error")
+            except Exception:
+                warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
                 os.remove(in_dir + "/" + file)
-                print("Removed " + file + " due to corruption")
 
     with tqdm(total=pbarTotal, desc="Converting files") as pbar:
         with cf.ThreadPoolExecutor() as executor:
@@ -105,7 +108,7 @@ def convert_to_matrix(file: str):
 
     return result
 
-#TODO: List could be substituted with dictionary and have filenames as keys
+# TODO: List could be substituted with dictionary and have filenames as keys
 def convert_dir_to_matrices(in_dir: str):
     """
     Convert a directory of PDF files to matrices. Returns a list of lists containing matrices.
@@ -125,7 +128,7 @@ if __name__ == "__main__":
     parser.add_argument("output", metavar = "OUT", type = str, help = "Path to output folder.")
     parser.add_argument("-z", "--zoom", metavar = "N", type = int, default = 3, help = "Zoom of the PDF conversion.")
     parser.add_argument("-v", "--verbose", action = "store_true", default = False, help = "Print more information.")
-    parser.add_argument("-m", "--multithreaded", action = "store_true", default = False, help = "Multithread the conversion process. Only for works for folders.")
+    parser.add_argument("-m", "--multithreaded", action = "store_true", default = False, help = "Multithread the conversion process. Only works for folders.")
     argv = parser.parse_args()
 
     ZOOM = argv.zoom

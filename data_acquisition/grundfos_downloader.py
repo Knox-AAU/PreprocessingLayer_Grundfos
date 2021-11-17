@@ -6,10 +6,9 @@ import argparse
 import pathlib
 import requests
 
-
 DOMAIN = "https://www.grundfos.com"
 
-def download_data(save_folder: str = "downloads"):
+def download_data(save_folder):
     """
     Downloads pdfs from the IOlinks.txt.
     """
@@ -19,7 +18,7 @@ def download_data(save_folder: str = "downloads"):
     lines = file1.readlines()
 
     # Check if a folder for pdf is made
-    out_folder = os.path.join(os.getcwd() ,save_folder)
+    out_folder = os.path.join(save_folder)
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
 

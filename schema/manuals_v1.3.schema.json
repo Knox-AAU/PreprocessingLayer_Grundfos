@@ -1,0 +1,378 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "required": [
+        "__class__",
+        "__module__",
+        "type",
+        "schema",
+        "generator",
+        "content"
+    ],
+    "properties": {
+        "__class__": {
+            "$id": "#/properties/__class__",
+            "default": "",
+            "description": "The Python class of this object.",
+            "examples": [
+                "Wrapper"
+            ],
+            "title": "The Class",
+            "type": "string"
+        },
+        "__module__": {
+            "$id": "#/properties/__module__",
+            "default": "",
+            "description": "The Python module to import __class__ from.",
+            "examples": [
+                "knox_source_data_io.models.wrapper"
+            ],
+            "title": "Import module",
+            "type": "string"
+        },
+        "type": {
+            "$id": "#/properties/type",
+            "default": "",
+            "examples": [
+                "TestType"
+            ],
+            "title": "The type of object",
+            "type": "string"
+        },
+        "schema": {
+            "$id": "#/properties/schema",
+            "type": "string",
+            "title": "The schema schema",
+            "default": "",
+            "examples": [
+                "TestSchema"
+            ]
+        },
+        "generator": {
+            "$id": "#/properties/generator",
+            "type": "object",
+            "title": "The generator schema",
+            "default": {},
+            "required": [
+                "app",
+                "version",
+                "generated_at"
+            ],
+            "properties": {
+                "app": {
+                    "$id": "#/properties/generator/properties/app",
+                    "type": "string",
+                    "title": "The app schema"
+                },
+                "version": {
+                    "$id": "#/properties/generator/properties/version",
+                    "type": "string",
+                    "title": "The version schema"
+                },
+                "generated_at": {
+                    "$id": "#/properties/generator/properties/generated_at",
+                    "type": "string",
+                    "title": "The generated_at schema"
+                }
+            },
+            "additionalProperties": true
+        },
+        "content": {
+            "$id": "#/properties/content",
+            "default": {},
+            "description": "The publication",
+            "required": [
+                "__class__",
+                "__module__",
+                "publication",
+                "publisher",
+                "pages",
+                "articles"
+            ],
+            "title": "The publication schema",
+            "type": "object",
+            "properties": {
+                "__class__": {
+                    "$id": "#/properties/__class__",
+                    "default": "",
+                    "description": "The Python class of this object.",
+                    "examples": [
+                        "Wrapper"
+                    ],
+                    "title": "The Class",
+                    "type": "string"
+                },
+                "__module__": {
+                    "$id": "#/properties/__module__",
+                    "default": "",
+                    "description": "The Python module to import __class__ from.",
+                    "examples": [
+                        "knox_source_data_io.models.wrapper"
+                    ],
+                    "title": "Import module",
+                    "type": "string"
+                },
+                "publication": {
+                    "$id": "#/properties/content/properties/publication",
+                    "type": "string",
+                    "title": "The publication schema",
+                    "default": "",
+                    "examples": [
+                        "Publication1"
+                    ]
+                },
+                "published_at": {
+                    "$id": "#/properties/content/properties/published_at",
+                    "type": "string",
+                    "title": "The published_at schema",
+                    "description": "The date of publication.",
+                    "default": "",
+                    "pattern": "YYYY-MM-DDTHH:MM:SSZ",
+                    "examples": [
+                        "2018-03-27T00:00:00+02:00"
+                    ]
+                },
+                "publisher": {
+                    "$id": "#/properties/content/properties/publisher",
+                    "type": "string",
+                    "title": "The publisher schema",
+                    "description": "The publisher of the publication.",
+                    "default": "",
+                    "examples": [
+                        "NordJyskePublisher"
+                    ]
+                },
+                "pages": {
+                    "$id": "#/properties/content/properties/pages",
+                    "type": "integer",
+                    "title": "The pages schema",
+                    "description": "The page count of the publication.",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "articles": {
+                    "$id": "#/properties/content/properties/articles",
+                    "type": "array",
+                    "title": "The articles schema",
+                    "description": "The individual articles of the publication.",
+                    "default": [],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/content/properties/articles/items",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/content/properties/articles/items/anyOf/0",
+                                "type": "object",
+                                "title": "The first anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "required": [
+                                    "__class__",
+                                    "__module__",
+                                    "headline",
+                                    "paragraphs"
+                                ],
+                                "properties": {
+                                    "__class__": {
+                                        "$id": "#/properties/__class__",
+                                        "default": "",
+                                        "description": "The Python class of this object.",
+                                        "examples": [
+                                            "Wrapper"
+                                        ],
+                                        "title": "The Class",
+                                        "type": "string"
+                                    },
+                                    "__module__": {
+                                        "$id": "#/properties/__module__",
+                                        "default": "",
+                                        "description": "The Python module to import __class__ from.",
+                                        "examples": [
+                                            "knox_source_data_io.models.wrapper"
+                                        ],
+                                        "title": "Import module",
+                                        "type": "string"
+                                    },
+                                    "headline": {
+                                        "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/headline",
+                                        "type": "string",
+                                        "title": "The headline schema",
+                                        "default": "",
+                                        "examples": [
+                                            "This is head line"
+                                        ]
+                                    },
+                                    "id": {
+                                        "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/id",
+                                        "type": "integer",
+                                        "title": "The id schema",
+                                        "default": 0
+                                    },
+                                    "confidence": {
+                                        "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/confidence",
+                                        "type": "number",
+                                        "title": "The confidence of the correctness of the extraction"
+                                    },
+                                    "extracted_from": {
+                                        "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/extracted_from",
+                                        "type": "array",
+                                        "title": "The extracted_from schema",
+                                        "default": [],
+                                        "additionalItems": true,
+                                        "items": {
+                                            "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/extracted_from/items",
+                                            "anyOf": [
+                                                {
+                                                    "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/extracted_from/items/anyOf/0",
+                                                    "type": "string",
+                                                    "title": "The extraction from",
+                                                    "default": "",
+                                                    "examples": [
+                                                        "This is file 1"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "paragraphs": {
+                                        "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/paragraphs",
+                                        "type": "array",
+                                        "title": "The paragraphs schema",
+                                        "default": [],
+                                        "additionalItems": true,
+                                        "items": {
+                                            "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/paragraphs/items",
+                                            "anyOf": [
+                                                {
+                                                    "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/paragraphs/items/anyOf/0",
+                                                    "type": "object",
+                                                    "title": "The first anyOf schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": {},
+                                                    "examples": [
+                                                        {
+                                                            "__class__": "Paragraph",
+                                                            "__module__": "knox_source_data_io.models.publication",
+                                                            "kind": "What kind?",
+                                                            "value": "Jens Hansen havde en bondegård."
+                                                        }
+                                                    ],
+                                                    "required": [
+                                                        "__class__",
+                                                        "__module__",
+                                                        "kind",
+                                                        "value"
+                                                    ],
+                                                    "properties": {
+                                                        "__class__": {
+                                                            "$id": "#/properties/__class__",
+                                                            "default": "",
+                                                            "description": "The Python class of this object.",
+                                                            "examples": [
+                                                                "Wrapper"
+                                                            ],
+                                                            "title": "The Class",
+                                                            "type": "string"
+                                                        },
+                                                        "__module__": {
+                                                            "$id": "#/properties/__module__",
+                                                            "default": "",
+                                                            "description": "The Python module to import __class__ from.",
+                                                            "examples": [
+                                                                "knox_source_data_io.models.wrapper"
+                                                            ],
+                                                            "title": "Import module",
+                                                            "type": "string"
+                                                        },
+                                                        "kind": {
+                                                            "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/paragraphs/items/anyOf/0/properties/kind",
+                                                            "type": "string",
+                                                            "title": "The kind of schema",
+                                                            "description": "A description of the paragraphs type.",
+                                                            "default": ""
+                                                        },
+                                                        "value": {
+                                                            "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/paragraphs/items/anyOf/0/properties/value",
+                                                            "type": "string",
+                                                            "title": "The value",
+                                                            "default": "",
+                                                            "examples": [
+                                                                "Jens Hansen havde en bondegård."
+                                                            ]
+                                                        }
+                                                    },
+                                                    "additionalProperties": true
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "byline": {
+                                        "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/byline",
+                                        "type": "object",
+                                        "title": "The byline schema",
+                                        "default": {},
+                                        "required": [
+                                            "__class__",
+                                            "__module__",
+                                            "name",
+                                            "email"
+                                        ],
+                                        "properties": {
+                                            "__class__": {
+                                                "$id": "#/properties/__class__",
+                                                "default": "",
+                                                "description": "The Python class of this object.",
+                                                "examples": [
+                                                    "Wrapper"
+                                                ],
+                                                "title": "The Class",
+                                                "type": "string"
+                                            },
+                                            "__module__": {
+                                                "$id": "#/properties/__module__",
+                                                "default": "",
+                                                "description": "The Python module to import __class__ from.",
+                                                "examples": [
+                                                    "knox_source_data_io.models.wrapper"
+                                                ],
+                                                "title": "Import module",
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/byline/properties/name",
+                                                "type": "string",
+                                                "title": "The name schema",
+                                                "default": "",
+                                                "examples": [
+                                                    "Michael Jackson"
+                                                ]
+                                            },
+                                            "email": {
+                                                "$id": "#/properties/content/properties/articles/items/anyOf/0/properties/byline/properties/email",
+                                                "type": "string",
+                                                "title": "The email schema",
+                                                "default": "",
+                                                "examples": [
+                                                    "MJ@king_of_pop.org"
+                                                ]
+                                            }
+                                        },
+                                        "additionalProperties": true
+                                    }
+                                },
+                                "additionalProperties": true
+                           }
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": true
+}
