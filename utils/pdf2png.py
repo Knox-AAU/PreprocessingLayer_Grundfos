@@ -15,7 +15,7 @@ ZOOM = 3
 VERBOSE = True
 
 
-def convert_to_file(file: str, out_dir: str):
+def convert_to_file(file: str, out_dir: str, pbar):
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
     """
@@ -26,8 +26,6 @@ def convert_to_file(file: str, out_dir: str):
         doc = fitz.open(file)
         number_of_pages = doc.pageCount
 
-        pbar = tqdm(total=number_of_pages)
-        pbar.set_description("Converting " + os.path.basename(file))
         # Convert each page to an image
         for page_number in range(number_of_pages):
             page = doc.loadPage(page_number)
@@ -35,11 +33,10 @@ def convert_to_file(file: str, out_dir: str):
             output_name = os.path.basename(file).replace(".pdf", "") + "_page" + str(page_number + 1) + ".png"
             pix.writePNG(os.path.join(out_dir, output_name))
             pbar.update(1)
-        pbar.close()
 
     except Exception as e:
         os.remove(file)
-        print("Removed file because of fitz error")
+        tqdm.write("Removed file because of fitz error")
 
 def convert_dir_to_files(in_dir: str, out_dir: str):
     """
@@ -58,6 +55,7 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     # Go through every file in the input dir and append to list.
     files = []
     out_dirs = []
+    pbarTotal = 0
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
             try:
@@ -65,13 +63,17 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 ghostscript.Ghostscript(*ar)
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
+                pbarTotal += fitz.open(os.path.join(in_dir, file)).pageCount
             except RuntimeError:
                 print("GhostScript Error")
                 os.remove(in_dir + "/" + file)
                 print("Removed " + file + " due to corruption")
 
-    with cf.ProcessPoolExecutor() as executor:
-        executor.map(convert_to_file, files, out_dirs)
+    with tqdm(total=pbarTotal, desc="Converting files") as pbar:
+        with cf.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(convert_to_file, file, out_dir, pbar) for file, out_dir in zip(files, out_dirs)]
+            for future in cf.as_completed(futures):
+                result = future.result()
 
 def convert_to_matrix(file: str):
     """
@@ -138,7 +140,7 @@ if __name__ == "__main__":
 
     if os.path.isfile(argv.input):
         if argv.input.endswith(".pdf"):
-            convert_to_file(argv.input, argv.output)
+            convert_to_file(argv.input, argv.output, pbar)
         else:
             print("Input file must be a PDF file.")
     elif os.path.isdir(argv.input):

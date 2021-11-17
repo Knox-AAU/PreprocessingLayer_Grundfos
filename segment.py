@@ -32,9 +32,15 @@ def segment_documents(args: str):
     IO_handler.folder_prep(args.output, args.clean)
     pdf2png.multi_convert_dir_to_files(args.input, os.path.join(tmp_folder, 'images'))
 
-    pbar = tqdm(total=len(os.listdir(args.input)))
+    elements_in_directory = os.listdir(args.input)
+    amount_of_files = 0
+    for element in elements_in_directory:
+        if element.endswith('.pdf'):
+            amount_of_files += 1
+
+    pbar = tqdm(total=amount_of_files)
     pbar.set_description("Segmenting documents")
-    for file in os.listdir(args.input):
+    for file in elements_in_directory:
         if file.endswith('.pdf'):
             try:
                 output_path = os.path.join(os.getcwd(), args.output, os.path.basename(file).replace(".pdf", ""))
@@ -49,7 +55,7 @@ def segment_documents(args: str):
                     time.sleep(0.01) # how often to check timer
                     if(time.time() > max_time):
                         seg_doc_process.terminate()
-                        print("Process: " + file + " terminated due to excessive time")
+                        tqdm.write("Process: " + file + " terminated due to excessive time")
                         shutil.rmtree(output_path)
                         seg_doc_process.join()
 
