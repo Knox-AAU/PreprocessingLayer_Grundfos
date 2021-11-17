@@ -23,13 +23,27 @@ import multiprocessing
 import shutil
 import config_data
 from config_data import config
+import warnings as warn
+from PyPDF2 import PdfFileReader
+
+def checkFile(fullfile):
+    with open(fullfile, 'rb') as f:
+        try:
+            pdf = PdfFileReader(f)
+            info = pdf.getDocumentInfo()
+            if info:
+                return True
+            else:
+                return False
+        except:
+            return False
 
 
 def segment_documents(args: str):
     """
     Does document segmentation of a pdf file and produces a JSON file with the information found.
     """
-    print("Beginning segmentation of " + str(len(os.listdir(args.input))) + " documents...")
+    print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
@@ -39,27 +53,33 @@ def segment_documents(args: str):
             try:
                 output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
+                if checkFile(config["INPUT_FOLDER"] + "/" + file) is False:
+                    os.remove(file)
+                    warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
+                    break
+
                 seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
                     file, args, output_path))  # creates new process that segments file
                 seg_doc_process.start()
 
                 current_pdf = miner.PDF_file(file, args)
-                estimated_per_page = 0.15  # max time to process each page
-                print("PDF PAGES " + str(len(current_pdf.pages)))
-                # max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
-                max_time = time.time() + 5
+                estimated_per_page = float(60)  # max time to process each page
+                print("PDF Pages: " + str(len(current_pdf.pages)))
+                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                # max_time = time.time() + (60*10)
 
                 while seg_doc_process.is_alive():
                     time.sleep(0.01)  # how often to check timer
                     if (time.time() > max_time):
                         seg_doc_process.terminate()
                         seg_doc_process.join()
-                        print("Process: " + file + " terminated due to excessive time")
+                        warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
                         shutil.rmtree(output_path)
 
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
+                # This except may be obsolete and redundant in the overall process
                 try:
                     print(ex)
                     print(file + " could not be opened and has been skipped!")
@@ -77,7 +97,6 @@ def segment_document(file: str, args, output_path):
     """
     # Has to run every time, as it's from another task, in case of environment variables not being set
     miner.initz_paths(args)
-
     print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     os.mkdir(output_path)
@@ -88,22 +107,27 @@ def segment_document(file: str, args, output_path):
     if not os.path.exists(os.path.join(output_path, "images")):
         os.mkdir(os.path.join(output_path, "images"))
 
+    # Check if folders are created
+
     textline_pages = []
     pages = []
     current_pdf = miner.PDF_file(file, args)
 
     for page in current_pdf.pages:
-
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
         if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
             # Only pages without a COLOSSAL amount of lines will be grouped.
             # Otherwise the segmentation will take too long.
+            # Consider writing a test if a PDF ever give an error on this
             miner.look_through_LTRectLine_list(page, args)
+        else:
+            warn.warn("PDF contains a page with way to many lines", ResourceWarning)
         image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
         mined_page = miner.make_page(page)
 
         if args.machine is True:
+            # Test whether or not it runs as expected (needs MI Fix)
             inferred_page = infer_page(image_path, args.accuracy)
             result_page = merge_pages(mined_page, inferred_page)
         else:
@@ -121,13 +145,11 @@ def segment_document(file: str, args, output_path):
 
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
+    analyzed_text.OriginPath = config["INPUT_FOLDER"] + file
 
     # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
-    print("Finished extracting" + file)
-
-    print("Segmentation of " + file + "finished.")
-
+    print("Finished extracting. " + "\n")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
@@ -252,7 +274,7 @@ if __name__ == "__main__":
     argparser.add_argument("-t", "--temporary", action="store_true", default=False, help="Keep temporary files")
     argparser.add_argument("-c", "--clean", action="store_true", default=False,
                            help="Clear output folder before running.")
-    argparser.add_argument("-s", "--schema", type=str, action="store", default="/schema/manuals_v1.1.schema.json",
+    argparser.add_argument("-s", "--schema", type=str, action="store", default="/schema/manuals_v1.3.schema.json",
                            help="Path to json schema.")
     argparser.add_argument("-d", "--download", action="store_true", default=False,
                            help="Downloads Grundfos data to input folder.")
