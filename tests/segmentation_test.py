@@ -71,7 +71,7 @@ class SegmentationTests(unittest.TestCase):
 
         config_data.set_config_data_from_envs()
 
-        with self.assertWarns(null):
+        with self.assertWarns(Warning):
             seg.segment_documents(argv)
 
 
