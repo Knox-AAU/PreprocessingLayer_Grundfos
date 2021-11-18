@@ -1,8 +1,6 @@
 import os
 import ghostscript
 import platform
-import win32security
-import ntsecuritycon as con
 
 def run_ghostscript(filepath: str):
     invalid_files = []
