@@ -1,3 +1,7 @@
+"""
+Handles setup of folders
+"""
+
 from binascii import b2a_hex
 import argparse
 import os
@@ -6,6 +10,10 @@ import time
 
 start_time = time.time()
 
+"""
+Makes output folder ready, by deleting unnessesary files if -clean flag is set,
+and create the output folder if it does not exist.
+"""
 def folder_prep(output:str = "tmp", clean:bool = False):
     tmp_folder = os.path.join(output, "tmp")
     if clean is True:

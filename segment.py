@@ -172,8 +172,10 @@ def segment_document(file: str, args, output_path):
         miner.remove_text_within(page, [element.coordinates for element in result_page.images])
         miner.remove_text_within(page, [element.coordinates for element in result_page.tables])
 
-        remove_duplicates_from_list(result_page.images)
-        remove_duplicates_from_list(result_page.tables)
+        if args.machine is False:
+            remove_duplicates_from_list(result_page.images)
+            remove_duplicates_from_list(result_page.tables)
+        
         produce_data_from_coords(result_page, image_path, output_path)
         pages.append(result_page)
 
@@ -230,6 +232,7 @@ def convert2coords(image, area: list) -> datastructures.Coordinates:
 def merge_pages(page1: datastructures.Page, page2: datastructures.Page) -> datastructures.Page:
     """
     Merges the contents of two page datastructures into one.
+    Used to merge data from PDF-miner and MI-module together.
     """
     if page1.page_number != page2.page_number:
         raise Exception("Pages must have the same page-number.")
