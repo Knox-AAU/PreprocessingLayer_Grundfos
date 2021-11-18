@@ -1,5 +1,5 @@
 """
-Handles setup of folders
+Handles setup of folders.
 """
 
 from binascii import b2a_hex
@@ -16,10 +16,10 @@ and create the output folder if it does not exist.
 """
 def folder_prep(output:str = "tmp", clean:bool = False):
     tmp_folder = os.path.join(output, "tmp")
-    if clean is True:
-        shutil.rmtree(output)
-        os.mkdir(output)
-    # raise IOError in case an output already exists in the selected directory and a clean run is not selected
+    if clean is True:    
+        for file in os.listdir(output):
+            os.remove(os.path.join(output, file))
+        # raise IOError in case an output already exists in the selected directory and a clean run is not selected
 
     if not os.path.exists(output):
         os.mkdir(output)
