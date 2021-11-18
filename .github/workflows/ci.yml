@@ -18,7 +18,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
         pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements.txt; fi
+        if [ -f requirements_nocuda.txt ]; then pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements_nocuda.txt; fi
     #- name: Analysing the code with pylint
     #  run: |
     #    pylint `ls -R|grep .py$|xargs`
