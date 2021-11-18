@@ -29,10 +29,8 @@ def download_data(save_folder):
         product_name = findfilename(line.rstrip("\n"))
 
         with open(os.path.join(out_folder, product_name), 'wb') as file:
-            print("Downloading " + product_name + "...")
             response = requests.get(line)
             file.write(response.content)
-            print(product_name + " saved to " + os.path.join(out_folder, product_name))
             pbar.update(1)
 
     pbar.close()

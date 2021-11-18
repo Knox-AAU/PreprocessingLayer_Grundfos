@@ -73,7 +73,7 @@ def segment_documents(args: str):
 
                 current_pdf = miner.PDF_file(file, args)
                 estimated_per_page = float(60)  # max time to process each page
-                print("PDF Pages: " + str(len(current_pdf.pages)))
+                tqdm.write("PDF Pages: " + str(len(current_pdf.pages)))
                 max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
                 # max_time = time.time() + (60*10)
 
@@ -91,7 +91,7 @@ def segment_documents(args: str):
                 # This except may be obsolete and redundant in the overall process
                 try:
                     print(ex)
-                    print(file + " could not be opened and has been skipped!")
+                    tqdm.write(file + " could not be opened and has been skipped!")
                     shutil.rmtree(output_path)
                 except:
                     pass
