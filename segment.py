@@ -302,7 +302,7 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
     argparser.add_argument("-i", "--input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
     argparser.add_argument("-o", "--output", type=str, action="store", metavar="OUTPUT", help="Path to output folder.")
-    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT", default="invalid_inpt",
+    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT", default="invalid_input",
                            help="Path to invalid input folder.")
     argparser.add_argument("-a", "--accuracy", type=float, default=0.7, metavar="A",
                            help="Minimum threshold for the prediction accuracy. Value between 0 to 1.")
