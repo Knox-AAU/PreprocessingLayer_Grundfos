@@ -13,3 +13,4 @@ torchvision
 torchaudio
 knox-source-data-io
 jsonschema
+pypdf2
