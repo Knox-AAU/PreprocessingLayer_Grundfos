@@ -1,7 +1,6 @@
 """
 This module provides functionality to segment pdf documents.
 """
-
 import os
 import shutil
 import argparse

@@ -11,8 +11,9 @@ def run_ghostscript(filepath: str):
                 if str(platform.system()).upper() == "WINDOWS":
                     os.chmod(os.path.join(filepath, file), 0o775)
                 ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
-                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + os.path.join(filepath, file), "-f", os.path.join(filepath, file)]
-                ghostscript.Ghostscript(*ar)
+                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + os.path.join(filepath, file)]
+                gs = ghostscript.Ghostscript(*ar)
+                del gs
             except:
                 #warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
                 print("Corruptness caught by GhostScript.")
