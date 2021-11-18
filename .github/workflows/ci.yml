@@ -17,7 +17,7 @@ jobs:
     - name: Install GhostScript
       run: |
         sudo apt update
-        sudo apt install ghostscript===0.7
+        sudo apt install ghostscript
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
