@@ -8,6 +8,7 @@ import sys
 import warnings as warn
 
 import fitz
+from fitz.fitz import Document
 import ghostscript
 import numpy as np
 from PIL import Image
@@ -71,6 +72,7 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 out_dirs.append(out_dir)
             except Exception:
                 warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
+                #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! file: " + file)
                 os.remove(in_dir + "/" + file)
 
     with cf.ProcessPoolExecutor() as executor:

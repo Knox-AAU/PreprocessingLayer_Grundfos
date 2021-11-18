@@ -1,7 +1,8 @@
 """
 This module provides functionality to segment pdf documents.
+This is the main script of the project, that can:
+Download pdf-files, segment the pdf files, and generate output.
 """
-
 import os
 import shutil
 import argparse
@@ -43,7 +44,8 @@ def checkFile(fullfile):
 
 def segment_documents(args: str):
     """
-    Does document segmentation of a pdf file and produces a JSON file with the information found.
+    Does document segmentation of all pdf files in the input folder,
+    and produces JSON files with the information found.
     """
     print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
@@ -157,7 +159,6 @@ def segment_document(file: str, args, output_path):
             miner.look_through_LTRectLine_list(page, args)
         else:
             print("PDF contains a page with way to many lines (above 10000)")
-            #warn.warn("PDF contains a page with way to many lines", ResourceWarning)
         image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
         mined_page = miner.make_page(page)
 
@@ -260,43 +261,34 @@ def remove_duplicates_from_list(list1: list, threshold=30):
 
 def produce_data_from_coords(page, image_path, output_path, area_treshold=14400):
     """
-    Produces matrices that represent separate images for all tables and figures on the page.
+    Checks if images and table coordinates are valid, 
+    and saves them to the output folder in the "images" and "tables" folders.
     """
-    table_list_copy = copy.copy(page.tables)
-    image_list_copy = copy.copy(page.images)
+    path = None
 
-    image = cv2.imread(image_path)
-    for table_number in range(len(table_list_copy)):
-        if table_list_copy[table_number].coordinates.area() > area_treshold and (
-                (table_list_copy[table_number].coordinates.is_negative() is False)):
-            try:  # TODO: Finish try-excepts
-                table_list_copy[table_number].path = os.path.join(output_path, "tables",
-                                                                  os.path.basename(image_path).replace(".png",
-                                                                                                       "_table" + str(
-                                                                                                           table_number) + ".png"))
-                extract_area.extract_area_from_matrix(image, table_list_copy[table_number].path,
-                                                      table_list_copy[table_number].coordinates)
-            except Exception as x:
-                print(x.__traceback__)
-                print(x)
-        else:
-            page.tables.remove(table_list_copy[table_number])
-    for image_number in range(len(image_list_copy)):
-        if (image_list_copy[image_number].coordinates.area() > area_treshold) and (
-                image_list_copy[image_number].coordinates.is_negative() is False):
-            try:
-                image_list_copy[image_number].path = os.path.join(output_path, "images",
-                                                                  os.path.basename(image_path).replace(".png",
-                                                                                                       "_image" + str(
-                                                                                                           image_number) + ".png"))
-                extract_area.extract_area_from_matrix(image, image_list_copy[image_number].path,
-                                                      image_list_copy[image_number].coordinates)
-            except Exception as x:
-                print(x.__traceback__)
-                print(x)
-        else:
-            page.images.remove(image_list_copy[image_number])
+    image_of_page = cv2.imread(image_path)
+    
+    for table_number in range(len(page.tables)):
+        path = os.path.join(output_path, "tables", os.path.basename(image_path).replace(".png",
+                            "_table" + str(table_number) + ".png"))
+        save_content(image_of_page, path, page.tables[table_number], area_treshold)  
+              
+    for image_number in range(len(page.images)):
+        path = os.path.join(output_path, "images", os.path.basename(image_path).replace(".png",
+                            "_image" + str(image_number) + ".png"))
+        save_content(image_of_page, path, page.images[image_number], area_treshold)
 
+"""
+Saves content of image or table as an image
+"""
+def save_content(image_of_page, path, obj, area_treshold):
+    if (obj.coordinates.area() > area_treshold) and (
+            obj.coordinates.is_negative() is False):
+        try:
+            extract_area.save_image_from_matrix(image_of_page, path, obj.coordinates)
+        except Exception as x:
+            print(x.__traceback__)
+            print(x)
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
@@ -317,7 +309,7 @@ if __name__ == "__main__":
                            help="Downloads Grundfos data to input folder.")
     argv = argparser.parse_args()
 
-    # Overwrite environment variables for this session, if argument exists.
+    # Overwrite environment variables for this session, if program flags exists.
     if argv.input:
         os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(argv.input))
     if argv.invalid_input:

@@ -17,7 +17,7 @@ def extract_area_from_file(input_path, output_path, area: Coordinates):
     roi_matrix = original_image[int(area.y0)-OFFSET:int(area.y1)+OFFSET, int(area.x0)-OFFSET:int(area.x1)+OFFSET]
     cv2.imwrite(output_path, roi_matrix)
 
-def extract_area_from_matrix(original_image, output_path, area: Coordinates):
+def save_image_from_matrix(original_image, output_path, area: Coordinates):
     """
     Reads an image matrix, extracts the area of interest and saves it as a new image.
     """
