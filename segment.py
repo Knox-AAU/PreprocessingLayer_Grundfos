@@ -25,8 +25,13 @@ import config_data
 from config_data import config
 import warnings as warn
 from PyPDF2 import PdfFileReader
+import utils.ghostscript_module as gs
 
-def checkFile(fullfile):
+def checkFile(fullfile, invalid_files):
+    for file in invalid_files:
+        if fullfile == file:
+            return False
+
     with open(fullfile, 'rb') as f:
         try:
             pdf = PdfFileReader(f)
@@ -46,6 +51,7 @@ def segment_documents(args: str):
     print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
+    invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
 
     for file in os.listdir(config["INPUT_FOLDER"]):
@@ -53,36 +59,37 @@ def segment_documents(args: str):
             try:
                 output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
-                if checkFile(config["INPUT_FOLDER"] + "/" + file) is False:
-                    os.remove(file)
-                    warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
-                    break
+                if checkFile(os.path.join(config["INPUT_FOLDER"], file), invalid_files) is False:
+                    os.remove(os.path.join(config["INPUT_FOLDER"], file))
+                    #warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
+                    print("Deleted " + file)
+                else:
 
-                seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
-                    file, args, output_path))  # creates new process that segments file
-                seg_doc_process.start()
+                    seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
+                        file, args, output_path))  # creates new process that segments file
+                    seg_doc_process.start()
 
-                current_pdf = miner.PDF_file(file, args)
-                estimated_per_page = float(60)  # max time to process each page
-                print("PDF Pages: " + str(len(current_pdf.pages)))
-                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
-                # max_time = time.time() + (60*10)
+                    current_pdf = miner.PDF_file(file, args)
+                    estimated_per_page = float(60)  # max time to process each page
+                    print("PDF Pages: " + str(len(current_pdf.pages)))
+                    max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                    # max_time = time.time() + (60*10)
 
-                while seg_doc_process.is_alive():
-                    time.sleep(0.01)  # how often to check timer
-                    if (time.time() > max_time):
-                        seg_doc_process.terminate()
-                        seg_doc_process.join()
-                        warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
-                        shutil.rmtree(output_path)
+                    while seg_doc_process.is_alive():
+                        time.sleep(0.01)  # how often to check timer
+                        if (time.time() > max_time):
+                            seg_doc_process.terminate()
+                            seg_doc_process.join()
+                            warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
+                            shutil.rmtree(output_path)
 
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 # This except may be obsolete and redundant in the overall process
+                print(ex)
+                print(file + " could not be opened and has been skipped!")
                 try:
-                    print(ex)
-                    print(file + " could not be opened and has been skipped!")
                     shutil.rmtree(output_path)
                 except:
                     pass
@@ -149,7 +156,7 @@ def segment_document(file: str, args, output_path):
 
     # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
-    print("Finished extracting. " + "\n")
+    print("Finished extracting.\n")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
@@ -265,7 +272,7 @@ if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
     argparser.add_argument("-i", "--input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
     argparser.add_argument("-o", "--output", type=str, action="store", metavar="OUTPUT", help="Path to output folder.")
-    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT",
+    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT", default="/invalids",
                            help="Path to invalid input folder.")
     argparser.add_argument("-a", "--accuracy", type=float, default=0.7, metavar="A",
                            help="Minimum threshold for the prediction accuracy. Value between 0 to 1.")

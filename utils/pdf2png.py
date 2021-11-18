@@ -86,26 +86,8 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     out_dirs = []
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
-            try:
-                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
-                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + in_dir + "/" + file, "-dPDFSETTINGS=/prepress", in_dir + "/" + file]
-                ghostscript.Ghostscript(*ar)
-                files.append(os.path.join(in_dir, file))
-                out_dirs.append(out_dir)
-            except Exception:
-                warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
-                if str(platform.system()).upper() == "WINDOWS":
-                    print("Added file to list for later removal.")
-                    invalid_files.append(os.path.join(in_dir, file))
-                    try:
-                        files.remove(os.path.join(in_dir, file))
-                    except:
-                        pass
-                else:
-                    print("Moved file to the invalid folder.")
-                    shutil.move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
-
-    write_invalid_pdf_list(invalid_files)
+            files.append(os.path.join(in_dir, file))
+            out_dirs.append(out_dir)
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)
