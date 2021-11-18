@@ -4,6 +4,8 @@ numpy===1.21.2
 beautifulsoup4===4.10.0
 pdfminer===20191125
 PyMuPDF===1.18.19
+pytest==6.1.1
+pytest-cov==2.10.1
 opencv-python==4.5.3.56
 ghostscript===0.7
 torch
