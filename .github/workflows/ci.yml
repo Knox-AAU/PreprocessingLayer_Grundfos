@@ -25,4 +25,4 @@ jobs:
         pylint `ls -R|grep .py$|xargs`
 
     - name: Run tests
-      run: pytest
+      run: python -m pytest

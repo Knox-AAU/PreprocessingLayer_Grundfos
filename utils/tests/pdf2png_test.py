@@ -1,7 +1,7 @@
 import os
 import shutil
 import unittest
-import utils.pdf2png as p2p
+from utils import pdf2png as p2p
 
 
 def message_warning(x):
