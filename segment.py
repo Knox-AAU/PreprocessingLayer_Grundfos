@@ -1,5 +1,7 @@
 """
 This module provides functionality to segment pdf documents.
+This is the main script of the project, that can:
+Download pdf-files, segment the pdf files, and generate output.
 """
 import os
 import shutil
@@ -24,6 +26,8 @@ import config_data
 from config_data import config
 import warnings as warn
 from PyPDF2 import PdfFileReader
+import psutil
+import fitz
 import utils.ghostscript_module as gs
 
 def checkFile(fullfile, invalid_files):
@@ -45,7 +49,8 @@ def checkFile(fullfile, invalid_files):
 
 def segment_documents(args: str):
     """
-    Does document segmentation of a pdf file and produces a JSON file with the information found.
+    Does document segmentation of all pdf files in the input folder,
+    and produces JSON files with the information found.
     """
     print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
@@ -56,46 +61,71 @@ def segment_documents(args: str):
     for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith('.pdf'):
             try:
-                output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
+                output_path = os.path.join(config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
                 if checkFile(os.path.join(config["INPUT_FOLDER"], file), invalid_files) is False:
-                    os.remove(os.path.join(config["INPUT_FOLDER"], file))
-                    #warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
-                    print("Deleted " + file)
-                else:
+                    os.remove(file)
+                    print("WARNING: PDF file deleted.")
+                    break
+                
+                print("\nGathering meta data...")
 
-                    seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
-                        file, args, output_path))  # creates new process that segments file
-                    seg_doc_process.start()
+                doc = fitz.open(file)
+                pages = doc.pageCount
+                fitz.close()
 
-                    current_pdf = miner.PDF_file(file, args)
-                    estimated_per_page = float(60)  # max time to process each page
-                    print("PDF Pages: " + str(len(current_pdf.pages)))
-                    max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
-                    # max_time = time.time() + (60*10)
+                gc.collect()
 
-                    while seg_doc_process.is_alive():
-                        time.sleep(0.01)  # how often to check timer
-                        if (time.time() > max_time):
-                            seg_doc_process.terminate()
-                            seg_doc_process.join()
-                            warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
-                            shutil.rmtree(output_path)
+                print("STARTING THREAD")
+                seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
+                    file, args, output_path))  # creates new process that segments file
+                seg_doc_process.start()
 
+                estimated_per_page = float(20)  # max time to process each page
+                print("PDF Pages: " + str(pages))
+                max_time = time.time() + (estimated_per_page * float(pages))
+
+                while True:
+                    if not seg_doc_process.is_alive():
+                        print("Thread done!")
+                        seg_doc_process.terminate()
+                        seg_doc_process.close()
+                        break
+
+                    time.sleep(0.1)  # how often to check timer
+                    if (time.time() > max_time):
+                        seg_doc_process.terminate()
+                        seg_doc_process.close()
+                        print("Process: " + file + " terminated due to excessive time")
+                        #warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
+                        shutil.rmtree(output_path)
+                    
+                    # Kills process if memory usage is high
+                    virtual = psutil.virtual_memory()
+                    if (virtual.percent > 90):
+                        seg_doc_process.terminate()
+                        seg_doc_process.close()
+                        print("Memory usage above 90%. PDF file extraction killed")
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 # This except may be obsolete and redundant in the overall process
-                print(ex)
-                print(file + " could not be opened and has been skipped!")
                 try:
+                    print(file + " could not be opened and has been skipped!")
+
+                    seg_doc_process.terminate()
+                    seg_doc_process.close()
+
                     shutil.rmtree(output_path)
                 except:
                     pass
+            
+            gc.collect()
+
+    print("\nALL pdf files DONE :DDDD")
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
-
 
 def segment_document(file: str, args, output_path):
     """
@@ -128,7 +158,7 @@ def segment_document(file: str, args, output_path):
             # Consider writing a test if a PDF ever give an error on this
             miner.look_through_LTRectLine_list(page, args)
         else:
-            warn.warn("PDF contains a page with way to many lines", ResourceWarning)
+            print("PDF contains a page with way to many lines (above 10000)")
         image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
         mined_page = miner.make_page(page)
 
@@ -142,8 +172,10 @@ def segment_document(file: str, args, output_path):
         miner.remove_text_within(page, [element.coordinates for element in result_page.images])
         miner.remove_text_within(page, [element.coordinates for element in result_page.tables])
 
-        remove_duplicates_from_list(result_page.images)
-        remove_duplicates_from_list(result_page.tables)
+        if args.machine is True:
+            remove_duplicates_from_list(result_page.images)
+            remove_duplicates_from_list(result_page.tables)
+        
         produce_data_from_coords(result_page, image_path, output_path)
         pages.append(result_page)
 
@@ -151,11 +183,11 @@ def segment_document(file: str, args, output_path):
 
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
-    analyzed_text.OriginPath = config["INPUT_FOLDER"] + file
+    analyzed_text.OriginPath = os.path.join(config["INPUT_FOLDER"], file)
 
     # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
-    print("Finished extracting.\n")
+    print("Finished extracting.")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
@@ -200,6 +232,7 @@ def convert2coords(image, area: list) -> datastructures.Coordinates:
 def merge_pages(page1: datastructures.Page, page2: datastructures.Page) -> datastructures.Page:
     """
     Merges the contents of two page datastructures into one.
+    Used to merge data from PDF-miner and MI-module together.
     """
     if page1.page_number != page2.page_number:
         raise Exception("Pages must have the same page-number.")
@@ -231,47 +264,40 @@ def remove_duplicates_from_list(list1: list, threshold=30):
 
 def produce_data_from_coords(page, image_path, output_path, area_treshold=14400):
     """
-    Produces matrices that represent separate images for all tables and figures on the page.
+    Checks if images and table coordinates are valid, 
+    and saves them to the output folder in the "images" and "tables" folders.
     """
-    table_list_copy = copy.copy(page.tables)
-    image_list_copy = copy.copy(page.images)
+    path = None
 
-    image = cv2.imread(image_path)
-    for table_number in range(len(table_list_copy)):
-        if table_list_copy[table_number].coordinates.area() > area_treshold and (
-                (table_list_copy[table_number].coordinates.is_negative() is False)):
-            try:  # TODO: Finish try-excepts
-                table_list_copy[table_number].path = os.path.join(output_path, "tables",
-                                                                  os.path.basename(image_path).replace(".png",
-                                                                                                       "_table" + str(
-                                                                                                           table_number) + ".png"))
-                extract_area.extract_area_from_matrix(image, table_list_copy[table_number].path,
-                                                      table_list_copy[table_number].coordinates)
-            except Exception as x:
-                print(x)
-        else:
-            page.tables.remove(table_list_copy[table_number])
-    for image_number in range(len(image_list_copy)):
-        if (image_list_copy[image_number].coordinates.area() > area_treshold) and (
-                image_list_copy[image_number].coordinates.is_negative() is False):
-            try:
-                image_list_copy[image_number].path = os.path.join(output_path, "images",
-                                                                  os.path.basename(image_path).replace(".png",
-                                                                                                       "_image" + str(
-                                                                                                           image_number) + ".png"))
-                extract_area.extract_area_from_matrix(image, image_list_copy[image_number].path,
-                                                      image_list_copy[image_number].coordinates)
-            except Exception as x:
-                print(x)
-        else:
-            page.images.remove(image_list_copy[image_number])
+    image_of_page = cv2.imread(image_path)
+    
+    for table_number in range(len(page.tables)):
+        path = os.path.join(output_path, "tables", os.path.basename(image_path).replace(".png",
+                            "_table" + str(table_number) + ".png"))
+        save_content(image_of_page, path, page.tables[table_number], area_treshold)  
+              
+    for image_number in range(len(page.images)):
+        path = os.path.join(output_path, "images", os.path.basename(image_path).replace(".png",
+                            "_image" + str(image_number) + ".png"))
+        save_content(image_of_page, path, page.images[image_number], area_treshold)
 
+"""
+Saves content of image or table as an image
+"""
+def save_content(image_of_page, path, obj, area_treshold):
+    if (obj.coordinates.area() > area_treshold) and (
+            obj.coordinates.is_negative() is False):
+        try:
+            extract_area.save_image_from_matrix(image_of_page, path, obj.coordinates)
+        except Exception as x:
+            print(x.__traceback__)
+            print(x)
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
     argparser.add_argument("-i", "--input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
     argparser.add_argument("-o", "--output", type=str, action="store", metavar="OUTPUT", help="Path to output folder.")
-    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT", default="/invalids",
+    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT", default="invalid_inpt",
                            help="Path to invalid input folder.")
     argparser.add_argument("-a", "--accuracy", type=float, default=0.7, metavar="A",
                            help="Minimum threshold for the prediction accuracy. Value between 0 to 1.")
@@ -286,7 +312,7 @@ if __name__ == "__main__":
                            help="Downloads Grundfos data to input folder.")
     argv = argparser.parse_args()
 
-    # Overwrite environment variables for this session, if argument exists.
+    # Overwrite environment variables for this session, if program flags exists.
     if argv.input:
         os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(argv.input))
     if argv.invalid_input:

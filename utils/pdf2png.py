@@ -20,19 +20,6 @@ ZOOM = 3
 VERBOSE = True
 
 
-def write_invalid_pdf_list(files: list):
-    txtfile = open(os.path.join(config["INVALID_INPUT_FOLDER"], "invalids.txt"), "w")
-    txtfile.write("")
-    txtfile.close()
-
-    txtfile = open(os.path.join(config["INVALID_INPUT_FOLDER"], "invalids.txt"), "a")
-    for file in files:
-        txtfile.write(f"{file} \n")
-
-    txtfile.close()
-    print("Finishing writing invalid files to list")
-
-
 def convert_to_file(file: str, out_dir: str):
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
@@ -81,7 +68,6 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     Multi-processed.
     """
     # Go through every file in the input dir and append to list.
-    invalid_files = []
     files = []
     out_dirs = []
     for file in os.listdir(in_dir):

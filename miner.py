@@ -46,12 +46,17 @@ class PDF_file:
     """
 
     def __init__(self, file, args):
-        self.file_name = os.path.basename(file)
-        temp_pages, self.interpreter, self.device = init_file(args, self.file_name)
-        self.pages = []
-        for page in temp_pages:
-            self.pages.append(PDF_page(self, args, page))
-
+        try:
+            self.file_name = os.path.basename(file)
+            temp_pages, self.interpreter, self.device = init_file(args, self.file_name)
+            self.pages = []
+            page_num = 0
+            for page in temp_pages:
+                page_num += 1
+                self.pages.append(PDF_page(self, args, page))
+        except MemoryError:
+            print("PDF miner ran out of moemory, and pdf file was force skiped at page: " + page_num)
+            return
 
 class PDF_page:
     """

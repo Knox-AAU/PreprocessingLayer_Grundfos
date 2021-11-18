@@ -1,5 +1,5 @@
 """
-This module has functionality to download the provided Grundfos pdfs.
+This module has functionality to download the provided Grundfos pdfs, from ioilinks.txt
 """
 import os
 import argparse
