@@ -71,7 +71,7 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 out_dirs.append(out_dir)
             except Exception:
                 warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
-                os.remove(in_dir + "/" + file)
+                os.remove(os.path.join(in_dir, file))
 
     with cf.ProcessPoolExecutor() as executor:
         executor.map(convert_to_file, files, out_dirs)

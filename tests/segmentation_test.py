@@ -8,7 +8,10 @@ import segment as seg
 
 class SegmentationTests(unittest.TestCase):
     def test_if_file_is_too_big_unit(self):
-        args = ["-c", "-iinput_timer", "-ooutput_timer"]
+        test_dir = os.path.dirname(__file__)
+        input_timer = os.path.join(test_dir, "input_timer")
+        output_timer = os.path.join(test_dir, "output_timer")
+        args = ["-c", "-i " + input_timer, "-o " + output_timer]
 
         argparser = argparse.ArgumentParser(description="Segments pdf documents.")
         argparser.add_argument("-i", "--input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
@@ -30,11 +33,11 @@ class SegmentationTests(unittest.TestCase):
         argv = argparser.parse_args(args)
 
         if argv.input:
-            os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(argv.input))
+            os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(input_timer))
         if argv.invalid_input:
             os.environ["GRUNDFOS_INVALID_INPUT_FOLDER"] = str(os.path.abspath(argv.invalid_input))
         if argv.output:
-            os.environ["GRUNDFOS_OUTPUT_FOLDER"] = str(os.path.abspath(argv.output))
+            os.environ["GRUNDFOS_OUTPUT_FOLDER"] = str(os.path.abspath(output_timer))
 
         config_data.set_config_data_from_envs()
         with self.assertWarns(UserWarning):
