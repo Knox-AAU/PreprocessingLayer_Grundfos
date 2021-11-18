@@ -15,7 +15,7 @@ from text_analyzer import TextAnalyser
 import data_acquisition.grundfos_downloader as downloader
 import miner
 import classification.infer as mi
-import utils.pdf2png as pdf2png
+from utils.pdf2png import Pdf2Png
 import utils.extract_area as extract_area
 import datastructure.datastructure as datastructures
 import IO_wrapper.manual_wrapper as wrapper
@@ -58,7 +58,9 @@ def segment_documents(args: str):
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
     invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
+    pdf2png = Pdf2Png(3, False)
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
+    invalid_files = invalid_files + pdf2png.invalid_files
 
     for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith('.pdf'):
