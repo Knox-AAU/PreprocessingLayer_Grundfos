@@ -29,6 +29,8 @@ from PyPDF2 import PdfFileReader
 import psutil
 import fitz
 import utils.ghostscript_module as gs
+import gc
+import traceback
 
 def checkFile(fullfile, invalid_files):
     for file in invalid_files:
@@ -70,9 +72,9 @@ def segment_documents(args: str):
                 
                 print("\nGathering meta data...")
 
-                doc = fitz.open(file)
+                doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
                 pages = doc.pageCount
-                fitz.close()
+                del doc
 
                 gc.collect()
 
@@ -110,9 +112,10 @@ def segment_documents(args: str):
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
                 # This except may be obsolete and redundant in the overall process
+                traceback.print_exc()
+                print(file + " could not be opened and has been skipped!")
+                
                 try:
-                    print(file + " could not be opened and has been skipped!")
-
                     seg_doc_process.terminate()
                     seg_doc_process.close()
 
