@@ -11,3 +11,4 @@ torch==1.9.1+cu102
 torchvision==0.10.1+cu102
 torchaudio===0.9.1
 knox-source-data-io
+tqdm===4.62.3

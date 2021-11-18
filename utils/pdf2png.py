@@ -11,17 +11,17 @@ import fitz
 import ghostscript
 import numpy as np
 from PIL import Image
+from tqdm import tqdm
 
 
 ZOOM = 3
 VERBOSE = True
 
 
-def convert_to_file(file: str, out_dir: str):
+def convert_to_file(file: str, out_dir: str, pbar):
     """
     Converts a PDF file and writes each page as a PNG image in the 'out_dir' directory.
     """
-    print("Converting " + file + "...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -35,14 +35,11 @@ def convert_to_file(file: str, out_dir: str):
             pix = page.getPixmap(matrix=mat)
             output_name = os.path.basename(file).replace(".pdf", "") + "_page" + str(page_number + 1) + ".png"
             pix.writePNG(os.path.join(out_dir, output_name))
+            pbar.update(1)
 
     except Exception:
         os.remove(file)
-        warn.warn("Corrupt file caught by fitz", RuntimeWarning)
-
-    
-    if VERBOSE is True:
-        print("Finished converting " + file + ".")
+        tqdm.write("Removed file because of fitz error")
 
 def convert_dir_to_files(in_dir: str, out_dir: str):
     """
@@ -61,6 +58,7 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
     # Go through every file in the input dir and append to list.
     files = []
     out_dirs = []
+    pbarTotal = 0
     for file in os.listdir(in_dir):
         if file.endswith(".pdf"):
             try:
@@ -69,18 +67,21 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 ghostscript.Ghostscript(*ar)
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
+                pbarTotal += fitz.open(os.path.join(in_dir, file)).pageCount
             except Exception:
                 warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
                 os.remove(in_dir + "/" + file)
 
-    with cf.ProcessPoolExecutor() as executor:
-        executor.map(convert_to_file, files, out_dirs)
+    with tqdm(total=pbarTotal, desc="Converting files") as pbar:
+        with cf.ThreadPoolExecutor() as executor:
+            futures = [executor.submit(convert_to_file, file, out_dir, pbar) for file, out_dir in zip(files, out_dirs)]
+            for future in cf.as_completed(futures):
+                result = future.result()
 
 def convert_to_matrix(file: str):
     """
     Converts a PDF file to image matrices and return a list containing a matrix for each page.
     """
-    print("Converting " + file + " to image matrices...")
     mat = fitz.Matrix(ZOOM, ZOOM)
 
     # Open image and get page count
@@ -89,6 +90,8 @@ def convert_to_matrix(file: str):
 
     result = []
 
+    pbar = tqdm(total=number_of_pages)
+    pbar.set_description("Converting " + file + "to image matrices")
     # Convert each page to an image
     for page_number in range(number_of_pages):
         page = doc.loadPage(page_number)
@@ -100,8 +103,9 @@ def convert_to_matrix(file: str):
         #C Convert from PIL format to cv2 format
         cv2_image = np.array(pil_image)
         result.append(cv2_image)
+        pbar.update(1)
+    pbar.close()
 
-    print("Finished converting " + file + ".")
     return result
 
 # TODO: List could be substituted with dictionary and have filenames as keys
@@ -139,7 +143,7 @@ if __name__ == "__main__":
 
     if os.path.isfile(argv.input):
         if argv.input.endswith(".pdf"):
-            convert_to_file(argv.input, argv.output)
+            convert_to_file(argv.input, argv.output, pbar)
         else:
             print("Input file must be a PDF file.")
     elif os.path.isdir(argv.input):

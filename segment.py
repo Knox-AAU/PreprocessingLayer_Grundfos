@@ -21,6 +21,7 @@ import IO_wrapper.manual_wrapper as wrapper
 import time
 import multiprocessing
 import shutil
+from tqdm import tqdm
 import config_data
 from config_data import config
 import warnings as warn
@@ -48,7 +49,15 @@ def segment_documents(args: str):
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
 
-    for file in os.listdir(config["INPUT_FOLDER"]):
+    elements_in_directory = os.listdir(args.input)
+    amount_of_files = 0
+    for element in elements_in_directory:
+        if element.endswith('.pdf'):
+            amount_of_files += 1
+
+    pbar = tqdm(total=amount_of_files)
+    pbar.set_description("Segmenting documents")
+    for file in elements_in_directory:
         if file.endswith('.pdf'):
             try:
                 output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
@@ -64,7 +73,7 @@ def segment_documents(args: str):
 
                 current_pdf = miner.PDF_file(file, args)
                 estimated_per_page = float(60)  # max time to process each page
-                print("PDF Pages: " + str(len(current_pdf.pages)))
+                tqdm.write("PDF Pages: " + str(len(current_pdf.pages)))
                 max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
                 # max_time = time.time() + (60*10)
 
@@ -72,9 +81,9 @@ def segment_documents(args: str):
                     time.sleep(0.01)  # how often to check timer
                     if (time.time() > max_time):
                         seg_doc_process.terminate()
-                        seg_doc_process.join()
-                        warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
+                        tqdm.write("Process: " + file + " terminated due to excessive time")
                         shutil.rmtree(output_path)
+                        seg_doc_process.join()
 
 
             except Exception as ex:
@@ -82,10 +91,12 @@ def segment_documents(args: str):
                 # This except may be obsolete and redundant in the overall process
                 try:
                     print(ex)
-                    print(file + " could not be opened and has been skipped!")
+                    tqdm.write(file + " could not be opened and has been skipped!")
                     shutil.rmtree(output_path)
                 except:
                     pass
+            pbar.update(1)
+    pbar.close()
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
@@ -97,7 +108,6 @@ def segment_document(file: str, args, output_path):
     """
     # Has to run every time, as it's from another task, in case of environment variables not being set
     miner.initz_paths(args)
-    print("Beginning segmentation of " + file + "...")
     schema_path = args.schema
     os.mkdir(output_path)
 
@@ -143,21 +153,20 @@ def segment_document(file: str, args, output_path):
 
         textline_pages.append([element.text_Line_Element for element in page.LTTextLineList])
 
+
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
     analyzed_text.OriginPath = config["INPUT_FOLDER"] + file
 
     # Create output
     wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
-    print("Finished extracting. " + "\n")
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
     Acquires tables and figures from MI-inference of documents.
     """
-    print("Acquiring tables and figures from MI-inference of documents...")
-    # TODO: Make split more unique, so that files that naturally include "_page" do not fail
-    page_data = datastructures.Page(int(os.path.basename(image_path).split("_page")[1].replace('.png', '')))
+    #TODO: Make split more unique, so that files that naturally include "_page" do not fail
+    page_data = datastructures.Page(int(os.path.basename(image_path).split("_page")[1].replace('.png','')))
     image = cv2.imread(image_path)
     prediction = mi.infer_image_from_matrix(image)
 
@@ -178,7 +187,6 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
                 page_data.images.append(figure)
             else:
                 continue
-    print("Finished acquiring images and tables from MI-inference of documents.")
     return page_data
 
 

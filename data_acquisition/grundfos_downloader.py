@@ -12,7 +12,7 @@ def download_data(save_folder):
     """
     Downloads pdfs from the IOlinks.txt.
     """
-    print("Downloading PDF files from grundfos website...")
+
     # Read all links
     file1 = open(os.path.join(pathlib.Path(__file__).parent.absolute(), 'ioilinks.txt'), 'r')
     lines = file1.readlines()
@@ -22,19 +22,18 @@ def download_data(save_folder):
     if not os.path.exists(out_folder):
         os.mkdir(out_folder)
 
-    pdf_download_count = 0
+    pbar = tqdm(total=len(lines))
+    pbar.set_description("Downloading files from Grundfos website")
     for line in lines:
         # Get a file name
         product_name = findfilename(line.rstrip("\n"))
 
         with open(os.path.join(out_folder, product_name), 'wb') as file:
-            print("Downloading " + product_name + "...")
             response = requests.get(line)
             file.write(response.content)
-            print(product_name + " saved to " + os.path.join(out_folder, product_name))
-            pdf_download_count += 1
+            pbar.update(1)
 
-    print(str(pdf_download_count) + " PDF files downloaded.")
+    pbar.close()
 
 
 def findfilename(string):
