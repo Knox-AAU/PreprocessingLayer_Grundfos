@@ -93,7 +93,10 @@ def infer_image_from_matrix(image):
 
     # Classify document elements
     with torch.no_grad():
-        prediction = model([image.cpu()])
+        if torch.cuda.is_available():
+            prediction = model([image.cuda()])
+        else:
+            prediction = model([image.cpu()])
 
     return prediction
 

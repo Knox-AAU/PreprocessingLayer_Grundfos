@@ -105,11 +105,11 @@ def segment_documents(args: str):
                         shutil.rmtree(output_path)
                     
                     # Kills process if memory usage is high
-                    virtual = psutil.virtual_memory()
-                    if (virtual.percent > 90):
-                        seg_doc_process.terminate()
-                        seg_doc_process.close()
-                        print("Memory usage above 90%. PDF file extraction killed")
+                    #virtual = psutil.virtual_memory()
+                    #if (virtual.percent > 90):
+                        #seg_doc_process.terminate()
+                        #seg_doc_process.close()
+                        #print("Memory usage above 90%. PDF file extraction killed")
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)

@@ -1,6 +1,7 @@
 import os
 import ghostscript
 import platform
+from shutil import copyfile
 
 def run_ghostscript(filepath: str):
     invalid_files = []
@@ -8,12 +9,13 @@ def run_ghostscript(filepath: str):
     for file in os.listdir(filepath):
         if file.endswith(".pdf"):
             try:
-                if str(platform.system()).upper() == "WINDOWS":
-                    os.chmod(os.path.join(filepath, file), 0o775)
-                ar = ["-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dQUIET", "-dBATCH", "-dNOPAUSE",
-                      "-dPDFSETTINGS=/printer", "-sOutputFile=" + os.path.join(filepath, file)]
+                #if str(platform.system()).upper() == "WINDOWS":
+                    #os.chmod(os.path.join(filepath, file), 0o777)
+                copyfile(os.path.join(filepath, file), os.path.join(filepath, file + "(gs)"))
+                ar = ["-dQUIET", "-dBATCH", "-dNOPAUSE", "-sDEVICE=pdfwrite", "-dPDFSETTINGS=/prepress", "-dPDFSETTINGS=/printer", "-sOutputFile=" + os.path.join(filepath, file), os.path.join(filepath, file + "(gs)")]
                 gs = ghostscript.Ghostscript(*ar)
                 del gs
+                os.remove(os.path.join(filepath, file + "(gs)"))
             except:
                 #warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
                 print("Corruptness caught by GhostScript.")
