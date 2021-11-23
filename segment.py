@@ -57,10 +57,9 @@ def segment_documents(args: str):
     print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
-    invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
     pdf2png = Pdf2Png(3, False)
     pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
-    invalid_files = invalid_files + pdf2png.invalid_files
+    invalid_files = pdf2png.invalid_files
 
     for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith('.pdf'):
@@ -68,9 +67,10 @@ def segment_documents(args: str):
                 output_path = os.path.join(config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
                 if checkFile(os.path.join(config["INPUT_FOLDER"], file), invalid_files) is False:
-                    os.remove(file)
-                    print("WARNING: PDF file deleted.")
-                    break
+                    if gs.run_ghostscript(os.path.join(config["INPUT_FOLDER"], file)) is True:
+                        os.remove(os.path.join(config["INPUT_FOLDER"], file))
+                        print("WARNING: " + file + " deleted.")
+                        break
                 
                 print("\nGathering meta data...")
 
