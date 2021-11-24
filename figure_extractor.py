@@ -5,13 +5,14 @@ from pandas import DataFrame
 
 class FigureExtractor:
 
-    def __init__(self, inputPath, outputPath):
+    def __init__(self, inputPath):
         self.inputPath = inputPath
-        self.outputPath = outputPath
 
     def extract_figures_and_captions(self):
         try:
-            result = subprocess.run() #Indsæt argumenter til run funktionen. Format: kommandoen "ls -l" indsættes ['ls', '-l']
+            result = subprocess.run(['sbt', '"runMain org.allenai.pdffigures2.FigureExtractorBatchCli'
+                                            ' /path/to/pdf_directory/ -s stat_file.json -m /figure/image/output/prefix'
+                                            ' -d /figure/data/output/prefix"'])
             return result
         except:
             print("Subprocess failed to run.")
