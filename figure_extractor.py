@@ -41,7 +41,7 @@ class FigureExtractor:
             with open(file) as extracted_json_figures:
                 extracted_figures = json.load(extracted_json_figures)
                 for figure in extracted_figures:
-                    split_figure_path = os.path.basename(figure.figurepath).split("-") #Replace "figurepath" with whatever it's called in the json
+                    split_figure_path = os.path.basename(figure.renderURL).split("-")
                     figure_name = split_figure_path[2] + "-" + split_figure_path[3]
                     figures_and_captions_one_manual.append([figure_name, figure.caption])
             figures_and_captions.append(figures_and_captions_one_manual)
