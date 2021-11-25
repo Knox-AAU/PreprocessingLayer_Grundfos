@@ -8,7 +8,7 @@ RUN apt-get -y install git
 RUN pip install --upgrade pip
 
 # Set up the work directory
-WORKDIR /
+WORKDIR /grundfos-preprocessing
 
 # Install Ghostscript
 RUN apt-get update
@@ -26,4 +26,4 @@ RUN pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements_
 COPY . .
 
 ENTRYPOINT ["python"]
-CMD ["segment.py", "-i INPUT_FOLDER", "-o OUTPUT_FOLDER"]
+CMD ["segment.py", "-c"]
