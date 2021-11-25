@@ -1,7 +1,8 @@
 import os
 import ghostscript
 import platform
-from shutil import copyfile
+from config_data import config
+from shutil import copyfile, move
 
 def run_ghostscript(filepath: str):
     if filepath.endswith(".pdf"):
@@ -18,7 +19,7 @@ def run_ghostscript(filepath: str):
                 return True
             else:
                 print("Moved file to the invalid folder.")
-                shutil.move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
+                move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
                 return True
 
     return False
