@@ -196,4 +196,8 @@ classification/model_196000.pth
 *.zip
 *.json
 
+!/tests/data/*.json
+!/tests/data/*/*.json
+!/tests/data/*/*/*.json
+
 .DS_Store
