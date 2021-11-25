@@ -8,9 +8,9 @@ filenum = 1
 for root, dirs, files in os.walk(Path):
     for file in files:
         if file.endswith(".pdf"):
-            print('Processing file: %d' % filenum)
+            print("Processing file: %d" % filenum)
             filenum += 1
-            
+
             FileName = os.path.basename(file)
 
             Text_file = open("TEXTs/" + FileName.replace(".pdf", "_Layout.txt"), "w")
@@ -22,7 +22,9 @@ for root, dirs, files in os.walk(Path):
             PageNum = 1
 
             for page in pdf:
-                Text_file.write("\n################ PAGE: %d ###################\n" % PageNum)
+                Text_file.write(
+                    "\n################ PAGE: %d ###################\n" % PageNum
+                )
                 Text_file.write(page)
                 PageNum += 1
 

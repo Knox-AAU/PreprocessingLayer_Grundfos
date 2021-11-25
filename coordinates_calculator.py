@@ -1,6 +1,7 @@
 import pdfminer.layout
 from datastructure.datastructure import Coordinates
 
+
 class CoordinatesCalculator:
     # All CoordinatesCalculator's calculations assumes the coordinates is set up like in PDFMiner i.e.
     # (x0,y0) is the lowest left corner, and (x1,y1) is the upper right
@@ -15,10 +16,10 @@ class CoordinatesCalculator:
 
     def compare_vertical_dist(self, x, y):
         """Returns the vertical distance of x compared to y, positive num means x is above y, negative meaning below, and 0 meas x and y overlap vertically"""
-        #test if x bottom-most coordinate is higher then y topmost coordiante.
+        # test if x bottom-most coordinate is higher then y topmost coordiante.
         if x.y0 > y.y1:
             return x.y0 - y.y1
-        #test if x topmost coordinate is lower then y bottom-most coordinate
+        # test if x topmost coordinate is lower then y bottom-most coordinate
         elif x.y1 < y.y0:
             return x.y1 - y.y0
         else:
@@ -26,10 +27,10 @@ class CoordinatesCalculator:
 
     def compare_horizontal_dist(self, x, y):
         """Returns the horizontal distance of x compared to y, positive num means x is further right y, negative meaning further left, and 0 meas x and y overlap horizontally"""
-        #test if x leftmost coordinate is further right then y rightmost coordinate
+        # test if x leftmost coordinate is further right then y rightmost coordinate
         if x.x0 > y.x1:
             return x.x0 - y.x1
-        #test if X rightmost coordinate if further left then y leftmost coordinate
+        # test if X rightmost coordinate if further left then y leftmost coordinate
         elif x.x1 < y.x0:
             return x.x1 - y.x0
         else:
@@ -45,43 +46,43 @@ class CoordinatesCalculator:
 
     def is_object_within_coordinates(self, ObjectsCoords, TestCoords):
         """Will return 1 if the ObjectCoords is within TestCoords, -1 if not, and 0 if partially"""
-        #assuming that the most likely senario is that the object isn't within the coordinates
-        #this is what we'll check for first
+        # assuming that the most likely senario is that the object isn't within the coordinates
+        # this is what we'll check for first
 
-        #is the the objects left most coordinate, further right then the right most test-coordinate.
+        # is the the objects left most coordinate, further right then the right most test-coordinate.
         if ObjectsCoords.x0 > TestCoords.x1:
             return -1
 
-        #is the objects bottom most coordinates, higher then the top most test-coordinate
+        # is the objects bottom most coordinates, higher then the top most test-coordinate
         if ObjectsCoords.y0 > TestCoords.y1:
             return -1
 
-        #is the objects right most coordinate, further left the left most test-coordinate
+        # is the objects right most coordinate, further left the left most test-coordinate
         if ObjectsCoords.x1 < TestCoords.x0:
             return -1
 
-        #is the objects top most coordinate, lower then the bottom most test-coordinate
+        # is the objects top most coordinate, lower then the bottom most test-coordinate
         if ObjectsCoords.y1 < TestCoords.y0:
             return -1
-        
-        #If nothing above was true then, the object can only be within or partially with the test-coordinates
-        #now we'll check if any edge of the object bleeds over the edge of the test-coordinates
 
-        #Checks if the objects left most cordinate is further left then the left most test-coordinate 
+        # If nothing above was true then, the object can only be within or partially with the test-coordinates
+        # now we'll check if any edge of the object bleeds over the edge of the test-coordinates
+
+        # Checks if the objects left most cordinate is further left then the left most test-coordinate
         if ObjectsCoords.x0 < TestCoords.x0:
             return 0
 
-        #Checks if the objects Bottom most cordinate is further down then the bottom most test-coordinate 
+        # Checks if the objects Bottom most cordinate is further down then the bottom most test-coordinate
         if ObjectsCoords.y0 < TestCoords.y0:
             return 0
 
-        #Checks if the objects right most cordinate is further right then the right most test-coordinate 
+        # Checks if the objects right most cordinate is further right then the right most test-coordinate
         if ObjectsCoords.x1 > TestCoords.x1:
             return 0
 
-        #Checks if the objects top most cordinate is further up then the top most test-coordinate 
+        # Checks if the objects top most cordinate is further up then the top most test-coordinate
         if ObjectsCoords.y1 > TestCoords.y1:
             return 0
 
-        #if nothing above is true, then the object must be within the test-coordinates
+        # if nothing above is true, then the object must be within the test-coordinates
         return 1

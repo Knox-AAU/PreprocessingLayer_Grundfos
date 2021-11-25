@@ -8,13 +8,16 @@ import requests
 
 DOMAIN = "https://www.grundfos.com"
 
+
 def download_data(save_folder):
     """
     Downloads pdfs from the IOlinks.txt.
     """
     print("Downloading PDF files from grundfos website...")
     # Read all links
-    file1 = open(os.path.join(pathlib.Path(__file__).parent.absolute(), 'ioilinks.txt'), 'r')
+    file1 = open(
+        os.path.join(pathlib.Path(__file__).parent.absolute(), "ioilinks.txt"), "r"
+    )
     lines = file1.readlines()
 
     # Check if a folder for pdf is made
@@ -27,7 +30,7 @@ def download_data(save_folder):
         # Get a file name
         product_name = findfilename(line.rstrip("\n"))
 
-        with open(os.path.join(out_folder, product_name), 'wb') as file:
+        with open(os.path.join(out_folder, product_name), "wb") as file:
             print("Downloading " + product_name + "...")
             response = requests.get(line)
             file.write(response.content)
@@ -41,13 +44,18 @@ def findfilename(string):
     """
     Parses a link to get the name of the file.
     """
-    dirs = string.split('/')
-    return dirs[len(dirs)-1]
+    dirs = string.split("/")
+    return dirs[len(dirs) - 1]
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--output", action="store", help="Custom output folder for the downloaded files.")
+    parser.add_argument(
+        "-o",
+        "--output",
+        action="store",
+        help="Custom output folder for the downloaded files.",
+    )
     argv = parser.parse_args()
 
     download_data(argv.output)

@@ -11,12 +11,15 @@ import os
 
 class LayoutExtractor:
     """Class for extracting PDFminder.layout of a given PDF"""
+
     def __init__(self, PDFpath):
         self.rsrcmgr = PDFResourceManager()
-        self.device = PDFPageAggregator(self.rsrcmgr, laparams=LAParams(detect_vertical=True))
+        self.device = PDFPageAggregator(
+            self.rsrcmgr, laparams=LAParams(detect_vertical=True)
+        )
         self.interpreter = PDFPageInterpreter(self.rsrcmgr, self.device)
         self.PDFpath = PDFpath
-        self.fp = open(os.path.join(os.getcwd(), PDFpath), 'rb')
+        self.fp = open(os.path.join(os.getcwd(), PDFpath), "rb")
 
     def __InitializePDF__(self):
         """Initializes PDF for other operations"""
@@ -30,14 +33,14 @@ class LayoutExtractor:
 
     def ChangePDF(self, PDFpath):
         self.PDFpath = PDFpath
-        self.fp = open(os.getcwd() + PDFpath, 'rb')
-        
+        self.fp = open(os.getcwd() + PDFpath, "rb")
+
     def PageLayout(self, PageNum):
         """Extracts Layout of specefied page"""
         self.__InitializePDF__()
 
         for _PageNum, page in enumerate(self.pages):
-            if(_PageNum == PageNum):
+            if _PageNum == PageNum:
                 self.interpreter.process_page(page)
                 return self.device.get_result()
 
@@ -57,5 +60,5 @@ class LayoutExtractor:
         self.__InitializePDF__()
 
         for _PageNum, page in enumerate(self.pages):
-            if(_PageNum == PageNum):
+            if _PageNum == PageNum:
                 return page.mediabox[2], page.mediabox[3]

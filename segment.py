@@ -26,8 +26,9 @@ from config_data import config
 import warnings as warn
 from PyPDF2 import PdfFileReader
 
+
 def checkFile(fullfile):
-    with open(fullfile, 'rb') as f:
+    with open(fullfile, "rb") as f:
         try:
             pdf = PdfFileReader(f)
             info = pdf.getDocumentInfo()
@@ -43,39 +44,55 @@ def segment_documents(args: str):
     """
     Does document segmentation of a pdf file and produces a JSON file with the information found.
     """
-    print("Beginning segmentation of " + str(len(os.listdir(config["INPUT_FOLDER"]))) + " documents...")
+    print(
+        "Beginning segmentation of "
+        + str(len(os.listdir(config["INPUT_FOLDER"])))
+        + " documents..."
+    )
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
-    pdf2png.multi_convert_dir_to_files(config["INPUT_FOLDER"], os.path.join(tmp_folder, 'images'))
+    pdf2png.multi_convert_dir_to_files(
+        config["INPUT_FOLDER"], os.path.join(tmp_folder, "images")
+    )
 
     for file in os.listdir(config["INPUT_FOLDER"]):
-        if file.endswith('.pdf'):
+        if file.endswith(".pdf"):
             try:
-                output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
-                                           os.path.basename(file).replace(".pdf", ""))
+                output_path = os.path.join(
+                    os.getcwd(),
+                    config["OUTPUT_FOLDER"],
+                    os.path.basename(file).replace(".pdf", ""),
+                )
                 if checkFile(config["INPUT_FOLDER"] + "/" + file) is False:
                     os.remove(file)
                     warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
                     break
 
-                seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
-                    file, args, output_path))  # creates new process that segments file
+                seg_doc_process = multiprocessing.Process(
+                    target=segment_document,
+                    name="Segment_document",
+                    args=(file, args, output_path),
+                )  # creates new process that segments file
                 seg_doc_process.start()
 
                 current_pdf = miner.PDF_file(file, args)
                 estimated_per_page = float(60)  # max time to process each page
                 print("PDF Pages: " + str(len(current_pdf.pages)))
-                max_time = time.time() + (estimated_per_page * float(len(current_pdf.pages)))
+                max_time = time.time() + (
+                    estimated_per_page * float(len(current_pdf.pages))
+                )
                 # max_time = time.time() + (60*10)
 
                 while seg_doc_process.is_alive():
                     time.sleep(0.01)  # how often to check timer
-                    if (time.time() > max_time):
+                    if time.time() > max_time:
                         seg_doc_process.terminate()
                         seg_doc_process.join()
-                        warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
+                        warn.warn(
+                            f"Process: {file} terminated due to excessive time",
+                            UserWarning,
+                        )
                         shutil.rmtree(output_path)
-
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
@@ -116,14 +133,16 @@ def segment_document(file: str, args, output_path):
     for page in current_pdf.pages:
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
-        if (len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000):
+        if len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000:
             # Only pages without a COLOSSAL amount of lines will be grouped.
             # Otherwise the segmentation will take too long.
             # Consider writing a test if a PDF ever give an error on this
             miner.look_through_LTRectLine_list(page, args)
         else:
             warn.warn("PDF contains a page with way to many lines", ResourceWarning)
-        image_path = os.path.join(config["OUTPUT_FOLDER"], "tmp", 'images', page.image_name)
+        image_path = os.path.join(
+            config["OUTPUT_FOLDER"], "tmp", "images", page.image_name
+        )
         mined_page = miner.make_page(page)
 
         if args.machine is True:
@@ -133,23 +152,32 @@ def segment_document(file: str, args, output_path):
         else:
             result_page = mined_page
 
-        miner.remove_text_within(page, [element.coordinates for element in result_page.images])
-        miner.remove_text_within(page, [element.coordinates for element in result_page.tables])
+        miner.remove_text_within(
+            page, [element.coordinates for element in result_page.images]
+        )
+        miner.remove_text_within(
+            page, [element.coordinates for element in result_page.tables]
+        )
 
         remove_duplicates_from_list(result_page.images)
         remove_duplicates_from_list(result_page.tables)
         produce_data_from_coords(result_page, image_path, output_path)
         pages.append(result_page)
 
-        textline_pages.append([element.text_Line_Element for element in page.LTTextLineList])
+        textline_pages.append(
+            [element.text_Line_Element for element in page.LTTextLineList]
+        )
 
     text_analyser = TextAnalyser(textline_pages)
     analyzed_text = text_analyser.segment_text()
     analyzed_text.OriginPath = config["INPUT_FOLDER"] + file
 
     # Create output
-    wrapper.create_output(analyzed_text, pages, current_pdf.file_name, schema_path, output_path)
+    wrapper.create_output(
+        analyzed_text, pages, current_pdf.file_name, schema_path, output_path
+    )
     print("Finished extracting. " + "\n")
+
 
 def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
@@ -157,15 +185,17 @@ def infer_page(image_path: str, min_score: float = 0.7) -> datastructures.Page:
     """
     print("Acquiring tables and figures from MI-inference of documents...")
     # TODO: Make split more unique, so that files that naturally include "_page" do not fail
-    page_data = datastructures.Page(int(os.path.basename(image_path).split("_page")[1].replace('.png', '')))
+    page_data = datastructures.Page(
+        int(os.path.basename(image_path).split("_page")[1].replace(".png", ""))
+    )
     image = cv2.imread(image_path)
     prediction = mi.infer_image_from_matrix(image)
 
     for pred in prediction:
-        for idx, mask in enumerate(pred['masks']):
+        for idx, mask in enumerate(pred["masks"]):
             label = mi.CATEGORIES2LABELS[pred["labels"][idx].item()]
 
-            if pred['scores'][idx].item() < min_score:
+            if pred["scores"][idx].item() < min_score:
                 continue
             area = convert2coords(image, list(map(int, pred["boxes"][idx].tolist())))
             # score = pred["scores"][idx].item()
@@ -187,11 +217,14 @@ def convert2coords(image, area: list) -> datastructures.Coordinates:
     Converts coordinates from MI-inference format to fit original image format.
     """
     rat = image.shape[0] / 1300
-    return datastructures.Coordinates(int(area[0] * rat), int(area[1] * rat),
-                                      int(area[2] * rat), int(area[3] * rat))
+    return datastructures.Coordinates(
+        int(area[0] * rat), int(area[1] * rat), int(area[2] * rat), int(area[3] * rat)
+    )
 
 
-def merge_pages(page1: datastructures.Page, page2: datastructures.Page) -> datastructures.Page:
+def merge_pages(
+    page1: datastructures.Page, page2: datastructures.Page
+) -> datastructures.Page:
     """
     Merges the contents of two page datastructures into one.
     """
@@ -214,12 +247,14 @@ def remove_duplicates_from_list(list1: list, threshold=30):
     """
     for object1 in list1:
         for object2 in list1:
-            if (object1 != object2):
+            if object1 != object2:
                 # Checks if object 2 is within object 1:
-                if (object2.coordinates.x0 >= object1.coordinates.x0 - threshold and
-                        object2.coordinates.x1 <= object1.coordinates.x1 + threshold and
-                        object2.coordinates.y0 >= object1.coordinates.y0 - threshold and
-                        object2.coordinates.y1 <= object1.coordinates.y1 + threshold):
+                if (
+                    object2.coordinates.x0 >= object1.coordinates.x0 - threshold
+                    and object2.coordinates.x1 <= object1.coordinates.x1 + threshold
+                    and object2.coordinates.y0 >= object1.coordinates.y0 - threshold
+                    and object2.coordinates.y1 <= object1.coordinates.y1 + threshold
+                ):
                     list1.remove(object2)
 
 
@@ -233,28 +268,42 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold=14400)
     image = cv2.imread(image_path)
     for table_number in range(len(table_list_copy)):
         if table_list_copy[table_number].coordinates.area() > area_treshold and (
-                (table_list_copy[table_number].coordinates.is_negative() is False)):
+            (table_list_copy[table_number].coordinates.is_negative() is False)
+        ):
             try:  # TODO: Finish try-excepts
-                table_list_copy[table_number].path = os.path.join(output_path, "tables",
-                                                                  os.path.basename(image_path).replace(".png",
-                                                                                                       "_table" + str(
-                                                                                                           table_number) + ".png"))
-                extract_area.extract_area_from_matrix(image, table_list_copy[table_number].path,
-                                                      table_list_copy[table_number].coordinates)
+                table_list_copy[table_number].path = os.path.join(
+                    output_path,
+                    "tables",
+                    os.path.basename(image_path).replace(
+                        ".png", "_table" + str(table_number) + ".png"
+                    ),
+                )
+                extract_area.extract_area_from_matrix(
+                    image,
+                    table_list_copy[table_number].path,
+                    table_list_copy[table_number].coordinates,
+                )
             except Exception as x:
                 print(x)
         else:
             page.tables.remove(table_list_copy[table_number])
     for image_number in range(len(image_list_copy)):
         if (image_list_copy[image_number].coordinates.area() > area_treshold) and (
-                image_list_copy[image_number].coordinates.is_negative() is False):
+            image_list_copy[image_number].coordinates.is_negative() is False
+        ):
             try:
-                image_list_copy[image_number].path = os.path.join(output_path, "images",
-                                                                  os.path.basename(image_path).replace(".png",
-                                                                                                       "_image" + str(
-                                                                                                           image_number) + ".png"))
-                extract_area.extract_area_from_matrix(image, image_list_copy[image_number].path,
-                                                      image_list_copy[image_number].coordinates)
+                image_list_copy[image_number].path = os.path.join(
+                    output_path,
+                    "images",
+                    os.path.basename(image_path).replace(
+                        ".png", "_image" + str(image_number) + ".png"
+                    ),
+                )
+                extract_area.extract_area_from_matrix(
+                    image,
+                    image_list_copy[image_number].path,
+                    image_list_copy[image_number].coordinates,
+                )
             except Exception as x:
                 print(x)
         else:
@@ -263,33 +312,86 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold=14400)
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
-    argparser.add_argument("-i", "--input", type=str, action="store", metavar="INPUT", help="Path to input folder.")
-    argparser.add_argument("-o", "--output", type=str, action="store", metavar="OUTPUT", help="Path to output folder.")
-    argparser.add_argument("-ii", "--invalid_input", type=str, action="store", metavar="INVALID_INPUT",
-                           help="Path to invalid input folder.")
-    argparser.add_argument("-a", "--accuracy", type=float, default=0.7, metavar="A",
-                           help="Minimum threshold for the prediction accuracy. Value between 0 to 1.")
-    argparser.add_argument("-m", "--machine", action="store_true",
-                           help="Enable machine intelligence crossreferencing.")  # NOTE: Could be merged with accuracy arg
-    argparser.add_argument("-t", "--temporary", action="store_true", default=False, help="Keep temporary files")
-    argparser.add_argument("-c", "--clean", action="store_true", default=False,
-                           help="Clear output folder before running.")
-    argparser.add_argument("-s", "--schema", type=str, action="store", default="/schema/manuals_v1.3.schema.json",
-                           help="Path to json schema.")
-    argparser.add_argument("-d", "--download", action="store_true", default=False,
-                           help="Downloads Grundfos data to input folder.")
+    argparser.add_argument(
+        "-i",
+        "--input",
+        type=str,
+        action="store",
+        metavar="INPUT",
+        help="Path to input folder.",
+    )
+    argparser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        action="store",
+        metavar="OUTPUT",
+        help="Path to output folder.",
+    )
+    argparser.add_argument(
+        "-ii",
+        "--invalid_input",
+        type=str,
+        action="store",
+        metavar="INVALID_INPUT",
+        help="Path to invalid input folder.",
+    )
+    argparser.add_argument(
+        "-a",
+        "--accuracy",
+        type=float,
+        default=0.7,
+        metavar="A",
+        help="Minimum threshold for the prediction accuracy. Value between 0 to 1.",
+    )
+    argparser.add_argument(
+        "-m",
+        "--machine",
+        action="store_true",
+        help="Enable machine intelligence crossreferencing.",
+    )  # NOTE: Could be merged with accuracy arg
+    argparser.add_argument(
+        "-t",
+        "--temporary",
+        action="store_true",
+        default=False,
+        help="Keep temporary files",
+    )
+    argparser.add_argument(
+        "-c",
+        "--clean",
+        action="store_true",
+        default=False,
+        help="Clear output folder before running.",
+    )
+    argparser.add_argument(
+        "-s",
+        "--schema",
+        type=str,
+        action="store",
+        default="/schema/manuals_v1.3.schema.json",
+        help="Path to json schema.",
+    )
+    argparser.add_argument(
+        "-d",
+        "--download",
+        action="store_true",
+        default=False,
+        help="Downloads Grundfos data to input folder.",
+    )
     argv = argparser.parse_args()
 
     # Overwrite environment variables for this session, if argument exists.
     if argv.input:
         os.environ["GRUNDFOS_INPUT_FOLDER"] = str(os.path.abspath(argv.input))
     if argv.invalid_input:
-        os.environ["GRUNDFOS_INVALID_INPUT_FOLDER"] = str(os.path.abspath(argv.invalid_input))
+        os.environ["GRUNDFOS_INVALID_INPUT_FOLDER"] = str(
+            os.path.abspath(argv.invalid_input)
+        )
     if argv.output:
         os.environ["GRUNDFOS_OUTPUT_FOLDER"] = str(os.path.abspath(argv.output))
     config_data.set_config_data_from_envs()
-    config_data.check_config(["GRUNDFOS_INPUT_FOLDER",
-                              "GRUNDFOS_OUTPUT_FOLDER"])
+    config_data.check_config(["GRUNDFOS_INPUT_FOLDER", "GRUNDFOS_OUTPUT_FOLDER"])
 
     for item in config:
         print(item, ": ", config[item])

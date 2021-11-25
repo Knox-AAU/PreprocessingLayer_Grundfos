@@ -11,14 +11,14 @@ filenum = 1
 for root, dirs, files in os.walk(Path):
     for file in files:
         if file.endswith(".pdf"):
-            print('Processing file: %d' % filenum)
+            print("Processing file: %d" % filenum)
             filenum += 1
             FileName = os.path.basename(file)
 
             Text_file = open("TEXTs/" + FileName.replace(".pdf", "_Text.txt"), "w")
 
-            # Load your 
-            filePointer = open(Path + '/' + file, 'rb')
+            # Load your
+            filePointer = open(Path + "/" + file, "rb")
             rsrcmgr = PDFResourceManager()
             laparams = LAParams(detect_vertical=True)
             device = PDFPageAggregator(rsrcmgr, laparams=laparams)
@@ -28,7 +28,9 @@ for root, dirs, files in os.walk(Path):
             PageNum = 1
 
             for page in pdf:
-                Text_file.write("\n################ PAGE: %d ###################\n" % PageNum)
+                Text_file.write(
+                    "\n################ PAGE: %d ###################\n" % PageNum
+                )
                 interpreter.process_page(page)
                 layout = device.get_result()
                 for lobj in layout:
