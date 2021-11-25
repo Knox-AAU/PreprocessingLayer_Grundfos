@@ -1,9 +1,11 @@
 import os
+import subprocess
 import sys
 import random
+import socket
 
+import netifaces
 import requests
-import selenium.common.exceptions
 from tqdm import tqdm
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -17,7 +19,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 from selenium.webdriver.common.proxy import Proxy, ProxyType
-from http_request_randomizer.requests.proxy.requestProxy import RequestProxy
 
 import re
 
@@ -52,13 +53,14 @@ def get_download_links():
     pbar.close()
     print(len(list_of_links))
     get_rechapta(list_of_links)
-    # download_files(list_of_links)
-    # download_file(str_link)
 
 
 def get_rechapta(links):
+    ip_address, mask, gateway = get_default_network_details()
+    interface_name = 'Wi-Fi'
     for link in links:
         l = DEFAULT_DOMAIN + link
+        change_ip(interface_name, ip_address, mask, gateway)
         options = webdriver.ChromeOptions()
         # options.add_argument("--user-agent=New User Agent")
         prefs = {'download.default_directory': os.path.join(os.path.abspath(os.curdir), "downloads")}
@@ -113,50 +115,42 @@ def get_rechapta(links):
         frames = driver.find_elements(By.TAG_NAME, "iframe")
         driver.switch_to.frame(recaptcha_challenge_frame)
 
-        SENTINEL = True
 
-        while SENTINEL is True:
+        # get the mp3 audio file
+        wait.until(presence_of_element_located((By.ID, "audio-source")))
+        src = driver.find_element_by_id("audio-source").get_attribute("src")
+        print(f"[INFO] Audio src: {src}")
 
-            # get the mp3 audio file
-            wait.until(presence_of_element_located((By.ID, "audio-source")))
-            src = driver.find_element_by_id("audio-source").get_attribute("src")
-            print(f"[INFO] Audio src: {src}")
+        path_to_mp3 = os.path.normpath(os.path.join(os.path.abspath(os.curdir), "sample.mp3"))
+        path_to_wav = os.path.normpath(os.path.join(os.path.abspath(os.curdir), "sample.wav"))
 
-            path_to_mp3 = os.path.normpath(os.path.join(os.path.abspath(os.curdir), "sample.mp3"))
-            path_to_wav = os.path.normpath(os.path.join(os.path.abspath(os.curdir), "sample.wav"))
+        # download the mp3 audio file from the source
+        urllib.request.urlretrieve(src, path_to_mp3)
 
-            # download the mp3 audio file from the source
-            urllib.request.urlretrieve(src, path_to_mp3)
+        # load downloaded mp3 audio file as .wav
+        try:
+            sound = pydub.AudioSegment.from_mp3(path_to_mp3)
+            sound.export(path_to_wav, format="wav")
+            sample_audio = sr.AudioFile(path_to_wav)
+        except Exception:
+            sys.exit(
+                "[ERR] Please run program as administrator or download ffmpeg manually, "
+                "https://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/"
+            )
 
-            # load downloaded mp3 audio file as .wav
-            try:
-                sound = pydub.AudioSegment.from_mp3(path_to_mp3)
-                sound.export(path_to_wav, format="wav")
-                sample_audio = sr.AudioFile(path_to_wav)
-            except Exception:
-                sys.exit(
-                    "[ERR] Please run program as administrator or download ffmpeg manually, "
-                    "https://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/"
-                )
+        # translate audio to text with google voice recognition
+        r = sr.Recognizer()
+        with sample_audio as source:
+            audio = r.record(source)
+        key = r.recognize_google(audio)
+        print(f"[INFO] Recaptcha Passcode: {key}")
 
-            # translate audio to text with google voice recognition
-            r = sr.Recognizer()
-            with sample_audio as source:
-                audio = r.record(source)
-            key = r.recognize_google(audio)
-            print(f"[INFO] Recaptcha Passcode: {key}")
+        # key in results and submit
+        time.sleep(random.uniform(5, 15))
+        driver.find_element_by_id("audio-response").send_keys(key.lower())
+        driver.find_element_by_id("audio-response").send_keys(Keys.ENTER)
 
-            # key in results and submit
-            time.sleep(random.uniform(5, 15))
-            driver.find_element_by_id("audio-response").send_keys(key.lower())
-            driver.find_element_by_id("audio-response").send_keys(Keys.ENTER)
 
-            try:
-                wait.until(presence_of_element_located((By.CLASS_NAME, "rc-audiochallenge-error-message")))
-                driver.find_elements_by_class_name('rc-audiochallenge-error-message"]')
-            except selenium.common.exceptions.NoSuchElementException:
-                print("no mas")
-                SENTINEL = False
 
         driver.switch_to.default_content()
         time.sleep(random.uniform(5, 15))
@@ -188,6 +182,44 @@ def list_current_files():
             f = file.replace(".pdf", "")
             files.add(f)
     return files
+
+
+def change_ip(interface_name, ip_address, mask, gateway):
+    ip_address = '.'.join(ip_address.split('.')[:-1]) + '.' + str(
+        random.randrange(8, 255 - int(mask.split('.')[-1]) - 1))
+    result_1 = subprocess.call(
+        f'netsh interface ipv4 set address name="{interface_name}" static {ip_address} {mask} {gateway}', shell=True)
+    result_2 = subprocess.call(f'netsh interface ipv4 set dns name="{interface_name}" static 8.8.8.8', shell=True)
+    if result_1 == 1 or result_2 == 1:
+        print("[WARN] Unable to change IP. Run the program with admin rights.")
+        sys.exit()
+    print(f"[INFO] New IP Address is: {ip_address}")
+    return True
+
+
+def get_default_network_details():
+    def get_ip_address():
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip_address = s.getsockname()[0]
+        s.close()
+        return ip_address
+
+    ip_address = get_ip_address()
+    for i in netifaces.interfaces():
+        try:
+            if str(netifaces.ifaddresses(i)[netifaces.AF_INET][0]['addr']) == str(ip_address):
+                print("[INFO] *Default Network Details*")
+                print("[INFO] IP Address: ", ip_address)
+                print("[INFO] Mask: ", netifaces.ifaddresses(i)[netifaces.AF_INET][0]['netmask'])
+                print("[INFO] Gateway: ", netifaces.gateways()['default'][netifaces.AF_INET][0])
+                return ip_address, \
+                        netifaces.ifaddresses(i)[netifaces.AF_INET][0]['netmask'], \
+                        netifaces.gateways()['default'][netifaces.AF_INET][0]
+        except Exception:
+            pass
+
+
 
 
 if __name__ == "__main__":
