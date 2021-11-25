@@ -10,7 +10,7 @@ from config_data import config
 Send data to Knowledge Layer
 """
 def send_data():
-    output_folder = config["INPUT_FOLDER"]
+    output_folder = config["OUTPUT_FOLDER"]
     for foldername in os.listdir(output_folder):
         id = foldername[len("Grundfosliterature-"):]
         json_file_name = "Grundfosliterature-" + id + "_output.json"

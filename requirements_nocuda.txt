@@ -9,4 +9,4 @@ ghostscript===0.7
 torch
 torchvision
 torchaudio
-knox-source-data-io
+knox-source-data-io==0.0.13.1
