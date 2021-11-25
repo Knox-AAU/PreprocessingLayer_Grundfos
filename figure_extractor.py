@@ -19,8 +19,8 @@ class FigureExtractor:
             return
 
     def get_data_as_dataframe(self):
-        manual_names = get_manual_names()
-        figures_and_captions = get_figures_and_captions()
+        manual_names = self.get_manual_names()
+        figures_and_captions = self.get_figures_and_captions()
 
         dataframe = DataFrame(figures_and_captions, columns=manual_names)
 
