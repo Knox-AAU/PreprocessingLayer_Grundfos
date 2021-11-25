@@ -1,0 +1,31 @@
+on: [push, pull_request]
+name: Continuous Integration
+
+jobs:
+  build:
+    name: Build and Test codebase
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install GhostScript
+      run: |
+        sudo apt-get update && \
+        sudo apt-get -y install ghostscript
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements_nocuda.txt ]; then pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements_nocuda.txt; fi
+
+    - name: Test
+      run: |
+        python -m pytest
