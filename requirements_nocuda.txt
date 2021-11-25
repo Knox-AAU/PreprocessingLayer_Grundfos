@@ -12,3 +12,5 @@ torchaudio
 knox-source-data-io==0.0.13.1
 psutil
 jsonschema
+tqdm===4.62.3
+PyPDF2
