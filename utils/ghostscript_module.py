@@ -16,10 +16,10 @@ def run_ghostscript(filepath: str):
             #warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
             print("Corruptness caught by GhostScript.")
             if str(platform.system()).upper() == "WINDOWS":
-                return True
+                return False
             else:
                 print("Moved file to the invalid folder.")
-                move(in_dir + "/" + file, config["INVALID_INPUT_FOLDER"])
-                return True
+                move(filepath, config["INVALID_INPUT_FOLDER"])
+                return False
 
-    return False
+    return True

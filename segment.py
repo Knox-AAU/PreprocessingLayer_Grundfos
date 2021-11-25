@@ -67,7 +67,7 @@ def segment_documents(args: str):
                 output_path = os.path.join(config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
                 if checkFile(os.path.join(config["INPUT_FOLDER"], file), invalid_files) is False:
-                    if gs.run_ghostscript(os.path.join(config["INPUT_FOLDER"], file)) is True:
+                    if gs.run_ghostscript(os.path.join(config["INPUT_FOLDER"], file)) is False:
                         os.remove(os.path.join(config["INPUT_FOLDER"], file))
                         print("WARNING: " + file + " deleted.")
                         break
