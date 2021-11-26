@@ -1,6 +1,0 @@
-# This file is for Windows.
-# If you have Mac OS - install from requirements_for_mac.txt
-pydub==0.25.1
-selenium==3.141.0
-SpeechRecognition==3.8.1
-urllib3==1.26.6
