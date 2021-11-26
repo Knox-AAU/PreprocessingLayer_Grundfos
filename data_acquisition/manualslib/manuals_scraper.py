@@ -65,6 +65,7 @@ def get_rechapta(links):
         # options.add_argument("--user-agent=New User Agent")
         prefs = {'download.default_directory': os.path.join(os.path.abspath(os.curdir), "downloads")}
         options.add_experimental_option('prefs', prefs)
+        options.add_argument("--user-data-dir=chrome-data")
         prox = Proxy()
         prox.proxy_type = ProxyType.AUTODETECT
 
@@ -72,7 +73,7 @@ def get_rechapta(links):
         prox.add_to_capabilities(capabilities)
 
         driver = webdriver.Chrome(ChromeDriverManager().install(), options=options, desired_capabilities=capabilities)
-        wait = WebDriverWait(driver, 10)
+        delay()
         driver.get(l)
         try:
             driver.find_element_by_xpath('//button[normalize-space()="AGREE"]').click()
@@ -91,7 +92,7 @@ def get_rechapta(links):
             print("[ERR] Unable to find recaptcha. Abort solver.")
             sys.exit()
         # switch to recaptcha frame
-        time.sleep(random.uniform(5, 15))
+        delay()
         frames = driver.find_elements(By.TAG_NAME, "iframe")
         driver.switch_to.frame(recaptcha_control_frame)
 
@@ -100,14 +101,14 @@ def get_rechapta(links):
         driver.find_element(By.CLASS_NAME, "recaptcha-checkbox-border").click()
 
         # switch to recaptcha audio control frame
-        time.sleep(random.uniform(5, 15))
+        delay()
         driver.switch_to.default_content()
         frames = driver.find_elements(By.TAG_NAME, "iframe")
         driver.switch_to.frame(recaptcha_challenge_frame)
 
         wait.until(presence_of_element_located((By.ID, "recaptcha-audio-button")))
         # click on audio challenge
-        time.sleep(random.uniform(5, 15))
+        delay()
         driver.find_element(By.ID, "recaptcha-audio-button").click()
 
         # switch to recaptcha audio challenge frame
@@ -146,14 +147,14 @@ def get_rechapta(links):
         print(f"[INFO] Recaptcha Passcode: {key}")
 
         # key in results and submit
-        time.sleep(random.uniform(5, 15))
+        delay()
         driver.find_element_by_id("audio-response").send_keys(key.lower())
         driver.find_element_by_id("audio-response").send_keys(Keys.ENTER)
 
 
 
         driver.switch_to.default_content()
-        time.sleep(random.uniform(5, 15))
+        delay()
         wait.until(presence_of_element_located((By.ID, "get-manual-button")))
 
         driver.find_element_by_id("get-manual-button").click()
@@ -169,6 +170,10 @@ def get_rechapta(links):
         driver.close()
 
     return
+
+
+def delay():
+    time.sleep(random.uniform(10, 30))
 
 
 def list_current_files():
