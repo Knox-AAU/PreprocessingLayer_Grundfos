@@ -1,5 +1,6 @@
 from datastructure.datastructure import Coordinates
 
+
 class IgnoreCoordinates:
     Pages = {}
 
@@ -13,11 +14,11 @@ class IgnoreCoordinates:
         """
         Add Coordinates to specefic page ignore list
         """
-        #Coordinates should be a class Coordinates
+        # Coordinates should be a class Coordinates
         if PageNum in self.Pages:
             self.Pages[PageNum].append(Coordinates)
         else:
-            self.Pages.update({PageNum : [Coordinates]})
+            self.Pages.update({PageNum: [Coordinates]})
 
     def page_coordinates(self, PageNum):
         """

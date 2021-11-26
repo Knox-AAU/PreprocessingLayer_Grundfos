@@ -1,7 +1,8 @@
 from pdfminer.layout import LTTextBox, LTTextLine
 import coordinates_calculator
 
-class LineStreamer():
+
+class LineStreamer:
     def __init__(self, text_Line_List):
         self.CoordsCalc = coordinates_calculator.CoordinatesCalculator()
         self.Pages = text_Line_List
@@ -12,7 +13,7 @@ class LineStreamer():
         self.NumOfPages = len(self.Pages)
 
         self.PageStreamers = {}
-        
+
     def NextLine(self):
         """Goes though all pages, and returns the next line"""
         self.CurrentLine += 1
@@ -27,7 +28,7 @@ class LineStreamer():
             else:
                 self.CurrentLine = -1
                 return None
-    
+
     def Reset(self):
         """Resets line stream"""
         self.CurrentPage = self.Pages[0]
@@ -38,14 +39,16 @@ class LineStreamer():
         """Streams the lines of a specefic page"""
         if PageNum in self.PageStreamers:
             result = self.PageStreamers[PageNum].NextLine()
-            if(result != None):
+            if result != None:
                 return result
             else:
                 del self.PageStreamers[PageNum]
                 return None
         else:
             if PageNum < len(self.Pages):
-                self.PageStreamers.update({PageNum : self.__PageStreamer__(self.Pages[PageNum])})
+                self.PageStreamers.update(
+                    {PageNum: self.__PageStreamer__(self.Pages[PageNum])}
+                )
                 return self.NextLineOfPage(PageNum)
             else:
                 return None
@@ -72,10 +75,9 @@ class LineStreamer():
         """returns the number of line of given page"""
         return len(self.Pages[PageNum])
 
-
-
-    class __PageStreamer__():
+    class __PageStreamer__:
         """private class used for returning lines of particular page"""
+
         def __init__(self, Page):
             self.Page = Page
             self.CurrentLine = -1

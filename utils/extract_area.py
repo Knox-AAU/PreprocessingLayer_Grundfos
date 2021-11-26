@@ -7,28 +7,40 @@ import argparse
 import cv2
 from datastructure.datastructure import Coordinates
 
-OFFSET = 0 # How many extra pixels outside the ROI should be included
+OFFSET = 0  # How many extra pixels outside the ROI should be included
+
 
 def extract_area_from_file(input_path, output_path, area: Coordinates):
     """
     Reads an image file, extracts the area of interest and saves it as a new image.
     """
     original_image = cv2.imread(input_path)
-    roi_matrix = original_image[int(area.y0)-OFFSET:int(area.y1)+OFFSET, int(area.x0)-OFFSET:int(area.x1)+OFFSET]
+    roi_matrix = original_image[
+        int(area.y0) - OFFSET : int(area.y1) + OFFSET,
+        int(area.x0) - OFFSET : int(area.x1) + OFFSET,
+    ]
     cv2.imwrite(output_path, roi_matrix)
+
 
 def save_image_from_matrix(original_image, output_path, area: Coordinates):
     """
     Reads an image matrix, extracts the area of interest and saves it as a new image.
     """
-    roi_matrix = original_image[int(area.y0)-OFFSET:int(area.y1)+OFFSET, int(area.x0)-OFFSET:int(area.x1)+OFFSET]
+    roi_matrix = original_image[
+        int(area.y0) - OFFSET : int(area.y1) + OFFSET,
+        int(area.x0) - OFFSET : int(area.x1) + OFFSET,
+    ]
     cv2.imwrite(output_path, roi_matrix)
+
 
 def extract_matrix_from_matrix(original_image, area: Coordinates):
     """
     Reads an image matrix, extracts the area of interest and returns it as a new matrix.
     """
-    return original_image[int(area.y0)-OFFSET:int(area.y1)+OFFSET, int(area.x0)-OFFSET:int(area.x1)+OFFSET]
+    return original_image[
+        int(area.y0) - OFFSET : int(area.y1) + OFFSET,
+        int(area.x0) - OFFSET : int(area.x1) + OFFSET,
+    ]
 
 
 if __name__ == "__main__":
