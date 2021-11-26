@@ -7,7 +7,7 @@ import requests
 FILETYPE = '.pdf'
 DOMAIN = 'https://www.grundfos.com'
 MAX_SITES_TO_CHECK = 100 #7000001 #7 million is chosen just to get a good sample size, however this process make time LONG time
-ITERATIONS_BEFORE_DELAY = 20 #Choose whatever works so the API doensn't block the connections because of insane amount of pings
+ITERATIONS_BEFORE_DELAY = 100 #Choose whatever works so the API doensn't block the connections because of insane amount of pings
 MIN_SLEEP = 10
 MAX_SLEEP = 20
 PDF_DOMAIN = "http://net.grundfos.com/Appl/ccmsservices/public/literature/filedata/Grundfosliterature-"
@@ -33,7 +33,7 @@ def get_response_headers():
         if x % ITERATIONS_BEFORE_DELAY == 1:
             delay()
         if x == MAX_SITES_TO_CHECK - 1:
-            safe_index(x)
+            safe_index(x, PATH_TO_INDEXES_CHECKED)
 
     return
 
@@ -44,20 +44,20 @@ def delay():
     sleep(sleeptimer)
 
 
-def safe_valid_links():
-    file = open(PATH_TO_VALID_LINKS, "a")
-    file.writelines(valid_links)
+def safe_valid_links(links, path):
+    file = open(path, "a")
+    file.writelines(links)
     file.close()
 
 
-def safe_invalid_links():
-    file = open(PATH_TO_INVALID_LINKS, "a")
-    file.writelines(invalid_links)
+def safe_invalid_links(links, path):
+    file = open(path, "a")
+    file.writelines(links)
     file.close()
 
 
-def safe_index(index: int):
-    file = open(PATH_TO_INDEXES_CHECKED, "w")
+def safe_index(index: int, path):
+    file = open(path, "w")
     file.write(str(index))
     file.close()
 
@@ -72,5 +72,5 @@ def read_index_from_file():
 if __name__ == "__main__":
     print("initiating the scraper")
     get_response_headers()
-    safe_valid_links()
-    safe_invalid_links()
+    safe_valid_links(valid_links, PATH_TO_VALID_LINKS)
+    safe_invalid_links(invalid_links, PATH_TO_INVALID_LINKS)
