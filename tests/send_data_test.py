@@ -34,7 +34,7 @@ class SendDataTest(unittest.TestCase):
         with self.assertRaises(requests.exceptions.HTTPError):
             send_json.send_data("http://127.0.0.1:8000/uploadJsonDoc/")
 
-    def failDataToKnowledgeLayerMsg():
+    def failDataToKnowledgeLayerMsg(self):
         return (
             "Knowledge layer server returned unexpected HTTP response code.\n"
             + "Test data send can be found in folder: "
