@@ -21,6 +21,7 @@ jobs:
         - name: Check for modified files
           id: git-check
           run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+
         - name: Push changes
           if: steps.git-check.outputs.modified == 'true'
           run: |
@@ -28,3 +29,8 @@ jobs:
             git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
             git commit -am "Automated changes"
             git push
+
+        - name: Analysing the code with pylint
+          run: |
+            python -m pip install pylint
+            pylint $(git ls-files '*.py')

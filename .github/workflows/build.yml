@@ -24,13 +24,8 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install pylint
         python -m pip install pytest
         if [ -f requirements_nocuda.txt ]; then pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements_nocuda.txt; fi
-
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
 
     - name: Test
       run: |
