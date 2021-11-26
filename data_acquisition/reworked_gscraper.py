@@ -20,7 +20,7 @@ valid_links = set()
 
 
 def get_response_headers():
-    index = read_index_from_file() + 1
+    index = read_index_from_file(PATH_TO_INDEXES_CHECKED) + 1
     for x in range(index, MAX_SITES_TO_CHECK):
         link = PDF_DOMAIN + str(x) + FILETYPE
         read = requests.get(link)
@@ -62,8 +62,8 @@ def safe_index(index: int, path):
     file.close()
 
 
-def read_index_from_file():
-    file = open(PATH_TO_INDEXES_CHECKED, "r")
+def read_index_from_file(path):
+    file = open(path, "r")
     index = int(file.readline())
     file.close()
     return index
