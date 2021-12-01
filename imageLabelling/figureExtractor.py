@@ -9,13 +9,12 @@ class FigureExtractor:
     extract figures and captions using pdffigures2
     input: path/to/pdf_folder, path/to/figure_folder, path/to/json_folder, path/to/store_output
     """
-    def __init__(self, sourcePath, inputPathPDF, inputPathFig, inputPathData, outputPath, cwdPath = '/Users/Bruger/Desktop/AAU software Bachelor/5. sem/KNOX/pdfFigures2'): #TODO change default cwdPath to match server
-        self.sourcePath = sourcePath
+    def __init__(self, inputPathPDF, inputPathFig, inputPathData, outputPath, sourcePath = '../pdfFigures2'):
         self.inputPathPDF = inputPathPDF
         self.inputPathData = inputPathData
         self.inputPathFig = inputPathFig
         self.outputPath = outputPath #where to store pruned JSON files
-        self.cwdPath = cwdPath #directory of pdffigures2 
+        self.sourcePath = sourcePath #directory of pdffigures2 
         
 
 
@@ -29,7 +28,7 @@ class FigureExtractor:
         dataPath = self.inputPathData + '/'
         
         cmdArg = "runMain org.allenai.pdffigures2.FigureExtractorBatchCli " + pdfPath + ' -s stat_file.json -m ' + figPath + ' -d ' + dataPath
-        cwdPath = self.cwdPath
+        cwdPath = self.sourcePath
         
         try:
             result = subprocess.run(['sbt', cmdArg], shell=True, cwd = cwdPath)
@@ -44,7 +43,6 @@ class FigureExtractor:
         return filename
 
     def get_figure_data(self):
-
         '''
         open each json file in input dicretory
         '''
@@ -78,6 +76,6 @@ class FigureExtractor:
                 
 #temporary, in future run this through segment.py
 if __name__ == '__main__':
-    figureExtractor = FigureExtractor('/Users/Bruger/Desktop/AAU software Bachelor/5. sem/KNOX/pdfFigures2', 'IO/INPUT', 'IO/OUTPUT_FIG', 'IO/OUTPUT_DATA', 'OUTPUT_PRUNED')
+    figureExtractor = FigureExtractor('IO/INPUT', 'IO/OUTPUT_FIG', 'IO/OUTPUT_DATA', 'OUTPUT_PRUNED')
     figureExtractor.callPdfFigures2()
     figureExtractor.get_figure_data()
