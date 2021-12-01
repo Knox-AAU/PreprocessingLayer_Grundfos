@@ -248,7 +248,7 @@ def segment_documents(args: str):
                 while True:
                     if page != last_page:
                         wsUtils.updatePageNumbers(page.value, pages)
-                        
+
                     if not seg_doc_process.is_alive():
                         print("Thread done!")
                         seg_doc_process.terminate()
@@ -268,7 +268,7 @@ def segment_documents(args: str):
                         seg_doc_process.terminate()
                         print("Memory usage above 99%. PDF file extraction killed")
                         break
-                        
+
                     time.sleep(0.1)  # how often to check timer
 
             except Exception as ex:
