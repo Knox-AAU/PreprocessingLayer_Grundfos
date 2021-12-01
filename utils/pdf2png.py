@@ -58,13 +58,7 @@ class Pdf2Png:
                 pix.writePNG(os.path.join(out_dir, output_name))
 
         except Exception:
-            warn.warn("Corrupt file caught by fitz", RuntimeWarning)
-            if str(platform.system()).upper() == "WINDOWS":
-                print("Added file to list for later removal.")
-                self.invalid_files.append(file)
-            else:
-                print("Moved file to the invalid folder.")
-                shutil.move(file, config["INVALID_INPUT_FOLDER"])
+            self.invalid_files.append(file)
 
         if self.VERBOSE is True:
             print("Finished converting " + file + ".")

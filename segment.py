@@ -45,6 +45,7 @@ class State(Enum):
     OTHER = 0
     GENERATING_IMAGES = 1
     PROCESSING = 2
+    FINISHED = 3
 
 
 class WsUtils:
@@ -60,6 +61,8 @@ class WsUtils:
 
     numberOfPDFs = 0
     numberOfPages = 0
+    currentPdf = 0
+    filename = ""
     state = State.OTHER
 
     def __init__(self, pages=0):
@@ -70,6 +73,8 @@ class WsUtils:
             return "GENERATING_IMAGES"
         elif state == State.PROCESSING:
             return "PROCESSING"
+        elif state == State.FINISHED:
+            return "FINISHED"
 
     def setState(self, newState):
         self.state = newState
@@ -79,6 +84,9 @@ class WsUtils:
         self.sendToAll(data)
 
     def updateCurrentPdf(self, pageNumb, fileName):
+        self.currentPdf = pageNumb
+        self.fileName = fileName
+        
         data = copy.deepcopy(self._jsonBaseObject)
         data["contents"]["currentPdf"] = pageNumb
         data["contents"]["fileName"] = fileName
@@ -92,20 +100,18 @@ class WsUtils:
 
     def sendInitzDataOnConenction(self, client):
         data = copy.deepcopy(self._jsonBaseObject)
-        data["contents"]["numberOfPDFs"] = self.numberOfPDFs
-        data["contents"]["imagePages"] = self.numberOfPages
         data["contents"]["setState"] = self.getStrStateFromEnum(self.state)
+        if (self.state == State.GENERATING_IMAGES):
+            data["contents"]["imagePages"] = self.numberOfPages
+        elif (self.state == State.PROCESSING):
+            data["contents"]["numberOfPDFs"] = self.numberOfPDFs
+            data["contents"]["currentPdf"] = self.currentPdf
+            data["contents"]["fileName"] = self.fileName
         client.sendMessage(self.encodeToJson(data))
 
-    def sendFinished(self):
+    def updateNumberOfPdfFiles(self):
         data = copy.deepcopy(self._jsonBaseObject)
-        data["contents"]["finished"] = True
-        self.state = "FINISHED"
-        self.sendToAll(data)
-
-    def sendInitzData(self, pdfs: int = numberOfPDFs):
-        data = copy.deepcopy(self._jsonBaseObject)
-        data["contents"]["numberOfPDFs"] = pdfs
+        data["contents"]["numberOfPDFs"] = self.numberOfPDFs
         self.sendToAll(data)
 
     def sendToAll(self, data):
@@ -144,6 +150,9 @@ def checkFile(fullfile, invalid_files):
         except:
             return False
 
+def move_file_to_invalid_files(sourceDirectoryPath, filename):
+    shutil.move(os.path.join(sourceDirectoryPath, filename), os.path.join(config["INVALID_INPUT_FOLDER"], filename))
+    print("WARNING: PDF corrupt, and moved to the invalid input folder. (" + str(filename) + ")")
 
 def segment_documents(args: str):
     """
@@ -156,18 +165,15 @@ def segment_documents(args: str):
         + str(len(os.listdir(config["INPUT_FOLDER"])))
         + " documents..."
     )
-    wsUtils.numberOfPDFs = len(os.listdir(config["INPUT_FOLDER"]))
-    wsUtils.sendInitzData()
 
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
-    invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
+    # Ghostscript converts text to images, and therfore it can not be used by pdf miner.
+    #invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
     pdf2png = Pdf2Png(3, False)
     wsUtils.setState(State.GENERATING_IMAGES)
 
-    # img_thread = Thread(target = wsUtils.generateImagesCounter, args=(pdf2png,))
-    # img_thread.start()
-
+    # Count number of pages from all PDF files.
     numberOfPages = 0
     for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith(".pdf"):
@@ -175,7 +181,7 @@ def segment_documents(args: str):
                 doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
                 numberOfPages += doc.pageCount    
             except:
-                pass
+                move_file_to_invalid_files(config["INPUT_FOLDER"], file)
 
     wsUtils.numberOfPages = numberOfPages
     wsUtils.updateImagePageNumbers(0, numberOfPages)
@@ -190,9 +196,14 @@ def segment_documents(args: str):
         wsUtils.updateImagePageNumbers(str(pdf2png.pageNumb.value), numberOfPages)
         time.sleep(0.1)
 
-    invalid_files = invalid_files + pdf2png.invalid_files
+    invalid_files = pdf2png.invalid_files
+    for file in invalid_files:
+        move_file_to_invalid_files(config["INPUT_FOLDER"], file)
 
+    wsUtils.numberOfPDFs = len(os.listdir(config["INPUT_FOLDER"]))
+    wsUtils.updateNumberOfPdfFiles() # Send updated page number after removed files
     wsUtils.setState(State.PROCESSING)
+    
     fileNumber = 0
     for file in os.listdir(config["INPUT_FOLDER"]):
         fileNumber += 1
@@ -201,15 +212,8 @@ def segment_documents(args: str):
             try:
                 output_path = os.path.join(
                     config["OUTPUT_FOLDER"], os.path.basename(file).replace(".pdf", "")
-                )
-                if (
-                    checkFile(os.path.join(config["INPUT_FOLDER"], file), invalid_files)
-                    is False
-                ):
-                    os.remove(file)
-                    print("WARNING: PDF file deleted.")
-                    break
-
+                )             
+                 
                 print("\nGathering meta data...")
 
                 doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
@@ -242,7 +246,6 @@ def segment_documents(args: str):
                     if page != last_page:
                         wsUtils.updatePageNumbers(page.value, pages)
 
-                    time.sleep(0.1)  # how often to check timer
                     if time.time() > max_time:
                         seg_doc_process.terminate()
                         print("Process: " + file + " terminated due to excessive time")
@@ -254,6 +257,8 @@ def segment_documents(args: str):
                     if virtual.percent > 99:
                         seg_doc_process.terminate()
                         print("Memory usage above 99%. PDF file extraction killed")
+                        
+                    time.sleep(0.1)  # how often to check timer
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
@@ -268,10 +273,8 @@ def segment_documents(args: str):
                 except:
                     pass
 
-            gc.collect()
-
     print("\nALL pdf files DONE :DDDD")
-    wsUtils.sendFinished()
+    wsUtils.setState(State.FINISHED)
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
