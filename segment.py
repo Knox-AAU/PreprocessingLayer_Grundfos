@@ -68,19 +68,11 @@ class WsUtils:
     def __init__(self, pages=0):
         self.numberOfPDFs = pages
 
-    def getStrStateFromEnum(self, state):
-        if state == State.GENERATING_IMAGES:
-            return "GENERATING_IMAGES"
-        elif state == State.PROCESSING:
-            return "PROCESSING"
-        elif state == State.FINISHED:
-            return "FINISHED"
-
-    def setState(self, newState):
+    def setState(self, newState:State):
         self.state = newState
         data = copy.deepcopy(self._jsonBaseObject)
 
-        data["contents"]["setState"] = self.getStrStateFromEnum(newState)
+        data["contents"]["setState"] = newState.name
         self.sendToAll(data)
 
     def updateCurrentPdf(self, pageNumb, fileName):
@@ -100,7 +92,7 @@ class WsUtils:
 
     def sendInitzDataOnConenction(self, client):
         data = copy.deepcopy(self._jsonBaseObject)
-        data["contents"]["setState"] = self.getStrStateFromEnum(self.state)
+        data["contents"]["setState"] = self.state.name
         if self.state == State.GENERATING_IMAGES:
             data["contents"]["imagePages"] = self.numberOfPages
         elif self.state == State.PROCESSING:
