@@ -68,7 +68,7 @@ class WsUtils:
     def __init__(self, pages=0):
         self.numberOfPDFs = pages
 
-    def setState(self, newState:State):
+    def setState(self, newState: State):
         self.state = newState
         data = copy.deepcopy(self._jsonBaseObject)
 
