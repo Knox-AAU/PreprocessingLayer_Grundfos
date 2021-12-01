@@ -171,8 +171,11 @@ def segment_documents(args: str):
     numberOfPages = 0
     for file in os.listdir(config["INPUT_FOLDER"]):
         if file.endswith(".pdf"):
-            doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
-            numberOfPages += doc.pageCount
+            try:
+                doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
+                numberOfPages += doc.pageCount    
+            except:
+                pass
 
     wsUtils.numberOfPages = numberOfPages
     wsUtils.updateImagePageNumbers(0, numberOfPages)
