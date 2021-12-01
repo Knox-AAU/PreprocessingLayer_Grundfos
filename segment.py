@@ -173,7 +173,7 @@ def segment_documents(args: str):
         if file.endswith(".pdf"):
             try:
                 doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
-                numberOfPages += doc.pageCount    
+                numberOfPages += doc.pageCount
             except:
                 pass
 
