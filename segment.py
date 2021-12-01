@@ -31,7 +31,94 @@ import fitz
 import utils.ghostscript_module as gs
 import gc
 import traceback
+from SimpleWebSocketServer import SimpleWebSocketServer, WebSocket
+import json
+from pprint import pprint
+from inspect import getmembers
+from types import FunctionType
+from threading import Thread, Event
+from multiprocessing import Process, Value, Lock
+from enum import Enum
 
+class State(Enum):
+    OTHER = 0
+    GENERATING_IMAGES = 1
+    PROCESSING = 2
+
+class WsUtils:
+    """
+    Methods for sending data to the UI
+    """
+    _jsonBaseObject = {"source":"grundfoss_preprocessing","type":"updateStatus",
+                        "contents":{}}
+    
+    numberOfPDFs = 0
+    numberOfPages = 0
+    state = State.OTHER
+    
+    def __init__(self, pages = 0):
+        self.numberOfPDFs = pages
+        
+    def getStrStateFromEnum(self, state):
+        if (state == State.GENERATING_IMAGES):
+            return "GENERATING_IMAGES"
+        elif (state == State.PROCESSING):
+            return "PROCESSING"
+        
+    def setState(self, newState):
+        self.state = newState
+        data = copy.deepcopy(self._jsonBaseObject)
+
+        data["contents"]["setState"] = self.getStrStateFromEnum(newState)
+        self.sendToAll(data)
+    
+    def updateCurrentPdf(self, pageNumb, fileName):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["currentPdf"] = pageNumb
+        data["contents"]["fileName"] = fileName
+        self.sendToAll(data)
+        
+    def updatePageNumbers(self, page, pages):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["page"] = page
+        data["contents"]["pages"] = pages
+        self.sendToAll(data)
+        
+    def sendInitzDataOnConenction(self, client):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["numberOfPDFs"] = self.numberOfPDFs
+        data["contents"]["imagePages"] = self.numberOfPages
+        data["contents"]["setState"] = self.getStrStateFromEnum(self.state)
+        client.sendMessage(self.encodeToJson(data))
+        
+    def sendFinished(self):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["finished"] = True
+        self.state = "FINISHED"
+        self.sendToAll(data)
+        
+    def sendInitzData(self, pdfs:int = numberOfPDFs):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["numberOfPDFs"] = pdfs
+        self.sendToAll(data)
+    
+    def sendToAll(self, data):
+        json = self.encodeToJson(data)
+        for client in wsClients:
+            client.sendMessage(json)
+        
+    def updateImagePageNumbers(self, imagePage, imagePages):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["imagePage"] = imagePage
+        data["contents"]["imagePages"] = imagePages
+        self.sendToAll(data)
+            
+    def encodeToJson(self, data):
+        return json.dumps(data)
+
+# List of websocket clients
+wsClients = []
+wsUtils = WsUtils()
 
 def checkFile(fullfile, invalid_files):
     for file in invalid_files:
@@ -55,21 +142,48 @@ def segment_documents(args: str):
     Does document segmentation of all pdf files in the input folder,
     and produces JSON files with the information found.
     """
+    global wsUtils
     print(
         "Beginning segmentation of "
         + str(len(os.listdir(config["INPUT_FOLDER"])))
         + " documents..."
     )
+    wsUtils.numberOfPDFs = len(os.listdir(config["INPUT_FOLDER"]))
+    wsUtils.sendInitzData()
+    
+    
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
     invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
     pdf2png = Pdf2Png(3, False)
-    pdf2png.multi_convert_dir_to_files(
-        config["INPUT_FOLDER"], os.path.join(tmp_folder, "images")
-    )
+    wsUtils.setState(State.GENERATING_IMAGES)
+    
+    #img_thread = Thread(target = wsUtils.generateImagesCounter, args=(pdf2png,))
+    #img_thread.start()
+    
+    numberOfPages = 0
+    for file in os.listdir(config["INPUT_FOLDER"]):
+        if file.endswith(".pdf"):
+            doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
+            numberOfPages += doc.pageCount
+    
+    wsUtils.numberOfPages = numberOfPages
+    wsUtils.updateImagePageNumbers(0, numberOfPages)
+    
+    img_thread = Thread(target = pdf2png.multi_convert_dir_to_files, args=(config["INPUT_FOLDER"], os.path.join(tmp_folder, "images")))
+    img_thread.start()
+    # Send data to all connected clients
+    while(img_thread.is_alive()):
+        wsUtils.updateImagePageNumbers(str(pdf2png.pageNumb.value), numberOfPages)
+        time.sleep(0.1)
+    
     invalid_files = invalid_files + pdf2png.invalid_files
 
+    wsUtils.setState(State.PROCESSING)
+    fileNumber = 0
     for file in os.listdir(config["INPUT_FOLDER"]):
+        fileNumber += 1
+        wsUtils.updateCurrentPdf(fileNumber, file)
         if file.endswith(".pdf"):
             try:
                 output_path = os.path.join(
@@ -92,10 +206,12 @@ def segment_documents(args: str):
                 gc.collect()
 
                 print("STARTING THREAD")
+                page = Value('i', 0)
+                last_page = -1
                 seg_doc_process = multiprocessing.Process(
                     target=segment_document,
                     name="Segment_document",
-                    args=(file, args, output_path),
+                    args=(file, args, output_path, page),
                 )  # creates new process that segments file
                 seg_doc_process.start()
 
@@ -109,21 +225,23 @@ def segment_documents(args: str):
                         seg_doc_process.terminate()
                         seg_doc_process.close()
                         break
+                    
+                    if (page != last_page):
+                        wsUtils.updatePageNumbers(page.value, pages)
+
 
                     time.sleep(0.1)  # how often to check timer
                     if time.time() > max_time:
                         seg_doc_process.terminate()
-                        seg_doc_process.close()
                         print("Process: " + file + " terminated due to excessive time")
                         # warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
                         shutil.rmtree(output_path)
 
                     # Kills process if memory usage is high
                     virtual = psutil.virtual_memory()
-                    if virtual.percent > 90:
+                    if virtual.percent > 99:
                         seg_doc_process.terminate()
-                        seg_doc_process.close()
-                        print("Memory usage above 90%. PDF file extraction killed")
+                        print("Memory usage above 99%. PDF file extraction killed")
 
             except Exception as ex:
                 # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
@@ -133,7 +251,6 @@ def segment_documents(args: str):
 
                 try:
                     seg_doc_process.terminate()
-                    seg_doc_process.close()
 
                     shutil.rmtree(output_path)
                 except:
@@ -142,12 +259,13 @@ def segment_documents(args: str):
             gc.collect()
 
     print("\nALL pdf files DONE :DDDD")
+    wsUtils.sendFinished()
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
 
 
-def segment_document(file: str, args, output_path):
+def segment_document(file: str, args, output_path, currentPage):
     """
     Segments a pdf document
     """
@@ -168,8 +286,12 @@ def segment_document(file: str, args, output_path):
     textline_pages = []
     pages = []
     current_pdf = miner.PDF_file(file, args)
-
+    with currentPage.get_lock():
+        currentPage.value = 0
     for page in current_pdf.pages:
+        with currentPage.get_lock():
+            currentPage.value += 1
+        
         miner.search_page(page, args)
         miner.flip_y_coordinates(page)
         if len(page.LTRectLineList) < 10000 and len(page.LTLineList) < 10000:
@@ -344,7 +466,23 @@ def save_content(image_of_page, path, obj, area_treshold):
         except Exception as x:
             print(x.__traceback__)
             print(x)
-
+    
+def wsRunner():
+    server = SimpleWebSocketServer('localhost', 1337, WsHandleClients)
+    
+    while True:
+        server.serveonce()
+        time.sleep(0.1)
+         
+class WsHandleClients(WebSocket):
+    def handleMessage(self):
+        print("Message recived from ws!: " + (self.data or ""))
+    def handleConnected(self):
+        wsClients.append(self)
+        wsUtils.sendInitzDataOnConenction(self)
+        
+    def handleClose(self):
+        wsClients.remove(self)
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Segments pdf documents.")
@@ -436,4 +574,9 @@ if __name__ == "__main__":
     if argv.download is True:
         downloader.download_data(config["INPUT_FOLDER"])
 
+    ws_thread = Thread(target = wsRunner)
+    ws_thread.start()
+    
     segment_documents(argv)
+    
+    ws_thread.join()
