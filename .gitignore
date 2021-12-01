@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+!pdffigures2/*
+
 # eclipse project file
 .settings/
 .classpath
