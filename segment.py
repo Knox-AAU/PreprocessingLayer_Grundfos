@@ -259,15 +259,14 @@ def segment_documents(args: str):
                         seg_doc_process.terminate()
                         print("Process: " + file + " terminated due to excessive time")
                         # warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
-                        shutil.rmtree(output_path)
-                        break
+                        if os.path.isdir(output_path):
+                            shutil.rmtree(output_path)
 
                     # Kills process if memory usage is high
                     virtual = psutil.virtual_memory()
                     if virtual.percent > 99:
                         seg_doc_process.terminate()
                         print("Memory usage above 99%. PDF file extraction killed")
-                        break
 
                     time.sleep(0.1)  # how often to check timer
 
