@@ -86,7 +86,7 @@ class WsUtils:
     def updateCurrentPdf(self, pageNumb, fileName):
         self.currentPdf = pageNumb
         self.fileName = fileName
-        
+
         data = copy.deepcopy(self._jsonBaseObject)
         data["contents"]["currentPdf"] = pageNumb
         data["contents"]["fileName"] = fileName
@@ -101,9 +101,9 @@ class WsUtils:
     def sendInitzDataOnConenction(self, client):
         data = copy.deepcopy(self._jsonBaseObject)
         data["contents"]["setState"] = self.getStrStateFromEnum(self.state)
-        if (self.state == State.GENERATING_IMAGES):
+        if self.state == State.GENERATING_IMAGES:
             data["contents"]["imagePages"] = self.numberOfPages
-        elif (self.state == State.PROCESSING):
+        elif self.state == State.PROCESSING:
             data["contents"]["numberOfPDFs"] = self.numberOfPDFs
             data["contents"]["currentPdf"] = self.currentPdf
             data["contents"]["fileName"] = self.fileName
@@ -150,9 +150,18 @@ def checkFile(fullfile, invalid_files):
         except:
             return False
 
+
 def move_file_to_invalid_files(sourceDirectoryPath, filename):
-    shutil.move(os.path.join(sourceDirectoryPath, filename), os.path.join(config["INVALID_INPUT_FOLDER"], filename))
-    print("WARNING: PDF corrupt, and moved to the invalid input folder. (" + str(filename) + ")")
+    shutil.move(
+        os.path.join(sourceDirectoryPath, filename),
+        os.path.join(config["INVALID_INPUT_FOLDER"], filename),
+    )
+    print(
+        "WARNING: PDF corrupt, and moved to the invalid input folder. ("
+        + str(filename)
+        + ")"
+    )
+
 
 def segment_documents(args: str):
     """
@@ -169,7 +178,7 @@ def segment_documents(args: str):
     tmp_folder = os.path.join(config["OUTPUT_FOLDER"], "tmp")
     IO_handler.folder_prep(config["OUTPUT_FOLDER"], args.clean)
     # Ghostscript converts text to images, and therfore it can not be used by pdf miner.
-    #invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
+    # invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
     pdf2png = Pdf2Png(3, False)
     wsUtils.setState(State.GENERATING_IMAGES)
 
@@ -201,9 +210,9 @@ def segment_documents(args: str):
         move_file_to_invalid_files(config["INPUT_FOLDER"], file)
 
     wsUtils.numberOfPDFs = len(os.listdir(config["INPUT_FOLDER"]))
-    wsUtils.updateNumberOfPdfFiles() # Send updated page number after removed files
+    wsUtils.updateNumberOfPdfFiles()  # Send updated page number after removed files
     wsUtils.setState(State.PROCESSING)
-    
+
     fileNumber = 0
     for file in os.listdir(config["INPUT_FOLDER"]):
         fileNumber += 1
@@ -212,8 +221,8 @@ def segment_documents(args: str):
             try:
                 output_path = os.path.join(
                     config["OUTPUT_FOLDER"], os.path.basename(file).replace(".pdf", "")
-                )             
-                 
+                )
+
                 print("\nGathering meta data...")
 
                 doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
