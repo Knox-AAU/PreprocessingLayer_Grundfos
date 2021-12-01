@@ -46,7 +46,7 @@ class Pdf2Png:
             # Convert each page to an image
             for page_number in range(number_of_pages):
                 pageNumber.value += 1
-                
+
                 page = doc.loadPage(page_number)
                 pix = page.getPixmap(matrix=mat)
                 output_name = (
@@ -77,12 +77,12 @@ class Pdf2Png:
         for file in os.listdir(in_dir):
             if file.endswith(".pdf"):
                 self.convert_to_file(os.path.join(in_dir, file), out_dir)
-                
+
     def setVarToGlobal(self, args):
         global pageNumber
         pageNumber = args
-    
-    pageNumb = multiprocessing.Value('i', 0)
+
+    pageNumb = multiprocessing.Value("i", 0)
 
     def multi_convert_dir_to_files(self, in_dir: str, out_dir: str):
         """
@@ -97,9 +97,11 @@ class Pdf2Png:
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
 
-        with cf.ProcessPoolExecutor(initializer=self.setVarToGlobal, initargs=(self.pageNumb,)) as executor:
+        with cf.ProcessPoolExecutor(
+            initializer=self.setVarToGlobal, initargs=(self.pageNumb,)
+        ) as executor:
             executor.map(self.convert_to_file, files, out_dirs)
-            
+
     def convert_to_matrix(self, file: str):
         """
         Converts a PDF file to image matrices and return a list containing a matrix for each page.
