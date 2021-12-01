@@ -9,7 +9,7 @@ class FigureExtractor:
     extract figures and captions using pdffigures2
     input: path/to/pdf_folder, path/to/figure_folder, path/to/json_folder, path/to/store_output
     """
-    def __init__(self, inputPathPDF, inputPathFig, inputPathData, outputPath, sourcePath = '../pdfFigures2'):
+    def __init__(self, inputPathPDF, inputPathFig, inputPathData, outputPath, sourcePath = '../pdf-Figures2'):
         self.inputPathPDF = inputPathPDF
         self.inputPathData = inputPathData
         self.inputPathFig = inputPathFig
