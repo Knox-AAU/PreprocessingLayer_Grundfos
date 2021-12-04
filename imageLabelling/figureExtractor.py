@@ -4,6 +4,15 @@ import json
 import logging
 import traceback
 
+class IDGenerator:
+    def __init__(self, seed = 0):
+        self.ID = seed
+    def generateID(self):
+        ID = self.ID
+        self.ID += 1
+        return ID
+        
+
 class FigureExtractor:
     """
     extract figures and captions using pdffigures2
@@ -48,15 +57,17 @@ class FigureExtractor:
         '''
         figureDataPath = os.path.join(self.sourcePath, self.inputPathData)
         
+        ID = IDGenerator(0)
+        
         for file in os.listdir(figureDataPath):
             pdfID = self.get_filename(file)
             print(pdfID)	
             
             with open(os.path.join(figureDataPath, file), encoding="utf8") as figureData:
                 prunedJson = json.load(figureData, encoding="utf8")
-
+            
             '''
-            remove unnecessary fields
+            remove unnecessary fields, add pdf id and figure id
             '''
             for figure in prunedJson:
                 figure.pop('captionBoundary', None)
@@ -65,6 +76,7 @@ class FigureExtractor:
                 figure.pop('regionBoundary', None)
                 figure.pop('renderDpi', None)
                 figure.update({"pdfID": pdfID})
+                figure.update({"figID": ID.generateID()})
         
             '''
             if the resulting pruned json is not empty, create a new json file in output path
@@ -76,6 +88,6 @@ class FigureExtractor:
                 
 #temporary, in future run this through segment.py
 if __name__ == '__main__':
-    figureExtractor = FigureExtractor('IO/INPUT', 'IO/OUTPUT_FIG', 'IO/OUTPUT_DATA', 'OUTPUT_PRUNED')
+    figureExtractor = FigureExtractor('IO/INPUT_ALL', 'IO/OUTPUT_FIG', 'IO/OUTPUT_DATA', 'OUTPUT_PRUNED')
     figureExtractor.callPdfFigures2()
     figureExtractor.get_figure_data()
