@@ -3,6 +3,7 @@ import subprocess
 import json
 import logging
 import traceback
+from labelGenerator import *
 
 class IDGenerator:
     def __init__(self, seed = 0):
@@ -82,12 +83,31 @@ class FigureExtractor:
             if the resulting pruned json is not empty, create a new json file in output path
             '''
             if(len(prunedJson) != 0):
-                filePath =os.path.join(os.path.dirname(os.getcwd()), self.outputPath)
+                filePath = os.path.join(os.path.dirname(os.getcwd()), self.outputPath)
                 newfile = open(os.path.join(filePath, pdfID + ".json"), "w", encoding='utf-8')
                 json.dump(prunedJson, newfile, sort_keys = True, indent = 2)
                 
+    def labelFigures(self, max_labels):
+        labelGen = labelGenerator()
+        figureDataPath = os.path.join(os.path.dirname(os.getcwd()), self.outputPath)
+        for file in os.listdir(figureDataPath):
+            pdfID = self.get_filename(file)
+            print(pdfID)	
+            
+            with open(os.path.join(figureDataPath, file), encoding="utf8") as figureData:
+                pdfJSON = json.load(figureData, encoding="utf8")
+                for fig in pdfJSON:
+                    label = labelGen.get_label(fig["figID"], max_labels)
+                    fig.update({"label": label})
+                    
+            filePath =os.path.join(os.path.dirname(os.getcwd()), figureDataPath)
+            newfile = open(os.path.join(filePath, pdfID + ".json"), "w", encoding='utf-8')
+            json.dump(pdfJSON, newfile, indent = 2)
+                    
+                    
 #temporary, in future run this through segment.py
 if __name__ == '__main__':
     figureExtractor = FigureExtractor('IO/INPUT_ALL', 'IO/OUTPUT_FIG', 'IO/OUTPUT_DATA', 'OUTPUT_PRUNED')
     figureExtractor.callPdfFigures2()
     figureExtractor.get_figure_data()
+    figureExtractor.labelFigures(3)
