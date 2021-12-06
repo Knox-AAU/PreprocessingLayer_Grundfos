@@ -51,10 +51,12 @@ class State(Enum):
     SENDING = 5
     FINISHED = 6
 
+
 class Commands(Enum):
     SCRAPE = 0
     PROCESS = 1
     SEND = 2
+
 
 class WsUtils:
     """
@@ -139,8 +141,8 @@ class WsUtils:
         if self.state == State.IDLE or self.state == State.FINISHED:
             try:
                 data = json.loads(jsonData)
-                if data['type'] == "executeCommands":
-                    rcThread = Thread(target=self.runCommands, args=(data['contents'],))
+                if data["type"] == "executeCommands":
+                    rcThread = Thread(target=self.runCommands, args=(data["contents"],))
                     rcThread.start()
             except ValueError as ve:
                 print("Could not parse JSON data from client.")
@@ -150,14 +152,14 @@ class WsUtils:
     def runCommands(self, commands):
         for command in commands:
             print(command)
-            if command['commandType'] == Commands.SCRAPE.name:
+            if command["commandType"] == Commands.SCRAPE.name:
                 self.setState(State.SCRAPING)
-                #Insert scraping method here
+                # Insert scraping method here
                 self.setState(State.DOWNLOADING)
                 downloader.download_data(config["INPUT_FOLDER"], wsUtils)
-            elif command['commandType'] == Commands.PROCESS.name:
+            elif command["commandType"] == Commands.PROCESS.name:
                 segment_documents(self.argv)
-            elif command['commandType'] == Commands.SEND.name:
+            elif command["commandType"] == Commands.SEND.name:
                 self.setState(State.SENDING)
                 send_data()
             else:
@@ -168,6 +170,7 @@ class WsUtils:
 # List of websocket clients
 wsClients = []
 wsUtils = None
+
 
 def checkFile(fullfile, invalid_files):
     for file in invalid_files:
@@ -642,6 +645,6 @@ if __name__ == "__main__":
     ws_thread = Thread(target=wsRunner)
     ws_thread.start()
 
-    #segment_documents(argv)
+    # segment_documents(argv)
 
     ws_thread.join()
