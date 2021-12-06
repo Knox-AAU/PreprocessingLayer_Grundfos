@@ -135,7 +135,9 @@ class WsUtils:
         data["contents"]["totalScrapeLinks"] = totalScrapeLinks
         self.sendToAll(data)
 
-    def updateFilesDownloaded(self, currentDownloadFile, currentDownloadFileName, totalDownloadFiles):
+    def updateFilesDownloaded(
+        self, currentDownloadFile, currentDownloadFileName, totalDownloadFiles
+    ):
         data = copy.deepcopy(self._jsonBaseObject)
         data["contents"]["currentDownloadFile"] = currentDownloadFile
         data["contents"]["fileName"] = currentDownloadFileName

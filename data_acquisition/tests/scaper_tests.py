@@ -2,13 +2,19 @@ import os
 import unittest
 import data_acquisition.reworked_gscraper as scaper
 
-PATH_TO_INVALID_LINKS = os.path.join(os.path.abspath(os.curdir), "scrapertestdata") + "/invalid_links.txt"
-PATH_TO_VALID_LINKS = os.path.join(os.path.abspath(os.curdir), "scrapertestdata") + "/downloadable_links.txt"
-PATH_TO_INDEXES_CHECKED = os.path.join(os.path.abspath(os.curdir), "scrapertestdata") + "/checked_links.txt"
+PATH_TO_INVALID_LINKS = (
+    os.path.join(os.path.abspath(os.curdir), "scrapertestdata") + "/invalid_links.txt"
+)
+PATH_TO_VALID_LINKS = (
+    os.path.join(os.path.abspath(os.curdir), "scrapertestdata")
+    + "/downloadable_links.txt"
+)
+PATH_TO_INDEXES_CHECKED = (
+    os.path.join(os.path.abspath(os.curdir), "scrapertestdata") + "/checked_links.txt"
+)
 
 
 class ScraperTests(unittest.TestCase):
-
     def test_write_to_file(self):
         # Test input
         test_string1 = "Hello World!"
@@ -54,5 +60,5 @@ class ScraperTests(unittest.TestCase):
         self.assertEqual(test_int, result_int)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -17,10 +17,20 @@ def download_data(save_folder, wsUtils: WsUtils):
     print("Downloading PDF files from grundfos website...")
     # Read all links
     downloadable_links = open(
-        os.path.join(pathlib.Path(__file__).parent.absolute(), "scraperdata", "downloadable_links.txt"), "r"
+        os.path.join(
+            pathlib.Path(__file__).parent.absolute(),
+            "scraperdata",
+            "downloadable_links.txt",
+        ),
+        "r",
     )
     downloaded_links = open(
-        os.path.join(pathlib.Path(__file__).parent.absolute(), "scraperdata", "downloaded_links.txt"), "a"
+        os.path.join(
+            pathlib.Path(__file__).parent.absolute(),
+            "scraperdata",
+            "downloaded_links.txt",
+        ),
+        "a",
     )
     lines = downloadable_links.readlines()
     # Check if a folder for pdf is made
@@ -44,7 +54,7 @@ def download_data(save_folder, wsUtils: WsUtils):
     downloaded_links.writelines(lines)
     downloaded_links.close()
     downloadable_links.close()
-    #downloadable_links.truncate(0)
+    # downloadable_links.truncate(0)
     print(str(pdf_download_count) + " PDF files downloaded.")
 
 
