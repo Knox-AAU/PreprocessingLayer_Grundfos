@@ -39,14 +39,22 @@ from types import FunctionType
 from threading import Thread, Event
 from multiprocessing import Process, Value, Lock
 from enum import Enum
+from send_json import send_data
 
 
 class State(Enum):
-    OTHER = 0
-    GENERATING_IMAGES = 1
-    PROCESSING = 2
-    FINISHED = 3
+    IDLE = 0
+    SCRAPING = 1
+    DOWNLOADING = 2
+    GENERATING_IMAGES = 3
+    PROCESSING = 4
+    SENDING = 5
+    FINISHED = 6
 
+class Commands(Enum):
+    SCRAPE = 0
+    PROCESS = 1
+    SEND = 2
 
 class WsUtils:
     """
@@ -63,10 +71,11 @@ class WsUtils:
     numberOfPages = 0
     currentPdf = 0
     filename = ""
-    state = State.OTHER
+    state = State.IDLE
+    argv = None
 
-    def __init__(self, pages=0):
-        self.numberOfPDFs = pages
+    def __init__(self, argv):
+        self.argv = argv
 
     def setState(self, newState: State):
         self.state = newState
@@ -117,14 +126,48 @@ class WsUtils:
         data["contents"]["imagePages"] = imagePages
         self.sendToAll(data)
 
+    def updateFilesDownloaded(self, currentFile, totalFiles):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["currentFile"] = currentFile
+        data["contents"]["totalFiles"] = totalFiles
+        self.sendToAll(data)
+
     def encodeToJson(self, data):
         return json.dumps(data)
+
+    def handleReceivedData(self, jsonData):
+        if self.state == State.IDLE or self.state == State.FINISHED:
+            try:
+                data = json.loads(jsonData)
+                if data['type'] == "executeCommands":
+                    rcThread = Thread(target=self.runCommands, args=(data['contents'],))
+                    rcThread.start()
+            except ValueError as ve:
+                print("Could not parse JSON data from client.")
+            except AttributeError as ae:
+                print("JSON data from client has invalid structure.")
+
+    def runCommands(self, commands):
+        for command in commands:
+            print(command)
+            if command['commandType'] == Commands.SCRAPE.name:
+                self.setState(State.SCRAPING)
+                #Insert scraping method here
+                self.setState(State.DOWNLOADING)
+                downloader.download_data(config["INPUT_FOLDER"], wsUtils)
+            elif command['commandType'] == Commands.PROCESS.name:
+                segment_documents(self.argv)
+            elif command['commandType'] == Commands.SEND.name:
+                self.setState(State.SENDING)
+                send_data()
+            else:
+                print("Command received but not recognised: " + command.commandType)
+        self.setState(State.FINISHED)
 
 
 # List of websocket clients
 wsClients = []
-wsUtils = WsUtils()
-
+wsUtils = None
 
 def checkFile(fullfile, invalid_files):
     for file in invalid_files:
@@ -276,7 +319,6 @@ def segment_documents(args: str):
                     pass
 
     print("\nALL pdf files DONE :DDDD")
-    wsUtils.setState(State.FINISHED)
 
     if args.temporary is False:
         shutil.rmtree(tmp_folder)
@@ -496,6 +538,7 @@ def wsRunner():
 class WsHandleClients(WebSocket):
     def handleMessage(self):
         print("Message recived from ws!: " + (self.data or ""))
+        wsUtils.handleReceivedData(self.data)
 
     def handleConnected(self):
         wsClients.append(self)
@@ -595,9 +638,10 @@ if __name__ == "__main__":
     if argv.download is True:
         downloader.download_data(config["INPUT_FOLDER"])
 
+    wsUtils = WsUtils(argv)
     ws_thread = Thread(target=wsRunner)
     ws_thread.start()
 
-    segment_documents(argv)
+    #segment_documents(argv)
 
     ws_thread.join()

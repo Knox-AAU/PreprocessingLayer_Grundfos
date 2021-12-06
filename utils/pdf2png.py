@@ -84,6 +84,7 @@ class Pdf2Png:
         Multi-processed.
         """
         # Go through every file in the input dir and append to list.
+        self.pageNumb.value = 0
         files = []
         out_dirs = []
         for file in os.listdir(in_dir):
