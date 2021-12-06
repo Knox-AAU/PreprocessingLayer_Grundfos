@@ -40,6 +40,7 @@ from threading import Thread, Event
 from multiprocessing import Process, Value, Lock
 from enum import Enum
 from send_json import send_data
+from data_acquisition.reworked_gscraper import Scraper
 
 
 class State(Enum):
@@ -128,6 +129,12 @@ class WsUtils:
         data["contents"]["imagePages"] = imagePages
         self.sendToAll(data)
 
+    def updateLinksScraped(self, currentScrapeLink, totalScrapeLinks):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["currentScrapeLink"] = currentScrapeLink
+        data["contents"]["totalScrapeLinks"] = totalScrapeLinks
+        self.sendToAll(data)
+
     def updateFilesDownloaded(self, currentDownloadFile, currentDownloadFileName, totalDownloadFiles):
         data = copy.deepcopy(self._jsonBaseObject)
         data["contents"]["currentDownloadFile"] = currentDownloadFile
@@ -155,7 +162,10 @@ class WsUtils:
             print(command)
             if command["commandType"] == Commands.SCRAPE.name:
                 self.setState(State.SCRAPING)
-                # Insert scraping method here
+                scraper = Scraper(wsUtils)
+                scraper.get_response_headers()
+                scraper.safe_valid_links()
+                scraper.safe_invalid_links()
                 self.setState(State.DOWNLOADING)
                 downloader.download_data(config["INPUT_FOLDER"], wsUtils)
             elif command["commandType"] == Commands.PROCESS.name:
