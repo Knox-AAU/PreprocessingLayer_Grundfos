@@ -128,10 +128,11 @@ class WsUtils:
         data["contents"]["imagePages"] = imagePages
         self.sendToAll(data)
 
-    def updateFilesDownloaded(self, currentFile, totalFiles):
+    def updateFilesDownloaded(self, currentDownloadFile, currentDownloadFileName, totalDownloadFiles):
         data = copy.deepcopy(self._jsonBaseObject)
-        data["contents"]["currentFile"] = currentFile
-        data["contents"]["totalFiles"] = totalFiles
+        data["contents"]["currentDownloadFile"] = currentDownloadFile
+        data["contents"]["fileName"] = currentDownloadFileName
+        data["contents"]["totalDownloadFiles"] = totalDownloadFiles
         self.sendToAll(data)
 
     def encodeToJson(self, data):

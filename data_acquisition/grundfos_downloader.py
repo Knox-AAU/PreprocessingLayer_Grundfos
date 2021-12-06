@@ -37,7 +37,7 @@ def download_data(save_folder, wsUtils: WsUtils):
             file.write(response.content)
             print(product_name + " saved to " + os.path.join(out_folder, product_name))
             pdf_download_count += 1
-        wsUtils.updateFilesDownloaded(pdf_download_count, len(lines))
+        wsUtils.updateFilesDownloaded(pdf_download_count, product_name, len(lines))
 
     print(str(pdf_download_count) + " PDF files downloaded.")
 
