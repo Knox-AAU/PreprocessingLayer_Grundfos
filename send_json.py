@@ -5,13 +5,14 @@ import os
 import json
 from knox_source_data_io.io_handler import IOHandler
 from config_data import config
+import requests
 
 """
 Send data to Knowledge Layer
 """
 
 
-def send_data(url: str = "http://127.0.0.1:8000/uploadjsonapi/uploadJsonDoc"):
+def send_data(url: str = "http://130.225.57.27/uploadjsonapi/uploadJsonDoc"):
     output_folder = config["OUTPUT_FOLDER"]
     for foldername in os.listdir(output_folder):
         id = foldername[len("Grundfosliterature-") :]
@@ -22,6 +23,8 @@ def send_data(url: str = "http://127.0.0.1:8000/uploadjsonapi/uploadJsonDoc"):
                 IOHandler.post_json(json_file.read().encode("utf-8"), url)
         except FileNotFoundError:
             pass
+        except requests.exceptions.HTTPError:
+            print("Could not send json files to knowledge layer.")
 
 
 if __name__ == "__main__":

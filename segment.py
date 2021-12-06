@@ -295,8 +295,9 @@ def segment_documents(args: str):
                 max_time = time.time() + (estimated_per_page * float(pages))
 
                 while True:
-                    if page != last_page:
+                    if page.value != last_page:
                         wsUtils.updatePageNumbers(page.value, pages)
+                        last_page = page.value
 
                     if not seg_doc_process.is_alive():
                         print("Thread done!")

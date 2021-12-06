@@ -2,6 +2,7 @@ import os
 import random
 from time import sleep
 import requests
+import pathlib
 
 class Scraper:
     FILETYPE = '.pdf'
@@ -11,9 +12,9 @@ class Scraper:
     MIN_SLEEP = 10
     MAX_SLEEP = 20
     PDF_DOMAIN = "http://net.grundfos.com/Appl/ccmsservices/public/literature/filedata/Grundfosliterature-"
-    PATH_TO_INVALID_LINKS = os.path.join(os.path.abspath(os.curdir), "scraperdata") + "/invalid_links.txt"
-    PATH_TO_VALID_LINKS = os.path.join(os.path.abspath(os.curdir), "scraperdata") + "/downloadable_links.txt"
-    PATH_TO_INDEXES_CHECKED = os.path.join(os.path.abspath(os.curdir), "scraperdata") + "/checked_links.txt"
+    PATH_TO_INVALID_LINKS = os.path.join(pathlib.Path(__file__).parent.absolute(), "scraperdata", "invalid_links.txt")
+    PATH_TO_VALID_LINKS = os.path.join(pathlib.Path(__file__).parent.absolute(), "scraperdata", "downloadable_links.txt")
+    PATH_TO_INDEXES_CHECKED = os.path.join(pathlib.Path(__file__).parent.absolute(), "scraperdata", "checked_links.txt")
 
     invalid_links = set()
     valid_links = set()
