@@ -144,6 +144,13 @@ class WsUtils:
         data["contents"]["totalDownloadFiles"] = totalDownloadFiles
         self.sendToAll(data)
 
+    def updateJsonSent(self, currentJsonFile, currentJsonFileName, totalJsonFiles):
+        data = copy.deepcopy(self._jsonBaseObject)
+        data["contents"]["currentJsonFile"] = currentJsonFile
+        data["contents"]["currentJsonFileName"] = currentJsonFileName
+        data["contents"]["totalJsonFiles"] = totalJsonFiles
+        self.sendToAll(data)
+
     def encodeToJson(self, data):
         return json.dumps(data)
 
@@ -174,7 +181,7 @@ class WsUtils:
                 segment_documents(self.argv)
             elif command["commandType"] == Commands.SEND.name:
                 self.setState(State.SENDING)
-                send_data()
+                send_data(wsUtils)
             else:
                 print("Command received but not recognised: " + command.commandType)
         self.setState(State.FINISHED)
