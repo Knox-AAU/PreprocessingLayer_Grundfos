@@ -4,7 +4,6 @@ import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction import text
 
-
 class labelGenerator:
 	def __init__(self, figureDataPath = "../OUTPUT_PRUNED"):
 		self.figureDataPath = figureDataPath
