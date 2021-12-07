@@ -59,11 +59,13 @@ class Scraper:
         file = open(self.PATH_TO_VALID_LINKS, "a")
         file.writelines(self.valid_links)
         file.close()
+        self.valid_links.clear()
 
     def safe_invalid_links(self):
         file = open(self.PATH_TO_INVALID_LINKS, "a")
         file.writelines(self.invalid_links)
         file.close()
+        self.invalid_links.clear()
 
     def safe_index(self, index: int):
         file = open(self.PATH_TO_INDEXES_CHECKED, "w")
