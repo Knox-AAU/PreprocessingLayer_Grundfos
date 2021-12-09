@@ -2,11 +2,7 @@ from pdfminer.layout import LTTextLine, LTTextLineHorizontal, LTTextLineVertical
 import PDFminerLayoutExtractor
 import PDFminerLineStreamer as PDFminerLineStreamer
 import coordinates_calculator as CoordinatesCalculator
-import ignore_coordinates
-from datastructure.datastructure import Coordinates
 import SegmentedPDF
-import re
-import sys
 
 class TextAnalyser:
     __Pages__ = None
