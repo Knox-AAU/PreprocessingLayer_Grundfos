@@ -26,12 +26,16 @@ def get_product_names(containerHref):
     pbar = tqdm(total=len(containerHref))
     pbar.set_description("Getting product names")
     for c in containerHref:
+        splitDomain = c.split('/')[5].replace(".html", "").replace("-"," ")
         page = r.get(c)
         soup = bs(page.content,"html.parser")
         containers = soup.find_all("div", {"class":"col-sm-2 mname"})
         for cn in containers:
             try:
-                names.add(cn.find('a').text+"\n")
+                text = cn.find('a').text
+                if str(text).isdecimal():
+                    text = f"{splitDomain} {text}"
+                names.add(f"{text}\n")
             except:
                 continue
         pbar.update(1)
