@@ -6,7 +6,7 @@ import requests
 
 FILETYPE = '.pdf'
 DOMAIN = 'https://www.grundfos.com'
-MAX_SITES_TO_CHECK = 100 #7000001 #7 million is chosen just to get a good sample size, however this process make time LONG time
+MAX_SITES_TO_CHECK = 10000 #7000001 #7 million is chosen just to get a good sample size, however this process make time LONG time
 ITERATIONS_BEFORE_DELAY = 100 #Choose whatever works so the API doensn't block the connections because of insane amount of pings
 MIN_SLEEP = 10
 MAX_SLEEP = 20
