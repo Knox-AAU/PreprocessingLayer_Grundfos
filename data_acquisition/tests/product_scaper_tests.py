@@ -37,7 +37,7 @@ class TestProductScraper(unittest.TestCase):
 
     def test_amount_of_products(self):
         #Set the current total amount of working product names within all categories
-        amount = 1695
+        amount = 1687
 
         #Get all categories
         categories = ps.get_href_for_categories(DOMAIN)
