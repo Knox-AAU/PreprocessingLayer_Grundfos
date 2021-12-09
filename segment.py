@@ -26,6 +26,7 @@ import config_data
 from config_data import config
 import warnings as warn
 from PyPDF2 import PdfFileReader
+import custom_exceptions
 
 def checkFile(fullfile):
     with open(fullfile, 'rb') as f:
@@ -33,11 +34,11 @@ def checkFile(fullfile):
             pdf = PdfFileReader(f)
             info = pdf.getDocumentInfo()
             if info:
-                return True
+                return
             else:
-                return False
+                raise PDFDocInfoError("PDF contains no document info.")
         except:
-            return False
+            raise PDFOpenError("PDF could not be opened.")
 
 
 def segment_documents(args: str):
@@ -59,13 +60,10 @@ def segment_documents(args: str):
     pbar.set_description("Segmenting documents")
     for file in elements_in_directory:
         if file.endswith('.pdf'):
-            try:
-                output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
+            output_path = os.path.join(os.getcwd(), config["OUTPUT_FOLDER"],
                                            os.path.basename(file).replace(".pdf", ""))
-                if checkFile(config["INPUT_FOLDER"] + "/" + file) is False:
-                    os.remove(file)
-                    warn.warn("WARNING: PDF file deleted.", RuntimeWarning)
-                    break
+            try:
+                checkFile(config["INPUT_FOLDER"] + "/" + file)
 
                 seg_doc_process = multiprocessing.Process(target=segment_document, name="Segment_document", args=(
                     file, args, output_path))  # creates new process that segments file
@@ -85,16 +83,28 @@ def segment_documents(args: str):
                         shutil.rmtree(output_path)
                         seg_doc_process.join()
 
+            except (PDFDocInfoError, PDFOpenError) as ex:
+                # The file loaded does not contain any document info or could not be opened
+                warn.warn("Error finding document info:", RuntimeWarning)
+                print(ex)
+                os.remove(file)
+                print("PDF file was deleted. (" + os.path.basename(file) + ")")
+
+            except MinerPDFBuildError as ex:
+                # The file was most likely not a pdf
+                warn.warn("Error saving PDF data:", RuntimeWarning)
+                print(ex)
+                print("File was skipped. (" + os.path.basename(file) + ")")
+                shutil.rmtree(output_path)
+
+            except ProduceDataFromCoordsError as ex:
+                # Error caught while producing data from coordinates
+                warn.warn("Error producing data from coordinates: ", RuntimeWarning)
+                print(ex)
 
             except Exception as ex:
-                # The file loaded was probably not a pdf and cant be segmented (with pdfminer)
-                # This except may be obsolete and redundant in the overall process
-                try:
-                    print(ex)
-                    tqdm.write(file + " could not be opened and has been skipped!")
-                    shutil.rmtree(output_path)
-                except:
-                    pass
+                print(ex)
+
             pbar.update(1)
     pbar.close()
 
@@ -239,34 +249,36 @@ def produce_data_from_coords(page, image_path, output_path, area_treshold=14400)
     image_list_copy = copy.copy(page.images)
 
     image = cv2.imread(image_path)
-    for table_number in range(len(table_list_copy)):
-        if table_list_copy[table_number].coordinates.area() > area_treshold and (
-                (table_list_copy[table_number].coordinates.is_negative() is False)):
-            try:  # TODO: Finish try-excepts
+
+    try:
+        for table_number in range(len(table_list_copy)):
+            if table_list_copy[table_number].coordinates.area() > area_treshold and (
+                    (table_list_copy[table_number].coordinates.is_negative() is False)):
                 table_list_copy[table_number].path = os.path.join(output_path, "tables",
                                                                   os.path.basename(image_path).replace(".png",
                                                                                                        "_table" + str(
                                                                                                            table_number) + ".png"))
                 extract_area.extract_area_from_matrix(image, table_list_copy[table_number].path,
                                                       table_list_copy[table_number].coordinates)
-            except Exception as x:
-                print(x)
-        else:
-            page.tables.remove(table_list_copy[table_number])
-    for image_number in range(len(image_list_copy)):
-        if (image_list_copy[image_number].coordinates.area() > area_treshold) and (
-                image_list_copy[image_number].coordinates.is_negative() is False):
-            try:
-                image_list_copy[image_number].path = os.path.join(output_path, "images",
-                                                                  os.path.basename(image_path).replace(".png",
-                                                                                                       "_image" + str(
-                                                                                                           image_number) + ".png"))
-                extract_area.extract_area_from_matrix(image, image_list_copy[image_number].path,
-                                                      image_list_copy[image_number].coordinates)
-            except Exception as x:
-                print(x)
-        else:
-            page.images.remove(image_list_copy[image_number])
+            else:
+                page.tables.remove(table_list_copy[table_number])
+    except Exception as ex:
+        raise ProduceDataFromCoordsError(ex)
+    finally:
+        try:
+            for image_number in range(len(image_list_copy)):
+                if (image_list_copy[image_number].coordinates.area() > area_treshold) and (
+                        image_list_copy[image_number].coordinates.is_negative() is False):
+                    image_list_copy[image_number].path = os.path.join(output_path, "images",
+                                                                      os.path.basename(image_path).replace(".png",
+                                                                                                           "_image" + str(
+                                                                                                               image_number) + ".png"))
+                    extract_area.extract_area_from_matrix(image, image_list_copy[image_number].path,
+                                                          image_list_copy[image_number].coordinates)
+                else:
+                    page.images.remove(image_list_copy[image_number])
+        except Exception as ex:
+            raise ProduceDataFromCoordsError(ex)
 
 
 if __name__ == "__main__":

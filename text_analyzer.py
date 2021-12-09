@@ -3,6 +3,7 @@ import PDFminerLayoutExtractor
 import PDFminerLineStreamer as PDFminerLineStreamer
 import coordinates_calculator as CoordinatesCalculator
 import SegmentedPDF
+import warnings as warn
 
 class TextAnalyser:
     __Pages__ = None
@@ -155,7 +156,9 @@ class TextAnalyser:
             del FirstPage[LargestColumnIndex]
 
             return PDFTitle, PDFSubTitle  
-        except:
+        except Exception as ex:
+            warn.warn("Error finding title: ", RunetimeWarning)
+            print(ex)
             return "", ""      
 
     def find_columns(self, Page):

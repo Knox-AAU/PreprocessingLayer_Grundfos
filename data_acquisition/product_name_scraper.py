@@ -3,6 +3,7 @@ import os
 import requests as r
 from bs4 import BeautifulSoup as bs
 from tqdm import tqdm
+import warnings as warn
 
 BASE = "https://www.manualslib.com"
 DOMAIN = "https://www.manualslib.com/brand/grundfos/"
@@ -36,7 +37,9 @@ def get_product_names(containerHref):
                 if str(text).isdecimal():
                     text = f"{splitDomain} {text}"
                 names.add(f"{text}\n")
-            except:
+            except Exception as ex:
+                warn.warn("Error getting product name: ", RuntimeWarning)
+                print(ex)
                 continue
         pbar.update(1)
     pbar.close()

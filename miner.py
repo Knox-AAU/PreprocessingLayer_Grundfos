@@ -20,6 +20,7 @@ from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 import config_data
 from config_data import config
+import custom_exceptions
 
 FIGURES = os.path.join("tmp", "figures")
 IMAGES = os.path.join("tmp", "images")
@@ -46,11 +47,14 @@ class PDF_file:
     """
 
     def __init__(self, file, args):
-        self.file_name = os.path.basename(file)
-        temp_pages, self.interpreter, self.device = init_file(args, self.file_name)
-        self.pages = []
-        for page in temp_pages:
-            self.pages.append(PDF_page(self, args, page))
+        try:
+            self.file_name = os.path.basename(file)
+            temp_pages, self.interpreter, self.device = init_file(args, self.file_name)
+            self.pages = []
+            for page in temp_pages:
+                self.pages.append(PDF_page(self, args, page))
+        except:
+            raise MinerPDFBuildError("File is most likely not a pdf.")
 
 
 class PDF_page:

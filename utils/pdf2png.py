@@ -37,9 +37,11 @@ def convert_to_file(file: str, out_dir: str, pbar):
             pix.writePNG(os.path.join(out_dir, output_name))
             pbar.update(1)
 
-    except Exception:
+    except Exception as ex:
+        warn.warn("Error opening file with fitz: ", RuntimeWarning)
+        print(ex)
         os.remove(file)
-        tqdm.write("Removed file because of fitz error")
+        print("Removed file because of fitz error. (" + os.path.basename(file) + ")")
 
 def convert_dir_to_files(in_dir: str, out_dir: str):
     """
@@ -68,9 +70,11 @@ def multi_convert_dir_to_files(in_dir: str, out_dir: str):
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
                 pbarTotal += fitz.open(os.path.join(in_dir, file)).pageCount
-            except Exception:
-                warn.warn("Corruptness caught by GhostScript", RuntimeWarning)
+            except Exception as ex:
+                warn.warn("Corruptness caught by GhostScript:", RuntimeWarning)
+                print(ex)
                 os.remove(in_dir + "/" + file)
+                print("Removed file because of GhostScript error. (" + file + ")")
 
     with tqdm(total=pbarTotal, desc="Converting files") as pbar:
         with cf.ThreadPoolExecutor() as executor:

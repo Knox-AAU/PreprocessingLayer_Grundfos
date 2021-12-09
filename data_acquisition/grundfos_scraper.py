@@ -5,6 +5,7 @@ This module has functionality to scrape hrefs from the grundfos product-catalog
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as uReq
 import requests
+import warnings as warn
 
 FILETYPE = '.pdf'
 DOMAIN = 'https://www.grundfos.com'
@@ -59,7 +60,9 @@ def find_next_page(page_soup):
         pages = page_soup.findAll("div", {"class": "sp_pagination section"})
         allPages = pages[0].div.ul.findAll("li")
         return DOMAIN + allPages[len(allPages) - 1].a['href']
-    except:
+    except Exception as ex:
+        warn.warn("Error finding next page: ", RuntimeWarning)
+        print(ex)
         return None
 
 
