@@ -42,7 +42,7 @@ def get_product_names(containerHref):
     return names
 
 def save_names_to_list(names, path):
-    with open(path, 'w') as out:
+    with open(path, 'w', newline='') as out:
         csv_out = csv.writer(out)
         csv_out.writerow(["Name", "Tag"])
         for row in names:
