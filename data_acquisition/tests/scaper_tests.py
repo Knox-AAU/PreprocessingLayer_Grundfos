@@ -1,6 +1,6 @@
 import os
 import unittest
-import data_acquisition.reworked_gscraper as scaper
+import data_acquisition.scraper as scaper
 
 PATH_TO_INVALID_LINKS = (
     os.path.join(os.path.abspath(os.curdir), "scrapertestdata") + "/invalid_links.txt"

@@ -1,0 +1,1 @@
+This folder contains data used by the scraper and downloader.
