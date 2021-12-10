@@ -35,15 +35,12 @@ class labelGenerator:
 		myStopWords = text.ENGLISH_STOP_WORDS
 		vectorizer = TfidfVectorizer(stop_words = myStopWords)
 		vectors = vectorizer.fit_transform(captionList)
-		feature_names = vectorizer.get_feature_names_out()
+		feature_names = vectorizer.get_feature_names()
 		dense = vectors.todense()
 		denselist = dense.tolist()
 		df = pd.DataFrame(denselist, columns=feature_names, index = idList)
 
 		return df
-
-
-
 
 	def get_label(self, id, max_labels):
 		self.colList.sort(key=lambda col: self.df.loc[id, col])
@@ -54,7 +51,3 @@ class labelGenerator:
 		print(result[0:max_labels])
 		return result[0:max_labels]
 
-labelGen = labelGenerator()
-
-for id in labelGen.idList:
-    labelGen.get_label(id, 5)

@@ -8,5 +8,6 @@ def testFileName():
     
     #act
     for case in testCases:
+        #assert
         assert figureExtractor.get_filename(case[0]) == case[1]
 
