@@ -34,40 +34,40 @@ def doShadyStuff():
     return data
 
 def check_for_keywords(list_of_captions: str, dictionary: dict):
-    tuples = []
-
-
-
-
+    captions = []
     for c in list_of_captions:
-        if c in dictionary:
-            c = c.replace("CU 300", "CU-300")
+        tuples = []
         split = c.split(" ")
-        if "Fig" in c:
-            split[0]= split[0]+" " + split[1] + " "
+        if ("Fig" or "Figure") in c:
+            split[0] = split[0] + " " + split[1] + " "
             split.pop(1)
+        for x in range(len(split)-1):
+            if dictonary.get(split[x] + " " + split[x+1]) is not None:
+                split[x] = split[x] + " " + split[x+1]
+                split[x+1] = ""
+                x = x + 1
         for s in split:
-            if s == "CU-300":
-                s = s.replace("-"," ")
-            if dictonary.get(s) is not None:
-                tuples.append((s, dictonary.get(s)))
-            else:
-                tuples.append((s, "O"))
-    return tuples
+            if s != "":
+                if dictonary.get(s) is not None:
+                    tuples.append((s, dictonary.get(s)))
+                else:
+                    tuples.append((s, "O"))
+        captions.append(tuples)
+    return captions
 
 
 
 
 
 if __name__ == "__main__":
-    test = extract_JSON.importJSON()
+    #test = extract_JSON.importJSON()
     dictonary = extract_JSON.create_dict()
     dictonary.pop("Name")
     tuples = check_for_keywords(test, dictonary)
     print(tuples)
 
-    NER.vectorization(tuples)
-    NER.leTrain()
+    #NER.vectorization(tuples)
+    #NER.leTrain()
 
 
 
