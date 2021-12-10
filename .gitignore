@@ -190,6 +190,11 @@ dmypy.json
 Tools/TextExtraction/PDF_Extract_Multiple_Text/TEXTs*
 Tools/TextExtraction/PDF_Extract_multiple_With_Layout/TEXTs*
 
+# Ignore scraper data
+data_acquisition/scraperdata/*.txt
+*.pyc
+__pycache__/
+
 #Ignore model
 .pth
 classification/model_196000.pth

@@ -2,6 +2,7 @@
 This module allows conversion of PDF files to PNG files.
 """
 # from _typeshed import Self
+import multiprocessing
 import os
 import argparse
 import concurrent.futures as cf
@@ -44,6 +45,8 @@ class Pdf2Png:
 
             # Convert each page to an image
             for page_number in range(number_of_pages):
+                pageNumber.value += 1
+
                 page = doc.loadPage(page_number)
                 pix = page.getPixmap(matrix=mat)
                 output_name = (
@@ -55,13 +58,7 @@ class Pdf2Png:
                 pix.writePNG(os.path.join(out_dir, output_name))
 
         except Exception:
-            warn.warn("Corrupt file caught by fitz", RuntimeWarning)
-            if str(platform.system()).upper() == "WINDOWS":
-                print("Added file to list for later removal.")
-                self.invalid_files.append(file)
-            else:
-                print("Moved file to the invalid folder.")
-                shutil.move(file, config["INVALID_INPUT_FOLDER"])
+            self.invalid_files.append(file)
 
         if self.VERBOSE is True:
             print("Finished converting " + file + ".")
@@ -75,12 +72,19 @@ class Pdf2Png:
             if file.endswith(".pdf"):
                 self.convert_to_file(os.path.join(in_dir, file), out_dir)
 
+    def setVarToGlobal(self, args):
+        global pageNumber
+        pageNumber = args
+
+    pageNumb = multiprocessing.Value("i", 0)
+
     def multi_convert_dir_to_files(self, in_dir: str, out_dir: str):
         """
         Convert a directory of PDF files and writes each page as a PNG image in the 'out_dir' directory.
         Multi-processed.
         """
         # Go through every file in the input dir and append to list.
+        self.pageNumb.value = 0
         files = []
         out_dirs = []
         for file in os.listdir(in_dir):
@@ -88,7 +92,9 @@ class Pdf2Png:
                 files.append(os.path.join(in_dir, file))
                 out_dirs.append(out_dir)
 
-        with cf.ProcessPoolExecutor() as executor:
+        with cf.ProcessPoolExecutor(
+            initializer=self.setVarToGlobal, initargs=(self.pageNumb,)
+        ) as executor:
             executor.map(self.convert_to_file, files, out_dirs)
 
     def convert_to_matrix(self, file: str):
