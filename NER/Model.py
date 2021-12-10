@@ -101,14 +101,15 @@ def runME():
         model = Model(input_text, out)
         model.compile(optimizer="adam", loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=["accuracy"])
 
-        X_tr, X_val = X_tr[:63*batch_size], X_tr[-10 *batch_size:]
-        y_tr, y_val = y_tr[:63*batch_size], y_tr[-10*batch_size:]
+        X_tr, X_val = X_tr[:73*batch_size], X_tr[-10*batch_size:]
+        y_tr, y_val = y_tr[:73*batch_size], y_tr[-10*batch_size:]
         y_tr = y_tr.reshape(y_tr.shape[0], y_tr.shape[1], 1)
         y_val = y_val.reshape(y_val.shape[0], y_val.shape[1], 1)
-        history = model.fit(np.array(X_tr), y_tr, validation_data=(np.array(X_val), y_val),batch_size=batch_size, epochs=2, verbose=1)
+        history = model.fit(np.array(X_tr), y_tr, validation_data=(np.array(X_val), y_val),batch_size=batch_size, epochs=1, verbose=1)
 
-        X_te = X_te[:10*batch_size]
-        test_pred = model.predict(np.array(X_te), verbose=1)
+        print(len(X_te))
+        X_te = X_te[:9*batch_size]
+        test_pred = model.predict(np.array(X_te), batch_size=batch_size, verbose=1)
 
         idx2tag = {i: w for w, i in tags2index.items()}
 
@@ -134,10 +135,10 @@ def runME():
 
 
         pred_labels = pred2label(test_pred)
-        test_labels = test2label(y_te[:10 * batch_size])
+        test_labels = test2label(y_te[:9 * 36])
         print(classification_report(test_labels, pred_labels))
-
-        i = 390
+        print(len(X_te))
+        i = 10
         p = model.predict(np.array(X_te[i:i+batch_size]))[0]
         p = np.argmax(p, axis=-1)
         print("{:15} {:5}: ({})".format("Word", "Pred", "True"))
