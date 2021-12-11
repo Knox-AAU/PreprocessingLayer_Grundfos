@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class State(Enum):
     IDLE = 0
     SCRAPING = 1
@@ -8,6 +9,7 @@ class State(Enum):
     PROCESSING = 4
     SENDING = 5
     FINISHED = 6
+
 
 class Commands(Enum):
     SCRAPE = 0

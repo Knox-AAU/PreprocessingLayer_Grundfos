@@ -9,7 +9,7 @@ import requests
 DOMAIN = "https://www.grundfos.com"
 
 
-def download_data(save_folder, wsUtils = None):
+def download_data(save_folder, wsUtils=None):
     """
     Downloads pdfs from the IOlinks.txt.
     """
@@ -43,8 +43,10 @@ def download_data(save_folder, wsUtils = None):
         product_name = findfilename(line.rstrip("\n"))
 
         if wsUtils != None:
-            wsUtils.updateFilesDownloaded(pdf_download_count + 1, product_name, len(lines))
-            
+            wsUtils.updateFilesDownloaded(
+                pdf_download_count + 1, product_name, len(lines)
+            )
+
         with open(os.path.join(out_folder, product_name), "wb") as file:
             print("Downloading " + product_name + "...")
             response = requests.get(line)
