@@ -24,7 +24,7 @@ wsClients = []
 wsUtils = None
     
 def wsRunner():
-    server = SimpleWebSocketServer("localhost", 1337, WsHandleClients)
+    server = SimpleWebSocketServer("192.38.49.149", 1337, WsHandleClients)
     print("Running WS server, and waiting for commands...")
 
     while exit_event.is_set() == False:
