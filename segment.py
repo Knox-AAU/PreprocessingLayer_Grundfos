@@ -31,11 +31,12 @@ from multiprocessing import Value
 from ws_states import *
 from defaultProgramArguments import defaultArguments, defaultEnviromentVariables
 
-class Segmentation:    
-    def __init__(self, args: str, wsUtilsObj = None):
+
+class Segmentation:
+    def __init__(self, args: str, wsUtilsObj=None):
         self.wsUtils = wsUtilsObj
         self.segment_documents(args)
-    
+
     def segment_documents(self, args: str):
         """
         Does document segmentation of all pdf files in the input folder,
@@ -52,7 +53,7 @@ class Segmentation:
         # Ghostscript converts text to images, and therfore it can not be used by pdf miner.
         # invalid_files = gs.run_ghostscript(config["INPUT_FOLDER"])
         pdf2png = Pdf2Png(3, False)
-        if (self.wsUtils != None):
+        if self.wsUtils != None:
             self.wsUtils.setState(State.GENERATING_IMAGES)
 
         # Count number of pages from all PDF files.
@@ -63,9 +64,11 @@ class Segmentation:
                     doc = fitz.open(os.path.join(config["INPUT_FOLDER"], file))
                     numberOfPages += doc.pageCount
                 except:
-                    IO_handler.move_file_to_invalid_files(config["INPUT_FOLDER"], file, config["INVALID_INPUT_FOLDER"])
+                    IO_handler.move_file_to_invalid_files(
+                        config["INPUT_FOLDER"], file, config["INVALID_INPUT_FOLDER"]
+                    )
 
-        if (self.wsUtils != None):
+        if self.wsUtils != None:
             self.wsUtils.numberOfPages = numberOfPages
             self.wsUtils.updateImagePageNumbers(0, numberOfPages)
 
@@ -76,15 +79,17 @@ class Segmentation:
         img_thread.start()
         # Send data to all connected clients
         while img_thread.is_alive():
-            if (self.wsUtils != None):
-                self.wsUtils.updateImagePageNumbers(str(pdf2png.pageNumb.value), numberOfPages)
+            if self.wsUtils != None:
+                self.wsUtils.updateImagePageNumbers(
+                    str(pdf2png.pageNumb.value), numberOfPages
+                )
             time.sleep(0.1)
 
         invalid_files = pdf2png.invalid_files
         for file in invalid_files:
             IO_handler.move_file_to_invalid_files(config["INPUT_FOLDER"], file)
 
-        if (self.wsUtils != None):
+        if self.wsUtils != None:
             self.wsUtils.numberOfPDFs = len(os.listdir(config["INPUT_FOLDER"]))
             self.wsUtils.updateNumberOfPdfFiles()  # Send updated page number after removed files
             self.wsUtils.setState(State.PROCESSING)
@@ -92,12 +97,13 @@ class Segmentation:
         fileNumber = 0
         for file in os.listdir(config["INPUT_FOLDER"]):
             fileNumber += 1
-            if (self.wsUtils != None):
+            if self.wsUtils != None:
                 self.wsUtils.updateCurrentPdf(fileNumber, file)
             if file.endswith(".pdf"):
                 try:
                     output_path = os.path.join(
-                        config["OUTPUT_FOLDER"], os.path.basename(file).replace(".pdf", "")
+                        config["OUTPUT_FOLDER"],
+                        os.path.basename(file).replace(".pdf", ""),
                     )
 
                     print("\nGathering meta data...")
@@ -135,7 +141,9 @@ class Segmentation:
 
                         if time.time() > max_time:
                             seg_doc_process.terminate()
-                            print("Process: " + file + " terminated due to excessive time")
+                            print(
+                                "Process: " + file + " terminated due to excessive time"
+                            )
                             # warn.warn(f"Process: {file} terminated due to excessive time", UserWarning)
                             if os.path.isdir(output_path):
                                 shutil.rmtree(output_path)
@@ -165,7 +173,6 @@ class Segmentation:
 
         if args.temporary is False:
             shutil.rmtree(tmp_folder)
-
 
     def segment_document(self, file: str, args, output_path, currentPage):
         """
@@ -243,8 +250,9 @@ class Segmentation:
         )
         print("Finished extracting.")
 
-
-    def infer_page(self, image_path: str, min_score: float = 0.7) -> datastructures.Page:
+    def infer_page(
+        self, image_path: str, min_score: float = 0.7
+    ) -> datastructures.Page:
         """
         Acquires tables and figures from MI-inference of documents.
         """
@@ -262,7 +270,9 @@ class Segmentation:
 
                 if pred["scores"][idx].item() < min_score:
                     continue
-                area = self.convert2coords(image, list(map(int, pred["boxes"][idx].tolist())))
+                area = self.convert2coords(
+                    image, list(map(int, pred["boxes"][idx].tolist()))
+                )
                 # score = pred["scores"][idx].item()
 
                 if label == "table":
@@ -276,19 +286,20 @@ class Segmentation:
         print("Finished acquiring images and tables from MI-inference of documents.")
         return page_data
 
-
     def convert2coords(self, image, area: list) -> datastructures.Coordinates:
         """
         Converts coordinates from MI-inference format to fit original image format.
         """
         rat = image.shape[0] / 1300
         return datastructures.Coordinates(
-            int(area[0] * rat), int(area[1] * rat), int(area[2] * rat), int(area[3] * rat)
+            int(area[0] * rat),
+            int(area[1] * rat),
+            int(area[2] * rat),
+            int(area[3] * rat),
         )
 
-
-    def merge_pages(self, 
-        page1: datastructures.Page, page2: datastructures.Page
+    def merge_pages(
+        self, page1: datastructures.Page, page2: datastructures.Page
     ) -> datastructures.Page:
         """
         Merges the contents of two page datastructures into one.
@@ -306,7 +317,6 @@ class Segmentation:
         result.add_from_page(page2_cpy)
         return result
 
-
     def remove_duplicates_from_list(self, list1: list, threshold=30):
         """
         Removes elements that reside in other elements.
@@ -323,8 +333,9 @@ class Segmentation:
                     ):
                         list1.remove(object2)
 
-
-    def produce_data_from_coords(self, page, image_path, output_path, area_treshold=14400):
+    def produce_data_from_coords(
+        self, page, image_path, output_path, area_treshold=14400
+    ):
         """
         Checks if images and table coordinates are valid,
         and saves them to the output folder in the "images" and "tables" folders.
@@ -341,7 +352,9 @@ class Segmentation:
                     ".png", "_table" + str(table_number) + ".png"
                 ),
             )
-            self.save_content(image_of_page, path, page.tables[table_number], area_treshold)
+            self.save_content(
+                image_of_page, path, page.tables[table_number], area_treshold
+            )
 
         for image_number in range(len(page.images)):
             path = os.path.join(
@@ -351,21 +364,26 @@ class Segmentation:
                     ".png", "_image" + str(image_number) + ".png"
                 ),
             )
-            self.save_content(image_of_page, path, page.images[image_number], area_treshold)
-
+            self.save_content(
+                image_of_page, path, page.images[image_number], area_treshold
+            )
 
     """
     Saves content of image or table as an image
     """
+
     def save_content(self, image_of_page, path, obj, area_treshold):
         if (obj.coordinates.area() > area_treshold) and (
             obj.coordinates.is_negative() is False
         ):
             try:
-                extract_area.save_image_from_matrix(image_of_page, path, obj.coordinates)
+                extract_area.save_image_from_matrix(
+                    image_of_page, path, obj.coordinates
+                )
             except Exception as x:
                 print(x.__traceback__)
                 print(x)
+
 
 if __name__ == "__main__":
     argv = defaultArguments("Segments pdf documents.").parse_args()

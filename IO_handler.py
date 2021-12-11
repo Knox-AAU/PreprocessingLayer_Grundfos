@@ -29,7 +29,8 @@ def folder_prep(output: str = "tmp", clean: bool = False):
         shutil.rmtree(tmp_folder)
 
     mkdirs(tmp_folder)
-    
+
+
 def move_file_to_invalid_files(sourceDirectoryPath, filename, invalidInputFolder):
     shutil.move(
         os.path.join(sourceDirectoryPath, filename),
@@ -40,6 +41,7 @@ def move_file_to_invalid_files(sourceDirectoryPath, filename, invalidInputFolder
         + str(filename)
         + ")"
     )
+
 
 def mkdirs(temporary_folder: str):
     """

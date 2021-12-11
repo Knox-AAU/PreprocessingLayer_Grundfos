@@ -22,7 +22,8 @@ exit_event = Event()
 # List of websocket clients
 wsClients = []
 wsUtils = None
-    
+
+
 def wsRunner():
     server = SimpleWebSocketServer("localhost", 1337, WsHandleClients)
     print("Running WS server, and waiting for commands...")
@@ -30,10 +31,11 @@ def wsRunner():
     while exit_event.is_set() == False:
         server.serveonce()
         time.sleep(0.1)
-        
+
     print("Closing websocket server...")
     server.close()
-        
+
+
 class WsHandleClients(WebSocket):
     def handleMessage(self):
         print("Message recived from ws!: " + (self.data or ""))
@@ -45,6 +47,7 @@ class WsHandleClients(WebSocket):
 
     def handleClose(self):
         wsClients.remove(self)
+
 
 class WsUtils:
     """
@@ -173,14 +176,18 @@ class WsUtils:
                 print("Command received but not recognised: " + command.commandType)
         self.setState(State.FINISHED)
 
+
 def signal_handler(signum, frame):
     exit_event.set()
 
+
 if __name__ == "__main__":
-    argv = defaultArguments("Run ws server for UI, and execute commands received.").parse_args()
+    argv = defaultArguments(
+        "Run ws server for UI, and execute commands received."
+    ).parse_args()
     defaultEnviromentVariables(argv, config_data)
     config_data.check_config(["GRUNDFOS_INPUT_FOLDER", "GRUNDFOS_OUTPUT_FOLDER"])
-    
+
     wsUtils = WsUtils(argv)
     # Handles ctrl+c (interupting the prgram)
     signal.signal(signal.SIGINT, signal_handler)

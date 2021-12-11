@@ -2,7 +2,7 @@ import argparse
 import os
 
 
-def defaultArguments(description:str):
+def defaultArguments(description: str):
     argparser = argparse.ArgumentParser(description=description)
     argparser.add_argument(
         "-i",
@@ -72,8 +72,9 @@ def defaultArguments(description:str):
         default=False,
         help="Downloads Grundfos data to input folder.",
     )
-    
+
     return argparser
+
 
 def defaultEnviromentVariables(argv, config_data):
     # Overwrite environment variables for this session, if program flags exists.
