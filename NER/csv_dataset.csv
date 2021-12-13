@@ -30,7 +30,7 @@ Sentence 28,Fig. 25 ,O
 Sentence 29,Fig. 41 ,O
 Sentence 30,Fig. 40 ,O
 Sentence 31,Fig. 42 ,O
-,CU 300,control unit
+,CU 300,B-control unit
 ,communicating,O
 ,with,O
 ,Grundfos,O
@@ -43,24 +43,24 @@ Sentence 36,Fig. 17 ,O
 Sentence 37,Fig. 27 ,O
 ,Start-up,O
 ,of,O
-,"DMH 254,",dc drives
+,"DMH 254,",B-dc drives
 ,and,O
 Sentence 38,Fig. 62 ,O
-,DMH 11-25,dc drives
+,DMH 11-25,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 39,Fig. 60 ,O
-,DMH 4.5-25,dc drives
+,DMH 4.5-25,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 40,Fig. 61 ,O
-,DMH 11-25,dc drives
+,DMH 11-25,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
@@ -73,7 +73,7 @@ Sentence 41,Fig. 7 ,O
 Sentence 42,Fig. 13 ,O
 ,Tank,O
 ,installation,O
-Sentence 43,Fig. 117DMH ,dc drives
+Sentence 43,Fig. 117DMH ,B-dc drives
 ,550-10,O
 ,(50,O
 ,"Hz),",O
@@ -115,26 +115,26 @@ Sentence 49,Fig. 21 ,O
 ,pipe,O
 ,lines,O
 Sentence 50,Fig. 6 ,O
-,DMH 257,water pump
+,DMH 257,B-water pump
 Sentence 51,Fig. 42 ,O
 ,Contact,O
 ,pressure,O
 ,gauge,O
 Sentence 52,Fig. 111 ,O
-,DMH 270-10,dc drives
+,DMH 270-10,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 53,Fig. 110DMH ,dc drives
+Sentence 53,Fig. 110DMH ,B-dc drives
 ,194-10,O
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 54,Fig. 112DMH ,dc drives
+Sentence 54,Fig. 112DMH ,B-dc drives
 ,270-10,O
 ,(60,O
 ,"Hz),",O
@@ -165,37 +165,37 @@ Sentence 59,Fig. 32 ,O
 ,double,O
 ,diaphragm,O
 Sentence 60,Fig. 75 ,O
-,DMH 23-16,dc drives
+,DMH 23-16,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 61,Fig. 76 ,O
-,DMH 23-16,dc drives
+,DMH 23-16,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 62,Fig. 77 ,O
-,DMH 36-16,dc drives
+,DMH 36-16,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 63,Fig. 1 ,O
-,DMH nameplate,dc drives
+,DMH nameplate,B-dc drives
 Sentence 64,Fig. 46 ,O
-,DMH 13-10,dc drives
+,DMH 13-10,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 65,Fig. 9 ,O
-,"DMH 254,",dc drives
+,"DMH 254,",B-dc drives
 ,"255,",O
 Sentence 66,Fig. 41 ,O
 ,Dosing,O
@@ -203,21 +203,21 @@ Sentence 66,Fig. 41 ,O
 ,with,O
 ,double,O
 ,diaphragm,O
-Sentence 67,Fig. 100DMH ,dc drives
+Sentence 67,Fig. 100DMH ,B-dc drives
 ,97-16,O
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 68,Fig. 101DMH ,dc drives
+Sentence 68,Fig. 101DMH ,B-dc drives
 ,97-16,O
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 69,Fig. 102DMH ,dc drives
+Sentence 69,Fig. 102DMH ,B-dc drives
 ,136-16,O
 ,(50,O
 ,"Hz),",O
@@ -243,21 +243,21 @@ Sentence 73,Fig. 10 ,O
 ,of,O
 ,optimum,O
 ,installation,O
-Sentence 74,Fig. 119DMH ,dc drives
+Sentence 74,Fig. 119DMH ,B-dc drives
 ,220-10,O
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 75,Fig. 121DMH ,dc drives
+Sentence 75,Fig. 121DMH ,B-dc drives
 ,440-10,O
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 76,Fig. 120DMH ,dc drives
+Sentence 76,Fig. 120DMH ,B-dc drives
 ,440-10,O
 ,(50,O
 ,"Hz),",O
@@ -265,31 +265,31 @@ Sentence 76,Fig. 120DMH ,dc drives
 ,=,O
 ,bar,O
 Sentence 77,Fig. 8 ,O
-,"DMH 251,",dc drives
+,"DMH 251,",B-dc drives
 ,"252,",O
 Sentence 78,Fig. 55 ,O
-,DMH 3.3-200,dc drives
+,DMH 3.3-200,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 79,Fig. 57 ,O
-,DMH 2-100,dc drives
+,DMH 2-100,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 80,Fig. 56 ,O
-,DMH 2-100,dc drives
+,DMH 2-100,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 81,Fig. 8 ,O
-,"DMH 280,",dc drives
+,"DMH 280,",B-dc drives
 Sentence 82,Fig. 19 ,O
 ,Connection,O
 ,of,O
@@ -303,21 +303,21 @@ Sentence 83,Fig. 37 ,O
 ,"valve,",O
 ,spring-loaded,O
 Sentence 84,Fig. 36 ,O
-,DMH 281-288:,dc drives
+,DMH 281-288:,B-dc drives
 ,dosing,O
 ,head,O
 ,with,O
 ,double,O
 ,diaphragm,O
 Sentence 85,Fig. 35 ,O
-,DMH 280:,dc drives
+,DMH 280:,B-dc drives
 ,dosing,O
 ,head,O
 ,with,O
 ,double,O
 ,diaphragm,O
 Sentence 86,Fig. 63 ,O
-,DMH 8-100,dc drives
+,DMH 8-100,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
@@ -344,14 +344,14 @@ Sentence 91,Fig. 7 ,O
 ,pressure,O
 ,gauge,O
 Sentence 92,Fig. 86 ,O
-,DMH 105-100,dc drives
+,DMH 105-100,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 93,Fig. 85 ,O
-,DMH 80-100,dc drives
+,DMH 80-100,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
@@ -363,14 +363,14 @@ Sentence 94,Fig. 44 ,O
 ,with,O
 ,double,O
 ,diaphragm,O
-Sentence 95,Fig. 115DMH ,dc drives
+Sentence 95,Fig. 115DMH ,B-dc drives
 ,21-200,O
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 96,Fig. 114DMH ,dc drives
+Sentence 96,Fig. 114DMH ,B-dc drives
 ,15-200,O
 ,(60,O
 ,"Hz),",O
@@ -383,33 +383,33 @@ Sentence 97,Fig. 25 ,O
 ,dosing,O
 ,head,O
 Sentence 98,Fig. 34 ,O
-,DMH 281-288,dc drives
+,DMH 281-288,B-dc drives
 Sentence 99,Fig. 6 ,O
-,DMH 288,dc drives
+,DMH 288,B-dc drives
 ,TM,O
 Sentence 100,Fig. 71 ,O
-,DMH 33-100,dc drives
+,DMH 33-100,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 101,Fig. 72 ,O
-,DMH 33-100,dc drives
+,DMH 33-100,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 102,Fig. 70 ,O
-,DMH 27-100,dc drives
+,DMH 27-100,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
 Sentence 103,Fig. 1 ,O
-,DMH nameplate,dc drives
+,DMH nameplate,B-dc drives
 Sentence 104,Fig. 10 ,O
 ,Example,O
 ,of,O
@@ -424,14 +424,14 @@ Sentence 106,Fig. 42 ,O
 ,Installation,O
 ,of,O
 ,diaphragm,O
-Sentence 107,Fig. 100DMH ,dc drives
+Sentence 107,Fig. 100DMH ,B-dc drives
 ,31-200,O
 ,(50,O
 ,"Hz),",O
 ,Q0,O
 ,=,O
 ,bar,O
-Sentence 108,Fig. 101DMH ,dc drives
+Sentence 108,Fig. 101DMH ,B-dc drives
 ,31-200,O
 ,(60,O
 ,"Hz),",O
@@ -439,7 +439,7 @@ Sentence 108,Fig. 101DMH ,dc drives
 ,=,O
 ,bar,O
 Sentence 109,Fig. 99 ,O
-,DMH 23-200,dc drives
+,DMH 23-200,B-dc drives
 ,(60,O
 ,"Hz),",O
 ,Q0,O
@@ -474,7 +474,7 @@ Sentence 115,Fig. 13 ,O
 ,Tank,O
 ,installation,O
 Sentence 116,Fig. 9 ,O
-,"DMH 283,",dc drives
+,"DMH 283,",B-dc drives
 ,"285,",O
 ,"286,",O
 ,"287,",O
@@ -556,7 +556,7 @@ Sentence 140,Fig. 4 ,O
 ,sensors,O
 Sentence 141,Fig. 8 ,O
 ,The,O
-,CU 300,control unit
+,CU 300,B-control unit
 ,Unit,O
 ,Information,O
 ,window,O
@@ -570,7 +570,7 @@ Sentence 143,Fig. 10 ,O
 ,connected,O
 ,directly,O
 ,to,O
-,CU 300,control unit
+,CU 300,B-control unit
 ,RS-232,O
 ,terminals.,O
 ,The,O
@@ -583,7 +583,7 @@ Sentence 143,Fig. 10 ,O
 ,problems,O
 Sentence 144,Fig. 6 ,O
 ,The,O
-,CU 300,control unit
+,CU 300,B-control unit
 ,Panel,O
 ,window,O
 Sentence 145,Fig. 2 ,O
@@ -616,7 +616,7 @@ Sentence 146,Fig . ,O
 ,used,O
 ,on,O
 ,any,O
-,G100,gateway
+,G100,B-gateway
 ,version,O
 ,for,O
 ,direct,O
@@ -627,7 +627,7 @@ Sentence 147,Fig. 11 ,O
 ,PC,O
 ,connected,O
 ,to,O
-,CU 300,control unit
+,CU 300,B-control unit
 ,RS-232,O
 ,terminals,O
 ,via,O
@@ -670,7 +670,7 @@ Sentence 149,Fig. 3 ,O
 ,this,O
 ,example,O
 ,two,O
-,CU 300,control unit
+,CU 300,B-control unit
 ,units,O
 ,are,O
 ,connected,O
@@ -873,7 +873,7 @@ Sentence 179,Fig. 17 ,O
 Sentence 180,Fig. 13 ,O
 Sentence 181,Fig. 6 ,O
 Sentence 182,Fig. 5 ,O
-,Pt100,accessories
+,Pt100,B-accessories
 ,sensor,O
 ,fitted,O
 Sentence 183,Fig. 6 ,O
@@ -1006,18 +1006,18 @@ Sentence 199,Fig. 3 ,O
 ,open,O
 ,system,O
 Sentence 200,Fig. 4 ,O
-,SM 111,industrial electrical
+,SM 111,B-industrial electrical
 ,terminals,O
 Sentence 201,Fig. 3 ,O
 ,Connecting,O
 ,several,O
-,IO 111,control unit
+,IO 111,B-control unit
 ,modules,O
 ,with,O
 ,daisy,O
 ,chain,O
 Sentence 202,Fig. 9 ,O
-,OD 401,control unit
+,OD 401,B-control unit
 ,operator,O
 ,display,O
 Sentence 203,Fig. 10 ,O
@@ -1176,7 +1176,7 @@ Sentence 228,Fig. 6 ,O
 ,Drain,O
 ,valve,O
 Sentence 229,Fig. 1 ,O
-,DTS,dispenser
+,DTS,B-dispenser
 ,nameplate,O
 Sentence 230,Fig. 4 ,O
 ,l,O
@@ -1198,7 +1198,7 @@ Sentence 232,Fig. 3 ,O
 ,station,O
 Sentence 233,Fig. 5 ,O
 ,Fitted,O
-,DTS,dispenser
+,DTS,B-dispenser
 ,tank,O
 ,dosing,O
 ,station,O
@@ -1249,13 +1249,13 @@ Sentence 252,Fig. 3 ,O
 ,position,O
 ,on,O
 ,horizontal,O
-,CR,water pump
+,CR,B-water pump
 ,pumps,O
 Sentence 253,Fig. 2 ,O
 ,Dimensional,O
 ,sketch,O
 Sentence 254,Fig. 1 ,O
-,CRN,water pump
+,CRN,B-water pump
 ,MAGdrive,O
 ,pump,O
 Sentence 255,Fig. 8 ,O
@@ -1340,14 +1340,14 @@ Sentence 271,Fig. 11 ,O
 ,surfaces,O
 ,on,O
 ,a,O
-,CRT,water pump
+,CRT,B-water pump
 ,pump,O
 Sentence 272,Fig. 1 ,O
 ,Correct,O
 ,lifting,O
 ,of,O
 ,a,O
-,CRT,water pump
+,CRT,B-water pump
 ,pump,O
 Sentence 273,Fig. 19 ,O
 ,Location,O
@@ -1371,7 +1371,7 @@ Sentence 275,Fig. 3 ,O
 ,system,O
 ,with,O
 ,a,O
-,CRT,water pump
+,CRT,B-water pump
 ,pump,O
 Sentence 276,Fig. 18 ,O
 ,"Connection,",O
@@ -1994,10 +1994,10 @@ Sentence 379,Fig. 7 ,O
 ,Delta,O
 ,(Y/D),O
 Sentence 380,Fig. 14 ,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 ,module,O
 Sentence 381,Fig. 13 ,O
-,WIO sensor,accessories
+,WIO sensor,B-accessories
 Sentence 382,Fig. 1 ,O
 ,SL1,O
 ,pump,O
@@ -2072,14 +2072,14 @@ Sentence 394,Fig. 35 ,O
 ,"clearance,",O
 ,installation,O
 ,types,O
-,D,water pump
+,D,B-water pump
 ,and,O
 ,"H,",O
 ,method,O
 Sentence 395,Fig. 31 ,O
 ,Sensor,O
 ,"connections,",O
-,SM 113,control unit
+,SM 113,B-control unit
 ,outside,O
 ,motor,O
 Sentence 396,Fig. 30 ,O
@@ -2090,9 +2090,9 @@ Sentence 396,Fig. 30 ,O
 ,the,O
 ,pump,O
 Sentence 397,Fig. 29 ,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 ,and,O
-,SM 113,control unit
+,SM 113,B-control unit
 Sentence 398,Fig. 12 ,O
 ,Wiring,O
 ,diagram,O
@@ -2180,7 +2180,7 @@ Sentence 411,Fig. 6 ,O
 ,an,O
 ,Installation,O
 Sentence 412,Fig. 8 ,O
-,Name,Tag
+,Name,B-Tag
 ,and,O
 ,type,O
 ,of,O
@@ -2404,7 +2404,7 @@ Sentence 457,Fig. 3 ,O
 ,with,O
 ,brackets,O
 Sentence 458,Fig. 15 ,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 Sentence 459,Fig. 2 ,O
 ,SEV,O
 ,pump,O
@@ -2426,7 +2426,7 @@ Sentence 462,Fig. 9 ,O
 ,SEV,O
 ,pump,O
 Sentence 463,Fig. 16 ,O
-,WIO sensor,accessories
+,WIO sensor,B-accessories
 Sentence 464,Fig. 20 ,O
 ,Removing,O
 ,the,O
@@ -2647,9 +2647,9 @@ Sentence 502,Fig. 2 ,O
 ,Stop,O
 ,levels,O
 Sentence 503,Fig. 12 ,O
-,WIO sensor,accessories
+,WIO sensor,B-accessories
 Sentence 504,Fig. 13 ,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 ,module,O
 Sentence 505,Fig. 3 ,O
 ,Nameplate,O
@@ -2665,13 +2665,13 @@ Sentence 507,Fig. 5 ,O
 ,system,O
 ,with,O
 ,a,O
-,CR,water pump
+,CR,B-water pump
 ,pump,O
 Sentence 508,Fig. 1 ,O
 ,Example,O
 ,of,O
 ,a,O
-,CR,water pump
+,CR,B-water pump
 ,nameplate,O
 ,with,O
 ,ATEX,O
@@ -2728,15 +2728,15 @@ Sentence 518,Fig. 12 ,O
 ,relay,O
 ,module,O
 Sentence 519,Fig. 4 ,O
-,DIT-IR,control unit
+,DIT-IR,B-control unit
 ,battery,O
 ,compartment,O
 Sentence 520,Fig. 1 ,O
 ,Nameplate,O
 ,of,O
-,DIT-IR,control unit
+,DIT-IR,B-control unit
 Sentence 521,Fig. 3 ,O
-,DIT-IR,control unit
+,DIT-IR,B-control unit
 ,keypad,O
 ,layout,O
 Sentence 522,Fig. 4 ,O
@@ -2808,7 +2808,7 @@ Sentence 541,Fig. 1 ,O
 Sentence 542,Fig. 2 ,O
 Sentence 543,Fig. 3 ,O
 Sentence 544,Fig. 1 ,O
-,MQ,water system
+,MQ,B-water system
 ,water,O
 ,supply,O
 ,system,O
@@ -2884,11 +2884,11 @@ Sentence 558,Fig. 5 ,O
 ,Connection,O
 ,of,O
 ,several,O
-,LC A2,controller
+,LC A2,B-controller
 ,units,O
 Sentence 559,Fig. 6 ,O
 ,Locked,O
-,LC A2,controller
+,LC A2,B-controller
 Sentence 560,Fig. 8 ,O
 ,Hydro,O
 ,Multi-E,O
@@ -2913,7 +2913,7 @@ Sentence 562,Fig. 9 ,O
 ,Multi-E,O
 ,with,O
 ,single-phase,O
-,CME,water pump
+,CME,B-water pump
 ,pumps,O
 Sentence 563,Fig. 24 ,O
 ,Max.,O
@@ -2988,7 +2988,7 @@ Sentence 573,Fig. 3 ,O
 ,inlet,O
 ,pressure,O
 Sentence 574,Fig. 25 ,O
-,R100,remote control
+,R100,B-remote control
 ,communicating,O
 ,with,O
 ,the,O
@@ -3022,7 +3022,7 @@ Sentence 578,Fig. 6 ,O
 ,Multi-E,O
 ,with,O
 ,single-phase,O
-,CME,water pump
+,CME,B-water pump
 ,pumps,O
 Sentence 579,Fig. 1 ,O
 ,Mounting,O
@@ -3254,15 +3254,15 @@ Sentence 614,Fig. 4 ,O
 ,IO,O
 ,module,O
 Sentence 615,Fig. 4 ,O
-,DIT-IR,control unit
+,DIT-IR,B-control unit
 ,battery,O
 ,compartment,O
 Sentence 616,Fig. 3 ,O
-,DIT-IR,control unit
+,DIT-IR,B-control unit
 ,keypad,O
 ,layout,O
 Sentence 617,Fig. 5 ,O
-,DIT-IR,control unit
+,DIT-IR,B-control unit
 ,connection,O
 Sentence 618,Fig. 3 ,O
 ,Filling,O
@@ -3542,7 +3542,7 @@ Sentence 669,Fig. 33 ,O
 Sentence 670,Fig. 14 ,O
 ,Connection,O
 ,terminals,O
-,TPE Series,industrial equipment
+,TPE Series,B-industrial equipment
 Sentence 671,Fig. 25 ,O
 ,Control,O
 ,"panel,",O
@@ -3688,9 +3688,9 @@ Sentence 685,Fig. 13 ,O
 Sentence 686,Fig. 4 ,O
 ,Connection,O
 ,terminals,O
-,TPE Series,industrial equipment
+,TPE Series,B-industrial equipment
 Sentence 687,Fig. 35 ,O
-,R100,remote control
+,R100,B-remote control
 ,communicating,O
 ,with,O
 ,the,O
@@ -3707,7 +3707,7 @@ Sentence 689,Fig. 1 ,O
 ,Foot-mounted,O
 ,"motor,",O
 ,IM,O
-,B,water pump
+,B,B-water pump
 Sentence 690,Fig. 4 ,O
 ,Connection,O
 ,terminals,O
@@ -3895,9 +3895,9 @@ Sentence 717,Fig. 17 ,O
 ,on,O
 ,a,O
 ,"CR,",O
-,CRI,water pump
+,CRI,B-water pump
 ,and,O
-,CRN,water pump
+,CRN,B-water pump
 ,pump,O
 Sentence 718,Fig. 1 ,O
 ,Lifting,O
@@ -3954,7 +3954,7 @@ Sentence 730,Fig. 23 ,O
 ,Analog,O
 ,inputs,O
 Sentence 731,Fig. 4 ,O
-,CU 361,control unit
+,CU 361,B-control unit
 ,control,O
 ,panel,O
 Sentence 732,Fig. 3 ,O
@@ -4014,7 +4014,7 @@ Sentence 747,Fig. 21 ,O
 ,with,O
 ,e.g.,O
 ,the,O
-,DIT,measuring instruments
+,DIT,B-measuring instruments
 ,photometer,O
 Sentence 748,Fig. 15 ,O
 ,Display,O
@@ -4522,19 +4522,19 @@ Sentence 816,Fig. 20 ,O
 ,Stroke-length,O
 ,adjustment,O
 Sentence 817,Fig. 52 ,O
-,DMX 132-10,water pump
+,DMX 132-10,B-water pump
 ,(50,O
 ,Hz),O
 Sentence 818,Fig. 50 ,O
-,DMX 67-10,water pump
+,DMX 67-10,B-water pump
 ,(50,O
 ,Hz),O
 Sentence 819,Fig. 49 ,O
-,DMX 380-3,water pump
+,DMX 380-3,B-water pump
 ,(50,O
 ,Hz),O
 Sentence 820,Fig. 51 ,O
-,DMX 67-10,water pump
+,DMX 67-10,B-water pump
 ,(60,O
 ,Hz),O
 Sentence 821,Fig. 21 ,O
@@ -4544,7 +4544,7 @@ Sentence 822,Fig. 3 ,O
 ,Dimensional,O
 ,sketches,O
 ,of,O
-,DMX 226,water pump
+,DMX 226,B-water pump
 ,(part,O
 ,2),O
 Sentence 823,Fig. 15 ,O
@@ -4563,37 +4563,37 @@ Sentence 825,Fig. 16 ,O
 ,Dosing,O
 ,controller,O
 Sentence 826,Fig. 31 ,O
-,DMX 52-8,water pump
+,DMX 52-8,B-water pump
 ,(50,O
 ,Hz),O
 Sentence 827,Fig. 32 ,O
-,DMX 52-8,water pump
+,DMX 52-8,B-water pump
 ,(60,O
 ,Hz),O
 Sentence 828,Fig. 2 ,O
 ,Dimensional,O
 ,sketches,O
 ,of,O
-,DMX 226,water pump
+,DMX 226,B-water pump
 ,(part,O
 ,1),O
 Sentence 829,Fig. 17 ,O
 ,Initial,O
 ,start-up,O
 Sentence 830,Fig. 76 ,O
-,DMX 765-3,water pump
+,DMX 765-3,B-water pump
 ,(50,O
 ,Hz),O
 Sentence 831,Fig. 71 ,O
-,DMX 249-3,water pump
+,DMX 249-3,B-water pump
 ,(60,O
 ,Hz),O
 Sentence 832,Fig. 72 ,O
-,DMX 315-3,water pump
+,DMX 315-3,B-water pump
 ,(50,O
 ,Hz),O
 Sentence 833,Fig. 70 ,O
-,DMX 249-3,water pump
+,DMX 249-3,B-water pump
 ,(50,O
 ,Hz),O
 Sentence 834,Fig. 69 ,O
@@ -4608,7 +4608,7 @@ Sentence 836,Fig. 19 ,O
 ,adjustment,O
 ,knob,O
 Sentence 837,Fig. 18 ,O
-,DMX 226,water pump
+,DMX 226,B-water pump
 Sentence 838,Fig. 5 ,O
 ,Installation,O
 ,with,O
@@ -4635,7 +4635,7 @@ Sentence 842,Fig. 2 ,O
 ,Dimensional,O
 ,sketches,O
 ,of,O
-,DMX 227,water pump
+,DMX 227,B-water pump
 Sentence 843,Fig. 11 ,O
 ,Installation,O
 ,to,O
@@ -4662,14 +4662,14 @@ Sentence 846,Fig. 18 ,O
 ,dosing,O
 ,head,O
 Sentence 847,Fig. 24 ,O
-,DMX 770-3,water pump
+,DMX 770-3,B-water pump
 Sentence 848,Fig. 21 ,O
-,DMX 430-5,water pump
+,DMX 430-5,B-water pump
 Sentence 849,Fig. 14 ,O
 ,Electronics,O
 ,enclosure,O
 Sentence 850,Fig. 13 ,O
-,DMX 227,water pump
+,DMX 227,B-water pump
 Sentence 851,Fig. 20 ,O
 ,Replacing,O
 ,the,O
@@ -4686,7 +4686,7 @@ Sentence 853,Fig. 20 ,O
 ,discharge,O
 ,lines,O
 Sentence 854,Fig. 9 ,O
-,DDI 209,water pump
+,DDI 209,B-water pump
 ,with,O
 ,diaphragm,O
 ,leakage,O
@@ -4715,14 +4715,14 @@ Sentence 860,Fig. 29 ,O
 ,Adhesive,O
 ,label,O
 Sentence 861,Fig. 1 ,O
-,DDI 209,water pump
+,DDI 209,B-water pump
 ,nameplate,O
 Sentence 862,Fig. 45 ,O
 ,Dosing,O
 ,capacity,O
 ,curves,O
 Sentence 863,Fig. 5 ,O
-,DDI 209,water pump
+,DDI 209,B-water pump
 ,with,O
 ,diaphragm,O
 ,leakage,O
@@ -4781,7 +4781,7 @@ Sentence 873,Fig. 71 ,O
 ,4/DN,O
 ,valve,O
 Sentence 874,Fig. 3 ,O
-,DDI 209,water pump
+,DDI 209,B-water pump
 ,Plus3,O
 ,system,O
 Sentence 875,Fig. 27 ,O
@@ -4824,7 +4824,7 @@ Sentence 881,Fig. 51 ,O
 ,direct,O
 ,weighting,O
 Sentence 882,Fig. 2 ,O
-,DDI 209,water pump
+,DDI 209,B-water pump
 ,with,O
 ,manual,O
 ,deaeration,O
@@ -4834,7 +4834,7 @@ Sentence 883,Fig. 66 ,O
 Sentence 884,Fig. 1 ,O
 ,Connection,O
 ,to,O
-,DDI 209,water pump
+,DDI 209,B-water pump
 Sentence 885,Fig. 2 ,O
 ,Connection,O
 ,to,O
@@ -4877,10 +4877,10 @@ Sentence 892,Fig. 4 ,O
 ,Installation,O
 ,of,O
 ,a,O
-,TP,control unit
+,TP,B-control unit
 ,and,O
 ,a,O
-,TPD,control unit
+,TPD,B-control unit
 ,pump,O
 ,with,O
 ,a,O
@@ -4893,10 +4893,10 @@ Sentence 893,Fig. 5 ,O
 ,Installation,O
 ,of,O
 ,a,O
-,TP,control unit
+,TP,B-control unit
 ,and,O
 ,a,O
-,TPD,control unit
+,TPD,B-control unit
 ,pump,O
 ,with,O
 ,a,O
@@ -4922,7 +4922,7 @@ Sentence 895,Fig. 8 ,O
 ,parts,O
 ,on,O
 ,the,O
-,TP,control unit
+,TP,B-control unit
 ,nameplate,O
 Sentence 896,Fig. 7 ,O
 ,Example,O
@@ -4955,7 +4955,7 @@ Sentence 900,Fig. 22 ,O
 ,Left:,O
 ,"RSL,",O
 ,Right:,O
-,FV,control unit
+,FV,B-control unit
 Sentence 901,Fig. 31 ,O
 ,Emission,O
 ,protection,O
@@ -4966,7 +4966,7 @@ Sentence 902,Fig. 12 ,O
 ,suction,O
 ,lance,O
 Sentence 903,Fig. 18 ,O
-,FV,control unit
+,FV,B-control unit
 ,up,O
 ,to,O
 ,l/h,O
@@ -4988,7 +4988,7 @@ Sentence 905,Fig. 28 ,O
 ,steel.,O
 Sentence 906,Fig. 20 ,O
 ,Left:,O
-,FV,control unit
+,FV,B-control unit
 ,up,O
 ,to,O
 ,"l/h,",O
@@ -5021,25 +5021,25 @@ Sentence 910,Fig. 3 ,O
 ,Hydraulic,O
 ,connection,O
 Sentence 911,Fig. 30 ,O
-,FV,control unit
+,FV,B-control unit
 ,up,O
 ,to,O
 ,l/h,O
 Sentence 912,Fig. 24 ,O
-,FV,control unit
+,FV,B-control unit
 ,without,O
 ,level,O
 ,"indication,",O
 ,PE/PVDF,O
 Sentence 913,Fig. 23 ,O
-,RSL,control unit
+,RSL,B-control unit
 ,with,O
 ,/,O
 ,without,O
 ,level,O
 ,indication,O
 Sentence 914,Fig. 16 ,O
-,FV,control unit
+,FV,B-control unit
 ,without,O
 ,level,O
 ,"indication,",O
@@ -5057,7 +5057,7 @@ Sentence 915,Fig. 8 ,O
 ,type,O
 ,(RSL,O
 ,and,O
-,FV,control unit
+,FV,B-control unit
 ,up,O
 ,to,O
 ,l/h),O
@@ -5111,7 +5111,7 @@ Sentence 925,Fig. 3 ,O
 ,of,O
 ,MTS,O
 ,model,O
-,B,water pump
+,B,B-water pump
 Sentence 926,Fig. 7 ,O
 ,Sectional,O
 ,drawings,O
@@ -5563,17 +5563,17 @@ Sentence 1024,Fig. 1 ,O
 ,Connections,O
 ,of,O
 ,the,O
-,PM Rain,switch
+,PM Rain,B-switch
 Sentence 1025,Fig. 7 ,O
 ,Principle,O
 ,sketch,O
 Sentence 1026,Fig. 2 ,O
-,PM Rain,switch
+,PM Rain,B-switch
 ,and,O
 ,JP,O
 ,pump,O
 Sentence 1027,Fig. 3 ,O
-,PM Rain,switch
+,PM Rain,B-switch
 ,and,O
 ,SB,O
 ,pump,O
@@ -5970,7 +5970,7 @@ Sentence 1101,Fig. 24 ,O
 Sentence 1102,Fig. 9 ,O
 ,Connection,O
 ,"terminals,",O
-,CME,water pump
+,CME,B-water pump
 ,pump,O
 ,(optional,O
 ,for,O
@@ -6547,7 +6547,7 @@ Sentence 1224,Fig. 5 ,O
 Sentence 1225,Fig. 3 ,O
 ,Foundation,O
 ,for,O
-,TP,control unit
+,TP,B-control unit
 ,pump,O
 Sentence 1226,Fig. 1 ,O
 ,Alarm,O
@@ -6608,7 +6608,7 @@ Sentence 1237,Fig. 3 ,O
 ,with,O
 ,foot,O
 Sentence 1238,Fig. 13 ,O
-,MTR 1s,industrial equipment
+,MTR 1s,B-industrial equipment
 ,to,O
 Sentence 1239,Fig. 9 ,O
 ,Position,O
@@ -6831,7 +6831,7 @@ Sentence 1280,Fig. 23 ,O
 ,systems,O
 ,with,O
 ,"CRI,",O
-,CRIE,water pump
+,CRIE,B-water pump
 ,pumps,O
 Sentence 1281,Fig. 37 ,O
 ,Difference,O
@@ -7110,7 +7110,7 @@ Sentence 1321,Fig. 1 ,O
 ,location,O
 Sentence 1322,Fig. 2 ,O
 ,"Nameplate,",O
-,MGE,engine
+,MGE,B-engine
 ,motors,O
 Sentence 1323,Fig. 20 ,O
 ,Motor,O
@@ -7130,7 +7130,7 @@ Sentence 1326,Fig. 3 ,O
 ,Connections,O
 ,to,O
 ,"LC,",O
-,LCD 108,control systems
+,LCD 108,B-control systems
 Sentence 1327,Fig. 2 ,O
 ,Connection,O
 ,"terminals,",O
@@ -7141,18 +7141,18 @@ Sentence 1328,Fig. 3 ,O
 ,switching,O
 ,points,O
 Sentence 1329,Fig. 10 ,O
-,BMS hp,water pump
+,BMS hp,B-water pump
 ,pump,O
 Sentence 1330,Fig. 21 ,O
 ,Example,O
 ,of,O
-,BMSX,water pump
+,BMSX,B-water pump
 ,booster,O
 ,system,O
 Sentence 1331,Fig. 7 ,O
 ,Example,O
 ,of,O
-,BMSX,water pump
+,BMSX,B-water pump
 ,system,O
 Sentence 1332,Fig. 12 ,O
 ,Pipe,O
@@ -7165,12 +7165,12 @@ Sentence 1333,Fig. 13 ,O
 Sentence 1334,Fig. 19 ,O
 ,Example,O
 ,of,O
-,BMS hp,water pump
+,BMS hp,B-water pump
 ,pump,O
 Sentence 1335,Fig. 20 ,O
 ,Ramping,O
 ,"up,",O
-,BMS hp,water pump
+,BMS hp,B-water pump
 Sentence 1336,Fig. 2 ,O
 ,Example,O
 ,of,O
@@ -7185,7 +7185,7 @@ Sentence 1337,Fig. 18 ,O
 Sentence 1338,Fig. 17 ,O
 ,Example,O
 ,of,O
-,BMS hs,water pump
+,BMS hs,B-water pump
 ,pump,O
 Sentence 1339,Fig. 16 ,O
 ,Horizontal,O
@@ -7458,7 +7458,7 @@ Sentence 1390,Fig. 6 ,O
 ,level,O
 ,controller,O
 ,for,O
-,Multilift MSS,lifting systems
+,Multilift MSS,B-lifting systems
 Sentence 1391,Fig. 7 ,O
 ,Example,O
 ,of,O
@@ -7678,7 +7678,7 @@ Sentence 1427,Fig. 5 ,O
 ,Protocol,O
 ,Configuration,O
 ,-,O
-,BACnet IP,industrial equipment
+,BACnet IP,B-industrial equipment
 Sentence 1428,Fig. 6 ,O
 ,Real,O
 ,Time,O
@@ -7696,7 +7696,7 @@ Sentence 1429,Fig. 7 ,O
 ,GRM,O
 ,IP,O
 Sentence 1430,Fig. 1 ,O
-,CIM 500,industrial electrical
+,CIM 500,B-industrial electrical
 ,Ethernet,O
 ,module,O
 Sentence 1431,Fig. 2 ,O
@@ -7704,7 +7704,7 @@ Sentence 1431,Fig. 2 ,O
 ,code,O
 ,for,O
 ,the,O
-,CIU,recording equipment
+,CIU,B-recording equipment
 ,quick,O
 ,guide,O
 Sentence 1432,Fig. 3 ,O
@@ -8623,7 +8623,7 @@ Sentence 1597,Fig. 6 ,O
 ,Seal,O
 ,chamber,O
 ,"CR,",O
-,CRN,water pump
+,CRN,B-water pump
 ,"32,",O
 ,"45,",O
 ,"64,",O
@@ -8634,7 +8634,7 @@ Sentence 1598,Fig. 4 ,O
 ,chamber,O
 ,"CR,",O
 ,"CRI,",O
-,CRN,water pump
+,CRN,B-water pump
 ,"1s,",O
 ,"1,",O
 ,"3,",O
@@ -8643,7 +8643,7 @@ Sentence 1599,Fig. 5 ,O
 ,chamber,O
 ,"CR,",O
 ,"CRI,",O
-,CRN,water pump
+,CRN,B-water pump
 ,"10,",O
 ,"15,",O
 Sentence 1600,Fig. 3 ,O
@@ -8824,13 +8824,13 @@ Sentence 1643,Fig. 7 ,O
 ,cable,O
 ,to,O
 ,the,O
-,CIU,recording equipment
+,CIU,B-recording equipment
 ,box,O
 Sentence 1644,Fig. 2 ,O
 ,CIM,O
 ,in,O
 ,a,O
-,CIU,recording equipment
+,CIU,B-recording equipment
 ,box,O
 Sentence 1645,Fig. 15 ,O
 ,Connection,O
@@ -9006,12 +9006,12 @@ Sentence 1674,Fig. 32 ,O
 ,with,O
 ,inspection,O
 ,screw,O
-,A,water pump
+,A,B-water pump
 ,upwards,O
 Sentence 1675,Fig. 31 ,O
 ,Sensor,O
 ,"connections,",O
-,SM 113,control unit
+,SM 113,B-control unit
 ,outside,O
 ,motor,O
 Sentence 1676,Fig. 30 ,O
@@ -9022,9 +9022,9 @@ Sentence 1676,Fig. 30 ,O
 ,the,O
 ,pump,O
 Sentence 1677,Fig. 29 ,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 ,and,O
-,SM 113,control unit
+,SM 113,B-control unit
 Sentence 1678,Fig. 22 ,O
 ,Approval,O
 ,plates,O
@@ -9153,14 +9153,14 @@ Sentence 1701,Fig. 42 ,O
 ,and,O
 ,"ALPHA3,",O
 ,25-60,O
-,A,water pump
+,A,B-water pump
 ,TM,O
 Sentence 1702,Fig. 41 ,O
 ,ALPHA2,O
 ,and,O
 ,"ALPHA3,",O
 ,25-60,O
-,A,water pump
+,A,B-water pump
 ,TM,O
 Sentence 1703,Fig. 34 ,O
 ,ALPHA2,O
@@ -9210,13 +9210,13 @@ Sentence 1710,Fig. 35 ,O
 ,25-40,O
 ,"A,",O
 ,25-60,O
-,A,water pump
+,A,B-water pump
 Sentence 1711,Fig. 40 ,O
 ,ALPHA2,O
 ,and,O
 ,"ALPHA3,",O
 ,25-40,O
-,A,water pump
+,A,B-water pump
 ,TM,O
 Sentence 1712,Fig. 18 ,O
 ,Nameplate,O
@@ -9571,7 +9571,7 @@ Sentence 1780,Fig. 3 ,O
 Sentence 1781,Fig. 11 ,O
 ,Dimensions,O
 ,of,O
-,WIO sensor,accessories
+,WIO sensor,B-accessories
 Sentence 1782,Fig. 4 ,O
 ,Lifting,O
 ,points,O
@@ -9774,14 +9774,14 @@ Sentence 1815,Fig. 3 ,O
 ,cable,O
 ,clamp,O
 Sentence 1816,Fig. 12 ,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 ,and,O
-,SM 113,control unit
+,SM 113,B-control unit
 Sentence 1817,Fig. 11 ,O
 ,DIP,O
 ,switches,O
 ,on,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 Sentence 1818,Fig. 13 ,O
 ,Connection,O
 ,pins,O
@@ -9991,16 +9991,16 @@ Sentence 1857,Fig. 29 ,O
 ,"Nameplate,",O
 ,PS.M,O
 Sentence 1858,Fig. 4 ,O
-,AQtap,water dispenser
+,AQtap,B-water dispenser
 ,interfaces,O
 ,and,O
 ,components,O
 Sentence 1859,Fig. 5 ,O
-,AQtap,water dispenser
+,AQtap,B-water dispenser
 ,inside,O
 ,components,O
 Sentence 1860,Fig. 8 ,O
-,AQtap,water dispenser
+,AQtap,B-water dispenser
 ,user,O
 ,interface,O
 Sentence 1861,Fig. 3 ,O
@@ -10010,7 +10010,7 @@ Sentence 1861,Fig. 3 ,O
 Sentence 1862,Fig. 6 ,O
 ,Nameplate,O
 Sentence 1863,Fig. 7 ,O
-,AQtap,water dispenser
+,AQtap,B-water dispenser
 ,component,O
 ,and,O
 ,connection,O
@@ -10019,7 +10019,7 @@ Sentence 1864,Fig. 9 ,O
 ,Dimensional,O
 ,sketch,O
 ,of,O
-,AQtap,water dispenser
+,AQtap,B-water dispenser
 Sentence 1865,Fig. 5 ,O
 ,Operation,O
 ,screen,O
@@ -10324,7 +10324,7 @@ Sentence 1930,Fig. 8 ,O
 Sentence 1931,Fig. 4 ,O
 ,Nameplate,O
 Sentence 1932,Fig. 10 ,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,system,O
 ,with,O
 ,solar,O
@@ -10381,7 +10381,7 @@ Sentence 1942,Fig. 26 ,O
 ,UV,O
 ,controller,O
 Sentence 1943,Fig. 7 ,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,standard,O
 ,UF,O
 ,module,O
@@ -10399,13 +10399,13 @@ Sentence 1945,Fig. 25 ,O
 Sentence 1946,Fig. 5 ,O
 ,Overview,O
 ,of,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,modules,O
 ,TM,O
 Sentence 1947,Fig. 28 ,O
 ,Dimensions,O
 ,of,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,"system,",O
 ,connections,O
 ,and,O
@@ -10429,7 +10429,7 @@ Sentence 1949,Fig. 2 ,O
 ,break,O
 ,tank,O
 Sentence 1950,Fig. 8 ,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,standard,O
 ,UF,O
 ,module,O
@@ -10438,7 +10438,7 @@ Sentence 1950,Fig. 8 ,O
 ,prefilter,O
 ,module,O
 Sentence 1951,Fig. 29 ,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,system,O
 ,and,O
 ,connections.,O
@@ -10456,12 +10456,12 @@ Sentence 1953,Fig. 19 ,O
 ,Prefilter,O
 ,overview,O
 Sentence 1954,Fig. 11 ,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,system,O
 ,with,O
 ,UPS,O
 Sentence 1955,Fig. 9 ,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,optional,O
 ,modules,O
 ,(without,O
@@ -10475,7 +10475,7 @@ Sentence 1956,Fig. 6 ,O
 ,PID,O
 ,of,O
 ,an,O
-,AQpure,water filtration systems
+,AQpure,B-water filtration systems
 ,system,O
 ,with,O
 ,all,O
@@ -10498,7 +10498,7 @@ Sentence 1960,Fig. 7 ,O
 ,NPSH,O
 ,curves,O
 ,for,O
-,CM 10,water pump
+,CM 10,B-water pump
 Sentence 1961,Fig. 11 ,O
 ,Position,O
 ,of,O
@@ -10540,7 +10540,7 @@ Sentence 1969,Fig. 14 ,O
 ,Alarm,O
 ,team,O
 Sentence 1970,Fig. 8 ,O
-,Name,Tag
+,Name,B-Tag
 ,and,O
 ,type,O
 ,of,O
@@ -10588,7 +10588,7 @@ Sentence 1977,Fig. 2 ,O
 ,TPE2,O
 ,"D,",O
 ,TPE3,O
-,D,water pump
+,D,B-water pump
 Sentence 1978,Fig. 1 ,O
 ,Nameplate,O
 Sentence 1979,Fig. 7 ,O
@@ -10686,7 +10686,7 @@ Sentence 1993,Fig. 30 ,O
 ,the,O
 ,weighting,O
 Sentence 1994,Fig. 1 ,O
-,AR,control unit
+,AR,B-control unit
 ,control,O
 ,unit,O
 ,for,O
@@ -10720,28 +10720,28 @@ Sentence 2000,Fig. 10 ,O
 ,Display,O
 ,of,O
 ,the,O
-,AR,control unit
+,AR,B-control unit
 ,control,O
 ,unit,O
 Sentence 2001,Fig. 7 ,O
 ,Connection,O
 ,diagram,O
 Sentence 2002,Fig. 4 ,O
-,AR,control unit
+,AR,B-control unit
 ,control,O
 ,unit,O
 ,mounted,O
 ,on,O
 ,a,O
-,DMX 221,dc drives
+,DMX 221,B-dc drives
 Sentence 2003,Fig. 5 ,O
-,AR,control unit
+,AR,B-control unit
 ,control,O
 ,unit,O
 ,mounted,O
 ,on,O
 ,a,O
-,DMX 226,water pump
+,DMX 226,B-water pump
 Sentence 2004,Fig. 22 ,O
 ,Display:,O
 ,strokes,O
@@ -11057,7 +11057,7 @@ Sentence 2061,Fig. 3 ,O
 ,of,O
 ,MTS,O
 ,model,O
-,B,water pump
+,B,B-water pump
 Sentence 2062,Fig. 7 ,O
 ,Sectional,O
 ,drawings,O
@@ -11299,7 +11299,7 @@ Sentence 2102,Fig. 15 ,O
 Sentence 2103,Fig. 28 ,O
 ,Connection,O
 ,plan,O
-,AQC-D6,measuring instruments
+,AQC-D6,B-measuring instruments
 Sentence 2104,Fig. 13 ,O
 ,ClO2,O
 ,production,O
@@ -11475,7 +11475,7 @@ Sentence 2138,Fig. 57 ,O
 ,the,O
 ,diaphragm,O
 ,for,O
-,DDI 150-4,water pump
+,DDI 150-4,B-water pump
 Sentence 2139,Fig. 7 ,O
 ,Coupling,O
 Sentence 2140,Fig. 12 ,O
@@ -11597,7 +11597,7 @@ Sentence 2160,Fig. 10 ,O
 ,"circuit,",O
 ,DC/AC,O
 Sentence 2161,Fig. 5 ,O
-,AQC-D6,measuring instruments
+,AQC-D6,B-measuring instruments
 Sentence 2162,Fig. 6 ,O
 ,Measuring,O
 ,cell,O
@@ -11608,7 +11608,7 @@ Sentence 2163,Fig. 12 ,O
 ,measuring,O
 ,cell,O
 Sentence 2164,Fig. 7 ,O
-,AQC-D6,measuring instruments
+,AQC-D6,B-measuring instruments
 Sentence 2165,Fig. 11 ,O
 ,Connecting,O
 ,to,O
@@ -11624,7 +11624,7 @@ Sentence 2165,Fig. 11 ,O
 ,version,O
 ,V0.20,O
 Sentence 2166,Fig. 8 ,O
-,AQC-D6,measuring instruments
+,AQC-D6,B-measuring instruments
 ,with,O
 ,open,O
 ,water,O
@@ -11659,7 +11659,7 @@ Sentence 2169,Fig. 4 ,O
 ,Measuring,O
 ,module,O
 Sentence 2170,Fig. 3 ,O
-,AQC-D6,measuring instruments
+,AQC-D6,B-measuring instruments
 Sentence 2171,Fig. 17 ,O
 ,Connection,O
 ,to,O
@@ -11818,14 +11818,14 @@ Sentence 2199,Fig. 2 ,O
 ,Electrical,O
 ,connection,O
 ,of,O
-,AQtap,water dispenser
+,AQtap,B-water dispenser
 ,solar,O
 ,package,O
 Sentence 2200,Fig. 4 ,O
 ,Dimensional,O
 ,sketch,O
 ,of,O
-,AQtap,water dispenser
+,AQtap,B-water dispenser
 ,solar,O
 ,package,O
 ,cabinet,O
@@ -11838,7 +11838,7 @@ Sentence 2202,Fig. 5 ,O
 ,station,O
 ,l,O
 Sentence 2203,Fig. 1 ,O
-,DTS,dispenser
+,DTS,B-dispenser
 ,nameplate,O
 Sentence 2204,Fig. 6 ,O
 ,Components,O
@@ -11849,7 +11849,7 @@ Sentence 2204,Fig. 6 ,O
 ,with,O
 ,media,O
 Sentence 2205,Fig. 7 ,O
-,DTS,dispenser
+,DTS,B-dispenser
 ,dosing,O
 ,tank,O
 ,station,O
@@ -12236,7 +12236,7 @@ Sentence 2265,Fig. 1 ,O
 Sentence 2266,Fig. 2 ,O
 ,Example,O
 ,of,O
-,BACnet MS/TP,industrial equipment
+,BACnet MS/TP,B-industrial equipment
 ,segment,O
 Sentence 2267,Fig. 1 ,O
 ,CIM,O
@@ -12327,7 +12327,7 @@ Sentence 2278,Fig. 24 ,O
 ,pressures,O
 ,(H),O
 Sentence 2279,Fig. 22 ,O
-,R100,remote control
+,R100,B-remote control
 ,communicating,O
 ,with,O
 ,the,O
@@ -12404,7 +12404,7 @@ Sentence 2289,Fig. 2 ,O
 Sentence 2290,Fig. 3 ,O
 ,Installation,O
 ,"positions,",O
-,PM 1,control unit
+,PM 1,B-control unit
 Sentence 2291,Fig. 18 ,O
 ,Insufficient,O
 ,compaction,O
@@ -12508,7 +12508,7 @@ Sentence 2308,Fig. 30 ,O
 ,switch,O
 Sentence 2309,Fig. 9 ,O
 ,Frame,O
-,A,water pump
+,A,B-water pump
 ,"1,5",O
 ,-,O
 ,"5,5",O
@@ -12523,7 +12523,7 @@ Sentence 2311,Fig. 24 ,O
 ,entry,O
 ,"plate,",O
 ,Frame,O
-,A,water pump
+,A,B-water pump
 ,UL,O
 ,installation,O
 Sentence 2312,Fig. 3 ,O
@@ -12548,7 +12548,7 @@ Sentence 2316,Fig. 16 ,O
 ,Power,O
 ,"connections,",O
 ,Frame,O
-,A,water pump
+,A,B-water pump
 Sentence 2317,Fig. 28 ,O
 ,Control,O
 ,terminals,O
@@ -12574,13 +12574,13 @@ Sentence 2321,Fig. 12 ,O
 ,Separation,O
 ,of,O
 ,modules(Frame,O
-,B,water pump
+,B,B-water pump
 ,example).,O
 Sentence 2322,Fig. 17 ,O
 ,Power,O
 ,"connections,",O
 ,Frame,O
-,B,water pump
+,B,B-water pump
 Sentence 2323,Fig. 39 ,O
 ,Locations,O
 ,of,O
@@ -12626,13 +12626,13 @@ Sentence 2326,Fig. 20 ,O
 ,entry,O
 ,"plate,",O
 ,Frame,O
-,A,water pump
+,A,B-water pump
 Sentence 2327,Fig. 21 ,O
 ,Cable,O
 ,entry,O
 ,"plate,",O
 ,Frame,O
-,B,water pump
+,B,B-water pump
 Sentence 2328,Fig. 68 ,O
 ,Accessing,O
 ,Control,O
@@ -12780,7 +12780,7 @@ Sentence 2349,Fig. 40 ,O
 ,overload,O
 Sentence 2350,Fig. 10 ,O
 ,Frame,O
-,B,water pump
+,B,B-water pump
 ,"7,5",O
 ,-,O
 ,kW,O
@@ -12870,7 +12870,7 @@ Sentence 2364,Fig. 4 ,O
 ,position,O
 ,during,O
 ,"filling,",O
-,MS,engine
+,MS,B-engine
 ,6000C,O
 Sentence 2365,Fig. 15 ,O
 ,Three-phase,O
@@ -12953,10 +12953,10 @@ Sentence 2382,Fig. 32 ,O
 ,the,O
 ,timer,O
 Sentence 2383,Fig. 45 ,O
-,DDA,water pump
+,DDA,B-water pump
 ,120-7,O
 ,/,O
-,DDA,water pump
+,DDA,B-water pump
 ,200-4,O
 Sentence 2384,Fig. 14 ,O
 ,DLD,O
@@ -13013,10 +13013,10 @@ Sentence 2397,Fig. 15 ,O
 ,tool,O
 ,kit,O
 Sentence 2398,Fig. 14 ,O
-,DDE,water pump
+,DDE,B-water pump
 ,120-7,O
 ,/,O
-,DDE,water pump
+,DDE,B-water pump
 ,200-4,O
 Sentence 2399,Fig. 6 ,O
 ,Adjusting,O
@@ -13249,7 +13249,7 @@ Sentence 2432,Fig. 46 ,O
 Sentence 2433,Fig. 28 ,O
 ,Connection,O
 ,plan,O
-,AQC-D6,measuring instruments
+,AQC-D6,B-measuring instruments
 Sentence 2434,Fig. 27 ,O
 ,Connection,O
 ,plan,O
@@ -13331,7 +13331,7 @@ Sentence 2449,Fig. 6 ,O
 ,layout,O
 Sentence 2450,Fig. 1 ,O
 ,Frame,O
-,A,water pump
+,A,B-water pump
 ,1.5,O
 ,-,O
 ,5.5,O
@@ -13342,7 +13342,7 @@ Sentence 2450,Fig. 1 ,O
 ,hp),O
 Sentence 2451,Fig. 2 ,O
 ,Frame,O
-,B,water pump
+,B,B-water pump
 ,7.5,O
 ,-,O
 ,kW,O
@@ -13493,7 +13493,7 @@ Sentence 2475,Fig. 26 ,O
 ,constant-curve,O
 ,settings,O
 Sentence 2476,Fig. 23 ,O
-,MI 301,remote control
+,MI 301,B-remote control
 Sentence 2477,Fig. 19 ,O
 ,Pumped,O
 ,liquids,O
@@ -13889,7 +13889,7 @@ Sentence 2546,Fig. 33 ,O
 ,Differential,O
 ,temperature,O
 Sentence 2547,Fig. 69 ,O
-,DPI,accessories
+,DPI,B-accessories
 ,V.2,O
 ,transmitter,O
 Sentence 2548,Fig. 59 ,O
@@ -13925,7 +13925,7 @@ Sentence 2552,Fig. 1 ,O
 ,threaded,O
 ,versions,O
 Sentence 2553,Fig. 7 ,O
-,R100,remote control
+,R100,B-remote control
 ,and,O
 ,indicator,O
 ,lights,O
@@ -13938,8 +13938,8 @@ Sentence 2555,Fig. 10 ,O
 ,sketch,O
 Sentence 2556,Fig. 4 ,O
 ,Nameplate,O
-,IO 351,i o systems
-,B,water pump
+,IO 351,B-i o systems
+,B,B-water pump
 Sentence 2557,Fig. 6 ,O
 ,Screen,O
 ,fixed,O
@@ -14320,7 +14320,7 @@ Sentence 2646,Fig. 3 ,O
 ,pumps,O
 ,fitted,O
 ,with,O
-,MGE,engine
+,MGE,B-engine
 ,motors,O
 Sentence 2647,Fig. 1 ,O
 ,Example,O
@@ -14692,7 +14692,7 @@ Sentence 2717,Fig. 6 ,O
 Sentence 2718,Fig. 24 ,O
 ,ALPHA1,O
 ,model,O
-,B,water pump
+,B,B-water pump
 Sentence 2719,Fig. 14 ,O
 ,ALPHA,O
 ,plugs,O
@@ -14842,7 +14842,7 @@ Sentence 2742,Fig. 7 ,O
 ,screen,O
 ,connected,O
 ,to,O
-,CUE,industrial equipment
+,CUE,B-industrial equipment
 ,(controller,O
 ,with,O
 ,no,O
@@ -14864,7 +14864,7 @@ Sentence 2744,Fig. 21 ,O
 ,"connection,",O
 ,C1Connecting,O
 ,the,O
-,MCB 114,control unit
+,MCB 114,B-control unit
 ,sensor,O
 ,input,O
 ,module,O
@@ -14914,7 +14914,7 @@ Sentence 2753,Fig. 3 ,O
 ,mains,O
 ,connection,O
 ,of,O
-,CUE,industrial equipment
+,CUE,B-industrial equipment
 ,with,O
 ,main,O
 ,"switch,",O
@@ -14932,7 +14932,7 @@ Sentence 2755,Fig. 2 ,O
 ,Operating,O
 ,levels,O
 ,of,O
-,DPK,water pump
+,DPK,B-water pump
 Sentence 2756,Figure 8: ,O
 ,Hit,O
 ,your,O
@@ -15102,9 +15102,9 @@ Sentence 2772,Figure 6: ,O
 ,your,O
 ,system,O
 Sentence 2773,Fig. 6 ,O
-,CIM 260,industrial electrical
+,CIM 260,B-industrial electrical
 ,or,O
-,CIM 280,control unit
+,CIM 280,B-control unit
 ,cellular,O
 ,module,O
 Sentence 2774,Fig. 1 ,O
@@ -15112,7 +15112,7 @@ Sentence 2774,Fig. 1 ,O
 ,code,O
 ,for,O
 ,the,O
-,CIU,recording equipment
+,CIU,B-recording equipment
 ,quick,O
 ,guide,O
 Sentence 2775,Fig. 3 ,O
@@ -15262,7 +15262,7 @@ Sentence 2800,Fig. 2 ,O
 Sentence 2801,Fig. 4 ,O
 Sentence 2802,Fig. 5 ,O
 ,"CR,",O
-,CRN,water pump
+,CRN,B-water pump
 ,"95,",O
 ,"125,",O
 Sentence 2803,Fig. 3 ,O
@@ -15270,7 +15270,7 @@ Sentence 2803,Fig. 3 ,O
 ,position,O
 ,on,O
 ,horizontal,O
-,CR,water pump
+,CR,B-water pump
 ,pumps,O
 Sentence 2804,Fig. 6 ,O
 ,Example,O
@@ -15317,9 +15317,9 @@ Sentence 2810,Fig. 3 ,O
 ,wiring,O
 ,diagram,O
 ,of,O
-,IO 113,i o systems
+,IO 113,B-i o systems
 ,and,O
-,SM 113,control unit
+,SM 113,B-control unit
 ,placed,O
 ,inside,O
 ,of,O
@@ -15411,7 +15411,7 @@ Sentence 2828,Fig. 1 ,O
 ,Example,O
 ,of,O
 ,a,O
-,DSS,heat pump
+,DSS,B-heat pump
 ,system,O
 Sentence 2829,Fig. 2 ,O
 ,Free-standing,O
@@ -15592,7 +15592,7 @@ Sentence 2857,Fig. 13 ,O
 Sentence 2858,Fig. 1 ,O
 ,Nameplate,O
 ,of,O
-,DIT-L,measuring instruments
+,DIT-L,B-measuring instruments
 Sentence 2859,Fig. 4 ,O
 ,Correct,O
 ,filling,O
@@ -15620,7 +15620,7 @@ Sentence 2862,Fig. 5 ,O
 Sentence 2863,Fig. 1 ,O
 ,Nameplate,O
 ,of,O
-,DIT-M,measuring instruments
+,DIT-M,B-measuring instruments
 Sentence 2864,Fig. 3 ,O
 ,Scheme,O
 ,of,O
@@ -15755,7 +15755,7 @@ Sentence 2889,Fig. 5 ,O
 ,SMART,O
 ,digital,O
 ,S,O
-,DDA,water pump
+,DDA,B-water pump
 Sentence 2890,Fig. 4 ,O
 ,Connection,O
 ,of,O
@@ -15783,7 +15783,7 @@ Sentence 2896,Fig. 5 ,O
 ,Connecting,O
 ,E-Box,O
 ,to,O
-,DDA,water pump
+,DDA,B-water pump
 Sentence 2897,Fig. 2 ,O
 ,Nameplate,O
 Sentence 2898,Fig. 3 ,O
@@ -15801,7 +15801,7 @@ Sentence 2901,Fig. 5 ,O
 ,Connecting,O
 ,E-Box,O
 ,to,O
-,DDA,water pump
+,DDA,B-water pump
 Sentence 2902,Fig. 14 ,O
 Sentence 2903,Fig. 1 ,O
 ,Opening,O
@@ -15884,7 +15884,7 @@ Sentence 2919,Fig. 2 ,O
 ,the,O
 ,side,O
 ,of,O
-,MP 204,control unit
+,MP 204,B-control unit
 Sentence 2920,Fig. 19 ,O
 ,Submersible,O
 ,pump,O
@@ -15902,7 +15902,7 @@ Sentence 2923,Fig. 13 ,O
 ,per,O
 ,phase,O
 ,through,O
-,MP 204,control unit
+,MP 204,B-control unit
 Sentence 2924,Fig. 8 ,O
 ,Three-phase,O
 ,connection,O
@@ -15987,7 +15987,7 @@ Sentence 2941,Fig. 1 ,O
 Sentence 2942,Fig. 1 ,O
 ,Nameplate,O
 Sentence 2943,Fig. 54 ,O
-,DMH 50-200,dc drives
+,DMH 50-200,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
@@ -16000,7 +16000,7 @@ Sentence 2944,Fig. 29 ,O
 ,zero,O
 ,point,O
 Sentence 2945,Fig. 32 ,O
-,DMH 281-288,dc drives
+,DMH 281-288,B-dc drives
 Sentence 2946,Fig. 23 ,O
 ,Filling,O
 ,the,O
@@ -16038,7 +16038,7 @@ Sentence 2952,Fig. 12 ,O
 Sentence 2953,Fig. 26 ,O
 ,Start-up,O
 ,of,O
-,DMH 281-288,dc drives
+,DMH 281-288,B-dc drives
 Sentence 2954,Fig. 35 ,O
 ,Stainless,O
 ,steel,O
@@ -16063,10 +16063,10 @@ Sentence 2958,Fig. 8 ,O
 ,optimum,O
 ,installation,O
 Sentence 2959,Fig. 6 ,O
-,DMH 288,dc drives
+,DMH 288,B-dc drives
 ,TM,O
 Sentence 2960,Fig. 34 ,O
-,DMH 281-288:,dc drives
+,DMH 281-288:,B-dc drives
 ,dosing,O
 ,head,O
 ,with,O
@@ -16137,7 +16137,7 @@ Sentence 2975,Fig. 25 ,O
 Sentence 2976,Fig. 23 ,O
 ,Connections,O
 Sentence 2977,Fig. 16 ,O
-,DMX 226,water pump
+,DMX 226,B-water pump
 Sentence 2978,Fig. 17 ,O
 ,Stroke-length,O
 ,adjustment,O
@@ -16182,7 +16182,7 @@ Sentence 2986,Fig. 19 ,O
 ,the,O
 ,diaphragm,O
 Sentence 2987,Fig. 12 ,O
-,DMX 227,water pump
+,DMX 227,B-water pump
 Sentence 2988,Fig. 1 ,O
 ,DMX,O
 ,nameplate,O
@@ -16591,7 +16591,7 @@ Sentence 3094,Fig. 39 ,O
 ,double,O
 ,diaphragm,O
 Sentence 3095,Fig. 6 ,O
-,DMH 257,water pump
+,DMH 257,B-water pump
 Sentence 3096,Fig. 38 ,O
 ,Diaphragm,O
 ,on,O
@@ -16611,7 +16611,7 @@ Sentence 3099,Fig. 11 ,O
 Sentence 3100,Fig. 1 ,O
 ,Nameplate,O
 Sentence 3101,Fig. 84 ,O
-,DMH 550-10,dc drives
+,DMH 550-10,B-dc drives
 ,(50,O
 ,"Hz),",O
 ,Q0,O
@@ -16630,12 +16630,12 @@ Sentence 3103,Fig. 35 ,O
 Sentence 3104,Fig. 24 ,O
 ,Start-up,O
 ,of,O
-,"DMH 251,",dc drives
+,"DMH 251,",B-dc drives
 ,and,O
 Sentence 3105,Fig. 25 ,O
 ,Start-up,O
 ,of,O
-,"DMH 254,",dc drives
+,"DMH 254,",B-dc drives
 ,and,O
 Sentence 3106,Fig. 15 ,O
 ,Installation,O
@@ -16667,7 +16667,7 @@ Sentence 3110,Fig. 32 ,O
 ,valve,O
 Sentence 3111,Fig. 1 ,O
 ,Control,O
-,CUE,industrial equipment
+,CUE,B-industrial equipment
 ,cabinet,O
 ,with,O
 ,an,O
@@ -16675,12 +16675,12 @@ Sentence 3111,Fig. 1 ,O
 ,front,O
 Sentence 3112,Fig. 1 ,O
 ,Control,O
-,CUE,industrial equipment
+,CUE,B-industrial equipment
 ,nameplate,O
 Sentence 3113,Fig. 8 ,O
 ,"Example,",O
 ,Control,O
-,MP 204,control unit
+,MP 204,B-control unit
 Sentence 3114,Fig. 9 ,O
 ,Grundfos,O
 ,GO,O
@@ -16693,7 +16693,7 @@ Sentence 3114,Fig. 9 ,O
 Sentence 3115,Fig. 1 ,O
 ,"Example,",O
 ,Control,O
-,MP 204,control unit
+,MP 204,B-control unit
 Sentence 3116,Fig. 2 ,O
 ,"Example,",O
 ,Control,O
@@ -17010,7 +17010,7 @@ Sentence 3193,Fig. 12 ,O
 ,instrumentation,O
 ,diagram,O
 Sentence 3194,Fig. 1 ,O
-,BMPX,water pump
+,BMPX,B-water pump
 ,booster,O
 ,system,O
 Sentence 3195,Fig. 2 ,O
@@ -17052,7 +17052,7 @@ Sentence 3198,Fig. 15. ,O
 ,"""hidden"".",O
 Sentence 3199,Fig. 16. ,O
 ,:,O
-,A,water pump
+,A,B-water pump
 ,CU,O
 ,and,O
 ,an,O
@@ -17166,7 +17166,7 @@ Sentence 3205,Fig. 7. ,O
 ,Connection,O
 ,Type,O
 ,is,O
-,G100,gateway
+,G100,B-gateway
 ,with,O
 ,modem.,O
 ,*),O

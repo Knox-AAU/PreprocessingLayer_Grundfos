@@ -11,10 +11,11 @@ from tensorflow.keras import Input
 from tensorflow.keras.layers import LSTM, Embedding, Dense, TimeDistributed, Dropout, Bidirectional, Lambda, add
 from seqeval.metrics import precision_score, recall_score, f1_score, classification_report
 import os
+import NER2 as ner
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-def runME():
+def runME(dic: dict):
         plt.style.use("ggplot")
         data = pd.read_csv("csv_dataset.csv", encoding="latin1")
         data = data.fillna(method="ffill")
@@ -54,7 +55,7 @@ def runME():
         largest_sen = max(len(sen) for sen in sentences)
         print('biggest sentence has {} words'.format(largest_sen))
 
-        max_len = 50
+        max_len = largest_sen
         X = [[w[0]for w in s] for s in sentences]
         new_X = []
         for seq in X:
@@ -80,7 +81,7 @@ def runME():
         sess.run(tf.compat.v1.global_variables_initializer())
         sess.run(tf.compat.v1.tables_initializer())
 
-        batch_size = 36
+        batch_size = 32
 
         def ElmoEmbedding(x):
             return elmo_model(inputs={"tokens": tf.squeeze(tf.cast(x,    tf.string)),"sequence_len": tf.constant(batch_size*[max_len])
@@ -101,16 +102,15 @@ def runME():
         model = Model(input_text, out)
         model.compile(optimizer="adam", loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=["accuracy"])
 
-        X_tr, X_val = X_tr[:73*batch_size], X_tr[-10*batch_size:]
-        y_tr, y_val = y_tr[:73*batch_size], y_tr[-10*batch_size:]
+        X_tr, X_val = X_tr[:73*batch_size], X_tr[-40*batch_size:]
+        y_tr, y_val = y_tr[:73*batch_size], y_tr[-40*batch_size:]
         y_tr = y_tr.reshape(y_tr.shape[0], y_tr.shape[1], 1)
         y_val = y_val.reshape(y_val.shape[0], y_val.shape[1], 1)
-        history = model.fit(np.array(X_tr), y_tr, validation_data=(np.array(X_val), y_val),batch_size=batch_size, epochs=1, verbose=1)
+        history = model.fit(np.array(X_tr), y_tr, validation_data=(np.array(X_val), y_val),batch_size=batch_size, epochs=3, verbose=1)
 
-        print(len(X_te))
+
         X_te = X_te[:9*batch_size]
-        test_pred = model.predict(np.array(X_te), batch_size=batch_size, verbose=1)
-
+        # test_pred = model.predict(np.array(X_te), batch_size=batch_size, verbose=1)
         idx2tag = {i: w for w, i in tags2index.items()}
 
 
@@ -133,12 +133,20 @@ def runME():
                 out.append(out_i)
             return out
 
+        def prep_pred_labels(predicted_x: list):
+            for x in predicted_x:
+                for i in range(len(x)):
+                    if dic.get(x[i]) is not None:
+                        x[i] = str(f"B-{dic.get(x[i])}")
+                    else:
+                        x[i] = 'O'
+            return predicted_x
 
-        pred_labels = pred2label(test_pred)
-        test_labels = test2label(y_te[:9 * 36])
-        print(classification_report(test_labels, pred_labels))
-        print(len(X_te))
-        i = 10
+        x_tee = prep_pred_labels(X_te)
+        #pred_labels = pred2label(test_pred)
+        test_labels = test2label(y_te[:len(x_tee)])
+        print(classification_report(test_labels, x_tee))
+        i = 8
         p = model.predict(np.array(X_te[i:i+batch_size]))[0]
         p = np.argmax(p, axis=-1)
         print("{:15} {:5}: ({})".format("Word", "Pred", "True"))
@@ -149,4 +157,11 @@ def runME():
 
 
 if __name__ == "__main__":
-    runME()
+    print("NER 2")
+    csv_data = ner.import_csv()
+    dictionary =  ner.create_dict(csv_data)
+    captions =  ner.importJSON()
+    tuples =  ner.create_tuples(captions, dictionary)
+    # print(tuples)
+    ner.create_csv_dataset(tuples)
+    runME(dictionary)

@@ -56,7 +56,7 @@ def importJSON():
 
 
 #3. GIV ALLE ORD I CAPTIONS ET TAG, OG LAV ET ARRAY AF ARRAYS MED VORES TUPLE
-def create_tuples(list_of_captions: str, dictionary: dict):
+def create_tuples(list_of_captions: list, dictionary: dict):
     captions = []
     for c in list_of_captions:
         tuples = []
@@ -94,9 +94,15 @@ def create_csv_dataset(tuples):
         for t in tuples:
             for x in range(len(t)):
                 if x == 0:
-                    body = [f"Sentence {sentence}", t[x][0], t[x][1]]
+                    if t[x][1] != "O":
+                        body = [f"Sentence {sentence}", t[x][0], f"B-{t[x][1]}"]
+                    else:
+                        body = [f"Sentence {sentence}", t[x][0], t[x][1]]
                 else:
-                    body = [None, t[x][0], t[x][1]]
+                    if t[x][1] != "O":
+                        body = [None, t[x][0], f"B-{t[x][1]}"]
+                    else:
+                        body = [None, t[x][0], t[x][1]]
                 write.writerow(body)
             sentence += 1
 
