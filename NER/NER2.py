@@ -84,6 +84,7 @@ def create_tuples(list_of_captions: str, dictionary: dict):
         captions.append(tuples)
     return captions
 
+#Gem til .csv så vores dataset ligner kaggle's
 def create_csv_dataset(tuples):
     with open("csv_dataset.csv", "w", encoding="utf8") as f:
         write = csv.writer(f, sys.stdout, lineterminator='\n')
