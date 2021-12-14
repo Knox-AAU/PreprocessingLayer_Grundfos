@@ -5,6 +5,7 @@ import os
 import argparse
 import pathlib
 import requests
+from tqdm import tqdm
 
 DOMAIN = "https://www.grundfos.com"
 
