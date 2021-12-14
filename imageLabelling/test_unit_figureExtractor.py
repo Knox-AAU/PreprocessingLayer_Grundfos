@@ -1,5 +1,5 @@
 import unittest
-from figureExtractor import * 
+from figure_extractor import * 
 
 def testFileName():
     #arrange

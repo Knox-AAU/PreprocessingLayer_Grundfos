@@ -3,7 +3,7 @@ import subprocess
 import json
 import logging
 import traceback
-from labelGenerator import *
+from label_generator import *
 
 class IDGenerator:
     def __init__(self, seed = 0):

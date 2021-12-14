@@ -1,6 +1,6 @@
 import unittest
 import json
-from figureExtractor import * 
+from figure_extractor import * 
 
 def testFileName():
     #arrange
