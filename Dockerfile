@@ -18,12 +18,12 @@ RUN apt-get -y install ghostscript
 RUN apt-get -y install python3-opencv
 
 # Copy the requirements to the work directory
-COPY requirements_nocuda.txt requirements_nocuda.txt
-
-# Install Dependencies
-RUN pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements_nocuda.txt
-
 COPY . .
 
-ENTRYPOINT ["python"]
-CMD ["segment.py", "-c"]
+# Install Dependencies
+RUN pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements.txt
+
+#COPY . .
+
+ENTRYPOINT ["python","segment.py"]
+CMD ["-c"]
