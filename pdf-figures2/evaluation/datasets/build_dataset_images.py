@@ -45,30 +45,59 @@ def get_images(pdf_dir, output_dir, dpi, mono=True):
         if doc_id in already_have:
             continue
         print("Creating images for pdf %s (%d / %d)" % (pdfname, i + 1, num_pdfs))
-        if (mono):
-            args = ["pdftoppm", "-gray", "-r", str(dpi),
-                  "-aa", "no", "-aaVector", "no", "-cropbox",
-                  join(pdf_dir, pdfname), join(output_dir, doc_id + "-page")]
+        if mono:
+            args = [
+                "pdftoppm",
+                "-gray",
+                "-r",
+                str(dpi),
+                "-aa",
+                "no",
+                "-aaVector",
+                "no",
+                "-cropbox",
+                join(pdf_dir, pdfname),
+                join(output_dir, doc_id + "-page"),
+            ]
         else:
-            args = ["pdftoppm", "-jpeg", "-r", str(dpi), "-cropbox",
-                  join(pdf_dir, pdfname), join(output_dir, doc_id + "-page")]
+            args = [
+                "pdftoppm",
+                "-jpeg",
+                "-r",
+                str(dpi),
+                "-cropbox",
+                join(pdf_dir, pdfname),
+                join(output_dir, doc_id + "-page"),
+            ]
         retcode = call(args)
         if retcode != 0:
             raise ValueError("Bad return code for <%s> (%d)", " ".join(args), retcode)
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Cache rasterized page images for a dataset')
-    parser.add_argument("dataset", choices=datasets.DATASETS.keys(), help="target dataset")
-    parser.add_argument("color", choices=["gray", "color"], help="kind of images to render")
+    parser = argparse.ArgumentParser(
+        description="Cache rasterized page images for a dataset"
+    )
+    parser.add_argument(
+        "dataset", choices=datasets.DATASETS.keys(), help="target dataset"
+    )
+    parser.add_argument(
+        "color", choices=["gray", "color"], help="kind of images to render"
+    )
     args = parser.parse_args()
 
     dataset = datasets.get_dataset(args.dataset)
     print("Running on dataset: " + dataset.name)
     if args.color == "gray":
-        get_images(dataset.pdf_dir, dataset.page_images_gray_dir,
-                   dataset.IMAGE_DPI, True)
+        get_images(
+            dataset.pdf_dir, dataset.page_images_gray_dir, dataset.IMAGE_DPI, True
+        )
     elif args.color == "color":
-        get_images(dataset.pdf_dir, dataset.page_images_color_dir,
-                   dataset.COLOR_IMAGE_DPI, False)
+        get_images(
+            dataset.pdf_dir,
+            dataset.page_images_color_dir,
+            dataset.COLOR_IMAGE_DPI,
+            False,
+        )
     else:
         exit(1)

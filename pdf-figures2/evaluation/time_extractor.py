@@ -5,13 +5,27 @@ from time import time
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Time a figure extractor')
-    parser.add_argument("dataset", choices=list(datasets.DATASETS.keys()), help="Name of the dataset to evaluate on")
-    parser.add_argument("extractor", choices=list(extractors.EXTRACTORS.keys()), help="Name of the extractor to test")
+    parser = argparse.ArgumentParser(description="Time a figure extractor")
+    parser.add_argument(
+        "dataset",
+        choices=list(datasets.DATASETS.keys()),
+        help="Name of the dataset to evaluate on",
+    )
+    parser.add_argument(
+        "extractor",
+        choices=list(extractors.EXTRACTORS.keys()),
+        help="Name of the extractor to test",
+    )
     parser.add_argument("-w", "--write-figures", action="store_true")
-    parser.add_argument("-r", "--compare-non-standard", action='store_true', help="Don't skip PDF in the dataset that" +
-                                                                                  "are marked as being non-standard")
-    parser.add_argument("-q", "--quiet", action='store_true', help="Reduce printed output")
+    parser.add_argument(
+        "-r",
+        "--compare-non-standard",
+        action="store_true",
+        help="Don't skip PDF in the dataset that" + "are marked as being non-standard",
+    )
+    parser.add_argument(
+        "-q", "--quiet", action="store_true", help="Reduce printed output"
+    )
     args = parser.parse_args()
 
     verbose = not args.quiet
@@ -31,6 +45,7 @@ def main():
     t0 = time()
     extractor.time(filenames, args.write_figures, verbose=verbose)
     print(time() - t0)
+
 
 if __name__ == "__main__":
     main()

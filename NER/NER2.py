@@ -12,13 +12,18 @@ import sys
     4. GEM DISSE TUPLE SOM .CSV, SÅ VORES DATASÆT LIGNER DET FRA KAGGLE
 """
 
-#1 IMPORT CSV OG LAV DICT
+# 1 IMPORT CSV OG LAV DICT
 def import_csv():
-    with open(os.path.join(pathlib.Path(__file__).parent.parent, 'data_acquisition/products.csv')) as f:
+    with open(
+        os.path.join(
+            pathlib.Path(__file__).parent.parent, "data_acquisition/products.csv"
+        )
+    ) as f:
         data = [tuple(line) for line in csv.reader(f)]
     return data
 
-#1.5 lav data om til dict
+
+# 1.5 lav data om til dict
 def create_dict(data):
     return dict(data)
 
@@ -28,12 +33,14 @@ def importJSON():
 
     try:
         if not (os.getcwd().endswith("JSONFiles")):
-            checkJSONDir = os.path.join(pathlib.Path(__file__).parent.parent, 'JSONFiles')
+            checkJSONDir = os.path.join(
+                pathlib.Path(__file__).parent.parent, "JSONFiles"
+            )
             if not (os.path.exists(checkJSONDir)):
                 os.mkdir(checkJSONDir)
 
-        #check if JSONFiles folder exists
-        #if not, create it
+        # check if JSONFiles folder exists
+        # if not, create it
 
         JSONFileFolder = os.listdir(checkJSONDir)
         JSONFile = []
@@ -42,10 +49,10 @@ def importJSON():
         for file in JSONFileFolder:
             if file.endswith(".json"):
                 filepath = os.path.join(checkJSONDir, file)
-                with open(filepath, 'r', encoding="utf8") as tempJSONFile:
+                with open(filepath, "r", encoding="utf8") as tempJSONFile:
                     jsonData = json.loads(tempJSONFile.read())
                     for i in range(len(jsonData)):
-                        captionData.append(jsonData[i]['caption'])
+                        captionData.append(jsonData[i]["caption"])
         return captionData
 
     except:
@@ -53,9 +60,7 @@ def importJSON():
         return None
 
 
-
-
-#3. GIV ALLE ORD I CAPTIONS ET TAG, OG LAV ET ARRAY AF ARRAYS MED VORES TUPLE
+# 3. GIV ALLE ORD I CAPTIONS ET TAG, OG LAV ET ARRAY AF ARRAYS MED VORES TUPLE
 def create_tuples(list_of_captions: list, dictionary: dict):
     captions = []
     for c in list_of_captions:
@@ -64,10 +69,10 @@ def create_tuples(list_of_captions: list, dictionary: dict):
         if ("Fig" or "Figure") in c:
             split[0] = split[0] + " " + split[1] + " "
             split.pop(1)
-        for x in range(len(split)-1):
-            if dictionary.get(split[x] + " " + split[x+1]) is not None:
-                split[x] = split[x] + " " + split[x+1]
-                split[x+1] = ""
+        for x in range(len(split) - 1):
+            if dictionary.get(split[x] + " " + split[x + 1]) is not None:
+                split[x] = split[x] + " " + split[x + 1]
+                split[x + 1] = ""
                 x = x + 1
             elif split[x] == "DMH":
                 split[x] = split[x] + " " + split[x + 1]
@@ -84,11 +89,12 @@ def create_tuples(list_of_captions: list, dictionary: dict):
         captions.append(tuples)
     return captions
 
-#Gem til .csv så vores dataset ligner kaggle's
+
+# Gem til .csv så vores dataset ligner kaggle's
 def create_csv_dataset(tuples):
     with open("csv_dataset.csv", "w", encoding="utf8") as f:
-        write = csv.writer(f, sys.stdout, lineterminator='\n')
-        header = ['Sentence #', "Word", 'Tag']
+        write = csv.writer(f, sys.stdout, lineterminator="\n")
+        header = ["Sentence #", "Word", "Tag"]
         write.writerow(header)
         sentence = 1
         for t in tuples:
@@ -113,5 +119,5 @@ if __name__ == "__main__":
     dictionary = create_dict(csv_data)
     captions = importJSON()
     tuples = create_tuples(captions, dictionary)
-    #print(tuples)
+    # print(tuples)
     create_csv_dataset(tuples)

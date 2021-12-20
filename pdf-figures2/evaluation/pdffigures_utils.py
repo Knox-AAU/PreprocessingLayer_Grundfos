@@ -35,12 +35,19 @@ def str_to_fig_type(string):
 
 
 class Figure(object):
-
     @staticmethod
     def from_dict(data):
-        return Figure(str_to_fig_type(data["figure_type"]), data["name"], data["page"],
-                      data["dpi"], data["caption"], data["page_height"], data["page_width"],
-                      data["caption_bb"], data["region_bb"])
+        return Figure(
+            str_to_fig_type(data["figure_type"]),
+            data["name"],
+            data["page"],
+            data["dpi"],
+            data["caption"],
+            data["page_height"],
+            data["page_width"],
+            data["caption_bb"],
+            data["region_bb"],
+        )
 
     def as_dict(self):
         data = {}
@@ -51,11 +58,26 @@ class Figure(object):
     def get_id(self):
         return self.figure_type, self.name, self.page
 
-    def __init__(self, figure_type, name, page, dpi, caption, page_height=None, page_width=None,
-                 caption_bb=None, region_bb=None):
+    def __init__(
+        self,
+        figure_type,
+        name,
+        page,
+        dpi,
+        caption,
+        page_height=None,
+        page_width=None,
+        caption_bb=None,
+        region_bb=None,
+    ):
         if not isinstance(figure_type, FigureType):
             raise ValueError()
-        if page_width is None and page_height is not None or page_height is None and page_width is not None:
+        if (
+            page_width is None
+            and page_height is not None
+            or page_height is None
+            and page_width is not None
+        ):
             raise ValueError()
         if page_width is not None and page_width <= 0:
             raise ValueError()
@@ -82,14 +104,23 @@ class Figure(object):
 
     def __str__(self):
         if self.page_width is not None:
-            return ("%s%s:<page=%d, caption=%s, " +
-                    "caption_bb=%s, region_bb=%s, dpi=%d>") % (
+            return (
+                "%s%s:<page=%d, caption=%s, " + "caption_bb=%s, region_bb=%s, dpi=%d>"
+            ) % (
                 "F" if self.figure_type == FigureType.figure else "T",
-                self.name, self.page,
-                        self.caption[:20], str(self.caption_bb),
-                        str(self.region_bb), self.dpi)
+                self.name,
+                self.page,
+                self.caption[:20],
+                str(self.caption_bb),
+                str(self.region_bb),
+                self.dpi,
+            )
         else:
-            return "%s:<page=%s, caption=%s>" % (self.name, str(self.page), self.caption[:20])
+            return "%s:<page=%s, caption=%s>" % (
+                self.name,
+                str(self.page),
+                self.caption[:20],
+            )
 
     def __eq__(self, other):
         return isinstance(other, Figure) and self.__dict__ == other.__dict__
@@ -99,6 +130,7 @@ class Error(Enum):
     """
     Result on a Figure
     """
+
     """ Extraction not found in the gold annotation """
     false_positive = 1
 
@@ -146,9 +178,11 @@ class EvaluatedFigure(object):
         if true_figure is None and extracted_figure is None:
             raise ValueError()
         if true_figure is not None and extracted_figure is not None:
-            if (extracted_figure.page != true_figure.page or
-                extracted_figure.name != true_figure.name or
-                extracted_figure.figure_type != true_figure.figure_type):
+            if (
+                extracted_figure.page != true_figure.page
+                or extracted_figure.name != true_figure.name
+                or extracted_figure.figure_type != true_figure.figure_type
+            ):
                 raise ValueError()
         if not isinstance(error, Error):
             raise ValueError()
@@ -190,9 +224,18 @@ class Evaluation(object):
     # version 10: remove `which` parameter
     version = 10
 
-    def __init__(self, dataset_name, dataset_version, extractor_name,
-                 extractor_version, extractor_config,
-                 evaluated_figures, compare_caption_text, doc_ids, timestamp):
+    def __init__(
+        self,
+        dataset_name,
+        dataset_version,
+        extractor_name,
+        extractor_version,
+        extractor_config,
+        evaluated_figures,
+        compare_caption_text,
+        doc_ids,
+        timestamp,
+    ):
         for fig in evaluated_figures:
             if not isinstance(fig, EvaluatedFigure):
                 raise ValueError()
@@ -255,27 +298,33 @@ def box_overlap(box1, box2):
 
 def box_overlaps(container, box):
     return not (
-        container[0] > box[2] or
-        container[1] > box[3] or
-        container[2] < box[0] or
-        container[3] < box[1]
-        )
+        container[0] > box[2]
+        or container[1] > box[3]
+        or container[2] < box[0]
+        or container[3] < box[1]
+    )
 
 
 def box_contains(container, box, tol=0):
-    return (container[0] <= (box[0] + tol) and
-            container[1] <= (box[1] + tol) and
-            container[2] >= (box[2] - tol) and
-            container[3] >= (box[3] - tol))
+    return (
+        container[0] <= (box[0] + tol)
+        and container[1] <= (box[1] + tol)
+        and container[2] >= (box[2] - tol)
+        and container[3] >= (box[3] - tol)
+    )
 
 
 def box_intersects(box, other, tol=0):
-    return not ((box[2] < other[0] - tol) or (box[0] > other[2] + tol) or
-      (box[3] < other[1] - tol) or (box[1] > other[3] + tol))
+    return not (
+        (box[2] < other[0] - tol)
+        or (box[0] > other[2] + tol)
+        or (box[3] < other[1] - tol)
+        or (box[1] > other[3] + tol)
+    )
 
 
 def crop_to_foreground(box, bw_image):
-    """ Returns `box` cropped to non-whitespace in the given black and white image """
+    """Returns `box` cropped to non-whitespace in the given black and white image"""
     blank = Image.new("1", bw_image.size)
     draw = ImageDraw.Draw(blank)
     draw.rectangle(box, fill=1)
@@ -285,14 +334,14 @@ def crop_to_foreground(box, bw_image):
 
 
 def scale_figure(figure, dpi):
-    """ Returns the caption and region bbox of a `figure` when scaled to `dpi` """
-    rescaling = dpi/figure.dpi
+    """Returns the caption and region bbox of a `figure` when scaled to `dpi`"""
+    rescaling = dpi / figure.dpi
     if figure.caption_bb is not None:
-        caption_box = [x*rescaling for x in figure.caption_bb]
+        caption_box = [x * rescaling for x in figure.caption_bb]
     else:
         caption_box = None
     if figure.region_bb is not None:
-        region_box = [x*rescaling for x in figure.region_bb]
+        region_box = [x * rescaling for x in figure.region_bb]
     else:
         region_box = None
     return caption_box, region_box
@@ -330,7 +379,7 @@ def get_num_pages_in_pdf(pdf_filepath):
     lines = output.split("\n")
     for line in lines:
         if line.startswith("Pages:"):
-            page = int(line[len("Pages:"):].strip())
+            page = int(line[len("Pages:") :].strip())
             return page
     raise ValueError("No page returned?")
 
@@ -341,16 +390,32 @@ def get_pdf_text(pdf_filepath, page, box, dpi, tol=0):
     pdf at `pdf_filepath` while padding `box` by `tol`.
     """
     box = [round(x) for x in box]
-    args = ["pdftotext", "-x", str(box[0] - tol), "-y", str(box[1] - tol), "-W",
-            str(box[2] - box[0] + tol*2), "-H", str(box[3] - box[1] + tol*2), "-f", str(page),
-            "-l", str(page), "-r", str(dpi), pdf_filepath, "-"]
+    args = [
+        "pdftotext",
+        "-x",
+        str(box[0] - tol),
+        "-y",
+        str(box[1] - tol),
+        "-W",
+        str(box[2] - box[0] + tol * 2),
+        "-H",
+        str(box[3] - box[1] + tol * 2),
+        "-f",
+        str(page),
+        "-l",
+        str(page),
+        "-r",
+        str(dpi),
+        pdf_filepath,
+        "-",
+    ]
     output = check_output(args)
     return output.decode("UTF-8").rstrip()
 
 
 def normalize_string(string):
     # Remove spaces and hyphens, normalize unicode
-    return normalize('NFKC', re.sub(r'\-|\s+', '', string))
+    return normalize("NFKC", re.sub(r"\-|\s+", "", string))
 
 
 def compare_captions(capt1, capt2):

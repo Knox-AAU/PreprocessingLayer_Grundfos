@@ -21,7 +21,9 @@ document_name -> list of sections". An example output could be:
 class FigureExtractor(object):
     name = "pdffigures2"
 
-    def __init__(self,):
+    def __init__(
+        self,
+    ):
         if "PDFFIGURES2_HOME" not in environ:
             home = dirname(dirname(__file__))
         else:
@@ -36,12 +38,12 @@ class FigureExtractor(object):
                 remove(join(self.scratch_dir, filename))
 
     def get_sections(self, doc_list):
-        args = ["sbt", "run " +
-                ",".join(doc_list) + " -q -g " + self.scratch_dir + "/"]
+        args = ["sbt", "run " + ",".join(doc_list) + " -q -g " + self.scratch_dir + "/"]
         exit_code = call(args, cwd=self.home)
         if exit_code != 0:
-            raise ValueError("Non-zero exit status %d, call:\n%s" % (exit_code,
-                                                                    " ".join(args)))
+            raise ValueError(
+                "Non-zero exit status %d, call:\n%s" % (exit_code, " ".join(args))
+            )
         sections = {}
         for filename in listdir(self.scratch_dir):
             with open(join(self.scratch_dir, filename)) as f:
@@ -87,10 +89,20 @@ class Parscit(object):
                 filepath = join(doc_list, filename)
                 pdftotext_args = ["pdftotext", filepath, tmp_file]
                 if call(pdftotext_args) != 0:
-                    raise ValueError("Call to pdftotext failed: <%s>", " ".join(pdftotext_args))
+                    raise ValueError(
+                        "Call to pdftotext failed: <%s>", " ".join(pdftotext_args)
+                    )
                 output_file = join(self.cache, filename[:-4] + ".xml")
-                args = ["perl", self.script, "-m", "extract_section", "-i", "raw",
-                        tmp_file, output_file]
+                args = [
+                    "perl",
+                    self.script,
+                    "-m",
+                    "extract_section",
+                    "-i",
+                    "raw",
+                    tmp_file,
+                    output_file,
+                ]
                 if call(args) != 0:
                     raise ValueError("Call to parscit failed: <%s>", " ".join(args))
 
@@ -128,15 +140,17 @@ class Grobid(object):
         target_dir = join(grobid, "grobid-core", "target")
         one_jar = [x for x in listdir(target_dir) if x.endswith("one-jar.jar")]
         if len(one_jar) == 0:
-            raise ValueError("one-jar jar file not found in %s (Grobid not compiled?)" % target_dir)
+            raise ValueError(
+                "one-jar jar file not found in %s (Grobid not compiled?)" % target_dir
+            )
         if len(one_jar) != 1:
             raise ValueError("Multiple on-jar jars? Found %s" % str(one_jar))
         one_jar = one_jar[0]
         self.grobid_jar = join(target_dir, one_jar)
         self.grobid_home = join(grobid, "grobid-home")
         assert "grobid-core-" in one_jar
-        self.version = one_jar[one_jar.find("grobid-core-") + 12:]
-        self.version = self.version[:self.version.find(".one-jar.jar")]
+        self.version = one_jar[one_jar.find("grobid-core-") + 12 :]
+        self.version = self.version[: self.version.find(".one-jar.jar")]
         self.cache = "grobid_cache_" + self.version
 
     def build_cache(self, doc_list):
@@ -150,7 +164,7 @@ class Grobid(object):
                 raise ValueError("Unexpected file in cached %s" % filename)
             files_in_cache.add(filename[:-8])
 
-        doc_id_to_file = {x.split("/")[-1][:-4]:x  for x in doc_list}
+        doc_id_to_file = {x.split("/")[-1][:-4]: x for x in doc_list}
 
         if len(doc_id_to_file.keys() - files_in_cache) > 0:
             # Grobid needs an input directory, not a list of files, so make a
@@ -162,8 +176,21 @@ class Grobid(object):
                     filename = doc_id_to_file[doc_id]
                     doc = filename.split("/")[-1]
                     copy(filename, join(tmpdir, doc))
-                args = ["java", "-Xmx1024m", "-jar", self.grobid_jar, "-gH", self.grobid_home,
-                        "-dIn", tmpdir, "-dOut", self.cache, "-exe", "processFullText", "-ignoreAssets"]
+                args = [
+                    "java",
+                    "-Xmx1024m",
+                    "-jar",
+                    self.grobid_jar,
+                    "-gH",
+                    self.grobid_home,
+                    "-dIn",
+                    tmpdir,
+                    "-dOut",
+                    self.cache,
+                    "-exe",
+                    "processFullText",
+                    "-ignoreAssets",
+                ]
                 print(" ".join(args))
                 if call(args) != 0:
                     raise ValueError("Call to grobid failed: <%s>", " ".join(args))
@@ -183,7 +210,11 @@ class Grobid(object):
         tree = ET.parse(filename)
         root = tree.getroot()
         sections = []
-        section_nodes = list(root.findall(".//{http://www.tei-c.org/ns/1.0}body/{http://www.tei-c.org/ns/1.0}div"))
+        section_nodes = list(
+            root.findall(
+                ".//{http://www.tei-c.org/ns/1.0}body/{http://www.tei-c.org/ns/1.0}div"
+            )
+        )
         for section_node in section_nodes:
             header = section_node.find("{http://www.tei-c.org/ns/1.0}head")
             if header is None:
@@ -203,8 +234,8 @@ class Grobid(object):
 EXTRACTORS = {
     Parscit.name: Parscit,
     Grobid.name: Grobid,
-    Grobid.name+"-numbered": lambda : Grobid(True),
-    FigureExtractor.name : FigureExtractor
+    Grobid.name + "-numbered": lambda: Grobid(True),
+    FigureExtractor.name: FigureExtractor,
 }
 
 

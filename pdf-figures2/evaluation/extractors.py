@@ -26,7 +26,9 @@ class PDFFigures2(object):
         else:
             self.extractor_home = environ[self.ENVIRON_VAR]
         if not isdir(self.extractor_home):
-            raise ValueError("Figure extractor home (%s) not found" % self.extractor_home)
+            raise ValueError(
+                "Figure extractor home (%s) not found" % self.extractor_home
+            )
         self.version = None
         self.extractions = None
 
@@ -35,26 +37,56 @@ class PDFFigures2(object):
 
     def get_version(self):
         if self.version is None:
-            output = check_output(["sbt", "-no-colors", "version"], cwd=self.extractor_home)
-            self.version = output.decode("utf-8").strip().split("\n")[-1].split("[info] ")[-1]
+            output = check_output(
+                ["sbt", "-no-colors", "version"], cwd=self.extractor_home
+            )
+            self.version = (
+                output.decode("utf-8").strip().split("\n")[-1].split("[info] ")[-1]
+            )
         return self.version
 
     def time(self, pdf_filenames, extract_images=False, verbose=False):
         tmpdir = tempfile.mkdtemp()
         try:
             if extract_images:
-                cli_args = " ".join(["run", ",".join(pdf_filenames), "-c", "-m", tmpdir + "/fig",
-                                     "-d", tmpdir + "/", "-e", "-q"])
+                cli_args = " ".join(
+                    [
+                        "run",
+                        ",".join(pdf_filenames),
+                        "-c",
+                        "-m",
+                        tmpdir + "/fig",
+                        "-d",
+                        tmpdir + "/",
+                        "-e",
+                        "-q",
+                    ]
+                )
             else:
-                cli_args = " ".join(["run", ",".join(pdf_filenames), "-c", "-d", tmpdir + "/", "-e", "-q"])
+                cli_args = " ".join(
+                    [
+                        "run",
+                        ",".join(pdf_filenames),
+                        "-c",
+                        "-d",
+                        tmpdir + "/",
+                        "-e",
+                        "-q",
+                    ]
+                )
 
             # -Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider is important to get
             # good performance rendering image heavy pdfs (see https://pdfbox.apache.org/2.0/getting-started.html)
-            args = ["sbt", "-Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider", cli_args]
+            args = [
+                "sbt",
+                "-Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider",
+                cli_args,
+            ]
             exit_code = call(args, cwd=self.extractor_home)
             if exit_code != 0:
-                raise ValueError("Non-zero exit status %d, call:\n%s" % (exit_code,
-                                                                     " ".join(args)))
+                raise ValueError(
+                    "Non-zero exit status %d, call:\n%s" % (exit_code, " ".join(args))
+                )
         finally:
             rmtree(tmpdir)
 
@@ -63,15 +95,21 @@ class PDFFigures2(object):
         try:
             # TODO it would be nice remove SBT's logging from reaching STDOUT
             extractions = {}
-            cli_args = " ".join(["run", ",".join(pdf_filenames),
-                                 "-c", "-d", tmpdir + "/", "-e", "-q"])
-            args = ["sbt", "-Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider", cli_args]
+            cli_args = " ".join(
+                ["run", ",".join(pdf_filenames), "-c", "-d", tmpdir + "/", "-e", "-q"]
+            )
+            args = [
+                "sbt",
+                "-Dsun.java2d.cmm=sun.java2d.cmm.kcms.KcmsServiceProvider",
+                cli_args,
+            ]
             exit_code = call(args, cwd=self.extractor_home)
             if exit_code != 0:
-                raise ValueError("Non-zero exit status %d, call:\n%s" %
-                                 (exit_code, " ".join(args)))
+                raise ValueError(
+                    "Non-zero exit status %d, call:\n%s" % (exit_code, " ".join(args))
+                )
             for filename in pdf_filenames:
-                doc_id = filename[:filename.rfind(".")].split("/")[-1]
+                doc_id = filename[: filename.rfind(".")].split("/")[-1]
                 extractions[doc_id] = self.load_json(join(tmpdir, doc_id + ".json"))
             self.extractions = extractions
         finally:
@@ -101,14 +139,17 @@ class PDFFigures2(object):
                 caption_bb[0] -= 3
                 caption_bb[2] += 3
                 caption_bb[3] += 3
-                figs.append(Figure(
-                    figure_type=str_to_fig_type(fig["figType"]),
-                    name=fig["name"],
-                    page=fig["page"] + 1,
-                    dpi=72.0,
-                    caption=caption,
-                    caption_bb=caption_bb,
-                    region_bb=region_bb))
+                figs.append(
+                    Figure(
+                        figure_type=str_to_fig_type(fig["figType"]),
+                        name=fig["name"],
+                        page=fig["page"] + 1,
+                        dpi=72.0,
+                        caption=caption,
+                        caption_bb=caption_bb,
+                        region_bb=region_bb,
+                    )
+                )
         return figs
 
     def get_extractions(self, pdf_filepath, dataset, doc_id):
@@ -155,7 +196,9 @@ class PDFFigures(object):
             args = ["pdffigures", "-i", "-m", "-j", filename, pdf_filepath]
             callret = call(args, stderr=DEVNULL, stdout=DEVNULL)
             if callret != 0:
-                raise ValueError("Call %s had error code %d" % (" ".join(args), callret))
+                raise ValueError(
+                    "Call %s had error code %d" % (" ".join(args), callret)
+                )
             extractions = []
             with open(filename + ".json") as f:
                 figure_data = json.load(f)
@@ -179,15 +222,12 @@ class PDFFigures(object):
                 page_height=data["Height"],
                 page_width=data["Width"],
                 dpi=data["DPI"],
-                )
+            )
             extractions.append(fig)
         return extractions
 
 
-EXTRACTORS = {
-  PDFFigures.NAME: PDFFigures,
-  PDFFigures2.NAME: PDFFigures2
-}
+EXTRACTORS = {PDFFigures.NAME: PDFFigures, PDFFigures2.NAME: PDFFigures2}
 
 
 def get_extractor(name):

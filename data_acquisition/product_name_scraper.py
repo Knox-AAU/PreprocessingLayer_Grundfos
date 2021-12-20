@@ -9,6 +9,7 @@ BASE = "https://www.manualslib.com"
 DOMAIN = "https://www.manualslib.com/brand/grundfos/"
 PATH_TO_NAMES = os.path.abspath(os.curdir) + "/products.csv"
 
+
 def get_href_for_categories(domain):
     links = set()
     page = r.get(domain)
@@ -22,18 +23,19 @@ def get_href_for_categories(domain):
     pbar.close()
     return links
 
+
 def get_product_names(containerHref):
     names = set()
     pbar = tqdm(total=len(containerHref))
     pbar.set_description("Getting product names")
     for c in containerHref:
-        splitDomain = c.split('/')[5].replace(".html", "").replace("-"," ")
+        splitDomain = c.split("/")[5].replace(".html", "").replace("-", " ")
         page = r.get(c)
-        soup = bs(page.content,"html.parser")
-        containers = soup.find_all("div", {"class":"col-sm-2 mname"})
+        soup = bs(page.content, "html.parser")
+        containers = soup.find_all("div", {"class": "col-sm-2 mname"})
         for cn in containers:
             try:
-                text = cn.find('a').text
+                text = cn.find("a").text
                 names.add((text, splitDomain))
             except:
                 continue
@@ -41,13 +43,16 @@ def get_product_names(containerHref):
     pbar.close()
     return names
 
+
 def save_names_to_list(names, path):
-    with open(path, 'w', newline='') as out:
+    with open(path, "w", newline="") as out:
         csv_out = csv.writer(out)
         csv_out.writerow(["Name", "Tag"])
         for row in names:
             print(row)
             csv_out.writerow(row)
+
+
 """
     pbar = tqdm(total=1)
     pbar.set_description("Saving product names")

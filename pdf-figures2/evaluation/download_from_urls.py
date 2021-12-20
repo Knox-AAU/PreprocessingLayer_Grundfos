@@ -19,6 +19,7 @@ any that are missing. Unless a file was only partially downloaded it can be safe
 
 def download_from_urls(doc_id_to_url, output_dir):
     import requests
+
     already_have = 0
     if not isdir(output_dir):
         print("Making directory %s to store PDFs" % output_dir)
@@ -29,10 +30,15 @@ def download_from_urls(doc_id_to_url, output_dir):
                 raise ValueError("File %s id not a PDF file" % filename)
             doc_id = filename[:-4]
             if doc_id not in doc_id_to_url:
-                raise ValueError("Document %s has an document id that was not recognized" % filename)
+                raise ValueError(
+                    "Document %s has an document id that was not recognized" % filename
+                )
             already_have += 1
             del doc_id_to_url[doc_id]
-    print("Already have %d documents, need to download %d" % (already_have, len(doc_id_to_url)))
+    print(
+        "Already have %d documents, need to download %d"
+        % (already_have, len(doc_id_to_url))
+    )
 
     for i, (doc_id, url) in enumerate(sorted(doc_id_to_url.items())):
         print("Downloading %s (%d of %d)" % (doc_id, i + 1, len(doc_id_to_url)))
@@ -49,7 +55,9 @@ def download_from_urls(doc_id_to_url, output_dir):
         try:
             if content.decode("utf-8").startswith("<!DOCTYPE html>"):
                 print(content)
-                raise ValueError("Appeared to get an HTML file for doc %s url=%s" % (doc_id, url))
+                raise ValueError(
+                    "Appeared to get an HTML file for doc %s url=%s" % (doc_id, url)
+                )
         except UnicodeDecodeError:
             pass
         # To ensure atomic writes, dump into a tmp file and then rename the tmp file
@@ -61,11 +69,22 @@ def download_from_urls(doc_id_to_url, output_dir):
 
 
 def setup():
-    parser = argparse.ArgumentParser(description='Download pdfs and cache rasterized page images')
-    parser.add_argument("-g", "--gray-images", help="Build grayscale images for each PDF "
-                                                    "(used for cropping extractor output)", action="store_true")
-    parser.add_argument("-c", "--color-images", help="Build color images for each PDF (used for debugging)",
-                        action="store_true")
+    parser = argparse.ArgumentParser(
+        description="Download pdfs and cache rasterized page images"
+    )
+    parser.add_argument(
+        "-g",
+        "--gray-images",
+        help="Build grayscale images for each PDF "
+        "(used for cropping extractor output)",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-c",
+        "--color-images",
+        help="Build color images for each PDF (used for debugging)",
+        action="store_true",
+    )
     args = parser.parse_args()
 
     for name, dataset in sorted(DATASETS.items()):
@@ -76,12 +95,17 @@ def setup():
         print("Done!")
         if args.gray_images:
             print("\nBUILDING GRAYSCALE IMAGES:")
-            get_images(dataset.pdf_dir, dataset.page_images_gray_dir, dataset.image_dpi, True)
+            get_images(
+                dataset.pdf_dir, dataset.page_images_gray_dir, dataset.image_dpi, True
+            )
             print("Done!")
         if args.color_images:
             print("\nBUILDING COLOR IMAGES:")
-            get_images(dataset.pdf_dir, dataset.page_images_color_dir, dataset.image_dpi, False)
+            get_images(
+                dataset.pdf_dir, dataset.page_images_color_dir, dataset.image_dpi, False
+            )
             print("Done!")
+
 
 if __name__ == "__main__":
     setup()

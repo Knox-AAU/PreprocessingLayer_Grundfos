@@ -22,7 +22,7 @@ def get_image_dict(directory):
         return None
     data = {}
     for filename in listdir(directory):
-        doc_id, page = filename[:filename.rfind(".")].split("-page-")
+        doc_id, page = filename[: filename.rfind(".")].split("-page-")
         if doc_id not in data:
             data[doc_id] = {}
         data[doc_id][int(page)] = join(directory, filename)
@@ -30,9 +30,17 @@ def get_image_dict(directory):
 
 
 class Document(object):
-
-    def __init__(self, doc_id, pages_annotated, figures, pdffile, dpi,
-                 gray_images=None, color_images=None, non_standard=False):
+    def __init__(
+        self,
+        doc_id,
+        pages_annotated,
+        figures,
+        pdffile,
+        dpi,
+        gray_images=None,
+        color_images=None,
+        non_standard=False,
+    ):
 
         if non_standard is not None and not isinstance(non_standard, bool):
             raise ValueError()
@@ -77,16 +85,18 @@ class Dataset(object):
         self.non_standard_docs_file = join(directory, self.NON_STANDARD_DOCS)
 
     """ Return all document ids """
+
     def get_doc_ids(self):
         docs = []
         for doc in listdir(self.pdf_dir):
             if len(doc) < 10:
                 print(doc)
-            docs.append(doc[:doc.rfind(".")])
+            docs.append(doc[: doc.rfind(".")])
         return docs
 
     """ Returns map of document_id -> list of page numbers that were annotated, 1 based, or
         None if all the pages of each PDF were annotated """
+
     def get_annotated_pages_map(self):
         if isfile(self.pages_annotated_file):
             with open(self.pages_annotated_file) as f:
@@ -95,6 +105,7 @@ class Dataset(object):
             return None
 
     """ Return the document ids of documents that have been marked as being non-standard """
+
     def get_nonstandard_doc_ids(self):
         ocr_docs = set()
         if isfile(self.non_standard_docs_file):
@@ -106,11 +117,13 @@ class Dataset(object):
             return set()
 
     """ Return a list of `Document` object for all the document in the given partition """
+
     def load_docs(self):
         doc_ids = self.get_doc_ids()
         return self.load_doc_ids(doc_ids)
 
     """ Return a list of `Document` objects for each of the given document ids """
+
     def load_doc_ids(self, doc_ids):
         pdf_file_map = self.get_pdf_file_map()
         color_image_map = self.get_color_image_file_map()
@@ -125,19 +138,23 @@ class Dataset(object):
             non_standard = False
             if ocr_docs is not None:
                 non_standard = doc_id in ocr_docs
-            documents.append(Document(
-                doc_id,
-                ann["annotated_pages"],
-                ann["figures"],
-                pdf_file_map[doc_id],
-                self.image_dpi,
-                gray_image_map[doc_id] if gray_image_map is not None else None,
-                color_image_map[doc_id] if color_image_map is not None else None,
-                non_standard=non_standard))
+            documents.append(
+                Document(
+                    doc_id,
+                    ann["annotated_pages"],
+                    ann["figures"],
+                    pdf_file_map[doc_id],
+                    self.image_dpi,
+                    gray_image_map[doc_id] if gray_image_map is not None else None,
+                    color_image_map[doc_id] if color_image_map is not None else None,
+                    non_standard=non_standard,
+                )
+            )
         return documents
 
     """ Return a list of `Figure` objects and which pages where annotated
         for each of the given document ids """
+
     def get_annotations(self):
         with open(self.annotation_file) as f:
             annotations = json.load(f)
@@ -157,6 +174,7 @@ class Dataset(object):
         return python_annotations
 
     """ Return map of document ids -> path to the pdf file """
+
     def get_pdf_file_map(self):
         map = {}
         for filename in listdir(self.pdf_dir):
@@ -168,19 +186,23 @@ class Dataset(object):
 
     """ Return map of document ids -> page number (1 based) -> filepath containing
         the color image of the page,  None if no color images were found"""
+
     def get_color_image_file_map(self):
         return get_image_dict(join(self.dir, self.PAGE_IMAGES_COLOR))
 
     """ Return map of document ids -> page number (1 based) -> filepath containing
         the gray image of the page, or None if no gray images were found"""
+
     def get_gray_image_file_map(self):
         return get_image_dict(join(self.dir, self.PAGE_IMAGES_GRAY))
 
     """ Return version of the dataset """
+
     def get_version(self):
         return self.version
 
     """ Return map of doc_id -> url """
+
     def get_urls(self):
         raise NotImplemented()
 
@@ -199,7 +221,9 @@ class Conference150(Dataset):
     VERSION = 2
 
     def __init__(self):
-        super().__init__(self.NAME, join(BASE_DIR, self.DIR), self.VERSION, self.IMAGE_DPI)
+        super().__init__(
+            self.NAME, join(BASE_DIR, self.DIR), self.VERSION, self.IMAGE_DPI
+        )
 
     def get_urls(self):
         # URLs are stored in a file
@@ -242,7 +266,9 @@ class S2Sample(Dataset):
     VERSION = 8
 
     def __init__(self):
-        super().__init__(self.NAME, join(BASE_DIR, self.DIR), self.VERSION, self.IMAGE_DPI)
+        super().__init__(
+            self.NAME, join(BASE_DIR, self.DIR), self.VERSION, self.IMAGE_DPI
+        )
 
     def get_urls(self):
         doc_ids_to_url = {}
@@ -264,10 +290,7 @@ class S2Sample(Dataset):
         return isinstance(other, S2Sample) and self.__dict__ == other.__dict__
 
 
-DATASETS = {
-    Conference150.NAME: Conference150,
-    S2Sample.NAME: S2Sample
-}
+DATASETS = {Conference150.NAME: Conference150, S2Sample.NAME: S2Sample}
 
 
 def get_dataset(name):

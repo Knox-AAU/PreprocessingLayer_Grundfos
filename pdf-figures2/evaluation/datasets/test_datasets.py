@@ -5,7 +5,6 @@ from pdffigures_utils import get_num_pages_in_pdf
 
 
 class TestDataset(unittest.TestCase):
-
     def test_pages_annotated_consistency(self):
         for dataset in datasets.DATASETS.values():
             dataset = dataset()
@@ -21,7 +20,7 @@ class TestDataset(unittest.TestCase):
                 self.assertTrue(len(pages) <= dataset.MAX_PAGES_TO_ANNOTATE)
                 num_pages = get_num_pages_in_pdf(filename)
                 self.assertTrue(num_pages >= max(pages) - 1)
-                expected_pages = math.ceil(num_pages*dataset.PAGE_SAMPLE_PERCENT)
+                expected_pages = math.ceil(num_pages * dataset.PAGE_SAMPLE_PERCENT)
                 expected_pages = min(expected_pages, dataset.MAX_PAGES_TO_ANNOTATE)
                 self.assertTrue(len(pages) == expected_pages)
 
@@ -54,5 +53,6 @@ class TestDataset(unittest.TestCase):
                     self.assertTrue(fig.page in pages_annotated)
             self.assertEqual(doc.pdffile.split("/")[-1][:-4], doc.doc_id)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

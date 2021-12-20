@@ -20,10 +20,11 @@ EXCLUDE_NAMES = ["abstract"]
 
 
 class SectionName(object):
-
     def __init__(self, raw_name):
         self.raw_name = raw_name
-        self.cannonical_name = normalize('NFKC', raw_name.replace(" ", "").replace(".", "").replace("-", ""))
+        self.cannonical_name = normalize(
+            "NFKC", raw_name.replace(" ", "").replace(".", "").replace("-", "")
+        )
 
     def __hash__(self):
         return hash(self.cannonical_name)
@@ -42,7 +43,6 @@ class SectionName(object):
 
 
 class EvaluatedDocument(object):
-
     def __init__(self, doc_id, url, correct, false_negatives, false_positives):
         self.doc_id = doc_id
         self.url = url
@@ -60,7 +60,6 @@ class EvaluatedDocument(object):
 
 
 class AnnotatedDocument(object):
-
     def __init__(self, filepath, doc_id, url, sections):
         self.filepath = filepath
         self.doc_id = doc_id
@@ -70,11 +69,11 @@ class AnnotatedDocument(object):
 
 # This is rather hacky, we assume that doc_ids are unique across datasets
 def get_doc_ids_to_url():
-    """ Returns map of doc_id -> url for all datasets """
+    """Returns map of doc_id -> url for all datasets"""
     url_map = {}
     for dataset in datasets.DATASETS.values():
         dataset = dataset()
-        for k,v in dataset.get_urls().items():
+        for k, v in dataset.get_urls().items():
             if k in url_map:
                 raise ValueError()
             url_map[k] = v
@@ -82,11 +81,11 @@ def get_doc_ids_to_url():
 
 
 def get_doc_ids_to_file():
-    """ Returns map of doc_id -> url for all datasets """
+    """Returns map of doc_id -> url for all datasets"""
     pdf_map = {}
     for dataset in datasets.DATASETS.values():
         dataset = dataset()
-        for k,v in dataset.get_pdf_file_map().items():
+        for k, v in dataset.get_pdf_file_map().items():
             if k in pdf_map:
                 raise ValueError()
             pdf_map[k] = v
@@ -94,7 +93,7 @@ def get_doc_ids_to_file():
 
 
 def load_annotations():
-    """ Returns map of doc_id -> AnnotatedDocument """
+    """Returns map of doc_id -> AnnotatedDocument"""
     with open(_ANNOTATIONS_FILE) as f:
         raw_annotations = json.load(f)
 
@@ -116,8 +115,16 @@ def load_annotations():
 
 def grade_extraction(annotated_doc, extracted_sections):
     true_sections = annotated_doc.sections
-    filtered_true_sections = [x for x in true_sections if not any(e in x.raw_name.lower() for e in EXCLUDE_NAMES)]
-    filtered_extracted_sections = [x for x in extracted_sections if not any(e in x.raw_name.lower() for e in EXCLUDE_NAMES)]
+    filtered_true_sections = [
+        x
+        for x in true_sections
+        if not any(e in x.raw_name.lower() for e in EXCLUDE_NAMES)
+    ]
+    filtered_extracted_sections = [
+        x
+        for x in extracted_sections
+        if not any(e in x.raw_name.lower() for e in EXCLUDE_NAMES)
+    ]
 
     num_extracted_sections = len(filtered_extracted_sections)
     num_true_sections = len(filtered_true_sections)
@@ -138,8 +145,13 @@ def grade_extraction(annotated_doc, extracted_sections):
     if not len(correct) + len(false_positives) == num_extracted_sections:
         raise ValueError()
 
-    return EvaluatedDocument(annotated_doc.doc_id, annotated_doc.url,
-                             correct, false_negative, false_positives)
+    return EvaluatedDocument(
+        annotated_doc.doc_id,
+        annotated_doc.url,
+        correct,
+        false_negative,
+        false_positives,
+    )
 
 
 def print_pr(evaluated_docs):
@@ -159,7 +171,7 @@ def print_pr(evaluated_docs):
     if total_correct == 0:
         f1 = 0
     else:
-        f1 = 2*p*r / (p + r)
+        f1 = 2 * p * r / (p + r)
     print("Correct: %d" % total_correct)
     print("FPs: %d" % fps)
     print("FNs: %d" % fns)
@@ -185,30 +197,49 @@ def list_errors(evaluated_docs, only_errors):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Evaluate a figure extractor')
-    parser.add_argument("extractor", choices=list(section_extractors.EXTRACTORS.keys()), help="Extractor to test")
-    parser.add_argument("-l", "--list_errors", nargs="?", const="all", choices=["all", "errors"],
-                        help="List details of the evaluations, if `errors` don't show results for 100% correct PDFs")
+    parser = argparse.ArgumentParser(description="Evaluate a figure extractor")
+    parser.add_argument(
+        "extractor",
+        choices=list(section_extractors.EXTRACTORS.keys()),
+        help="Extractor to test",
+    )
+    parser.add_argument(
+        "-l",
+        "--list_errors",
+        nargs="?",
+        const="all",
+        choices=["all", "errors"],
+        help="List details of the evaluations, if `errors` don't show results for 100% correct PDFs",
+    )
     parser.add_argument("-d", "--doc_id", help="Only test on the given documents")
     args = parser.parse_args()
 
     annotations = load_annotations()
     print("Have %d labelled documents" % len(annotations))
-    true_sections = {k:v for k,v in load_annotations().items() if v.sections is not None}
+    true_sections = {
+        k: v for k, v in load_annotations().items() if v.sections is not None
+    }
     if args.doc_id:
         true_sections = {args.doc_id: true_sections[args.doc_id]}
 
     extractor = section_extractors.get_extractor(args.extractor)
-    extracted_sections = extractor.get_sections([x.filepath for x in true_sections.values()])
-    extracted_sections = {k:[SectionName(x) for x in v] for k,v in extracted_sections.items()}
+    extracted_sections = extractor.get_sections(
+        [x.filepath for x in true_sections.values()]
+    )
+    extracted_sections = {
+        k: [SectionName(x) for x in v] for k, v in extracted_sections.items()
+    }
 
     evaluated_docs = []
     for doc_id, annotated_doc in true_sections.items():
-        evaluated_docs.append(grade_extraction(annotated_doc, extracted_sections[doc_id]))
+        evaluated_docs.append(
+            grade_extraction(annotated_doc, extracted_sections[doc_id])
+        )
     print_pr(evaluated_docs)
 
     if args.list_errors:
         list_errors(evaluated_docs, args.list_errors == "errors")
+
 
 if __name__ == "__main__":
     main()

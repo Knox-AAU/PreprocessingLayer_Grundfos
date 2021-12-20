@@ -7,9 +7,12 @@ from pandas import DataFrame
 class FigureExtractor:
     """
     extract figures and captions using pdffigures2
-    takes paths to output of pdffigures2 as input 
+    takes paths to output of pdffigures2 as input
     """
-    def __init__(self, inputPath, inputPathPDF, inputPathData, inputPathFig, outputPath):
+
+    def __init__(
+        self, inputPath, inputPathPDF, inputPathData, inputPathFig, outputPath
+    ):
         self.inputPath = inputPath
         self.inputPathPDF = inputPathPDF
         self.inputPathData = inputPathData
@@ -18,25 +21,33 @@ class FigureExtractor:
 
     def callPdfFigures2(self):
         """
-        generate figures and captions 
-        by calling command in terminal to run pdffigures2 
-        with given inputPaths 
+        generate figures and captions
+        by calling command in terminal to run pdffigures2
+        with given inputPaths
         """
-        
-        pdfPath = self.inputPathPDF + '/' #adding '/' because prefix is added to end of path (adding empty prefix)
-        figPath = self.inputPathFig + '/'
-        dataPath = self.inputPathData + '/'
-        
-        cmdArg = '"runMain org.allenai.pdffigures2.FigureExtractorBatchCli ' + pdfPath + ' -s stat_file.json -m ' + figPath + ' -d ' + dataPath +'"'
+
+        pdfPath = (
+            self.inputPathPDF + "/"
+        )  # adding '/' because prefix is added to end of path (adding empty prefix)
+        figPath = self.inputPathFig + "/"
+        dataPath = self.inputPathData + "/"
+
+        cmdArg = (
+            '"runMain org.allenai.pdffigures2.FigureExtractorBatchCli '
+            + pdfPath
+            + " -s stat_file.json -m "
+            + figPath
+            + " -d "
+            + dataPath
+            + '"'
+        )
         try:
-            result = subprocess.run(['sbt', cmdArg])
+            result = subprocess.run(["sbt", cmdArg])
             return result
         except:
             print("Subprocess failed to run.")
             return
-        
-        
-        
+
     """"
 
     def get_pdf_names(self):
@@ -71,8 +82,7 @@ class FigureExtractor:
         return dataframe
     """
 
-#temporary, in future run this through segment.py
-if __name__ == '__main__':
+
+# temporary, in future run this through segment.py
+if __name__ == "__main__":
     figureExtractor = FigureExtractor("pdffigures2/IO/OUTPUT_FIG")
-    
-    

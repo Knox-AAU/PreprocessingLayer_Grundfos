@@ -42,7 +42,9 @@ def pair_extractions(labels, extractions):
         yield label_ids_to_fig.get(fig_id), fig
 
 
-def grade_document_extractions(document, extractions, compare_caption_text, crop_extractions):
+def grade_document_extractions(
+    document, extractions, compare_caption_text, crop_extractions
+):
     """
     Evaluates an extraction
 
@@ -61,11 +63,15 @@ def grade_document_extractions(document, extractions, compare_caption_text, crop
         if ex.page in pages:
             extracted_figures.append(ex)
 
-    for true_figure, extracted_figure in pair_extractions(true_figures, extracted_figures):
+    for true_figure, extracted_figure in pair_extractions(
+        true_figures, extracted_figures
+    ):
         grayscale_images = document.gray_images
         if crop_extractions and grayscale_images is None:
-            raise ValueError("Unable to corp extraction since grayscale image have not been built" +
-                             " for document %s" % document.doc_id)
+            raise ValueError(
+                "Unable to corp extraction since grayscale image have not been built"
+                + " for document %s" % document.doc_id
+            )
         if extracted_figure is None:
             if true_figure is None:
                 raise RuntimeError()
@@ -82,22 +88,35 @@ def grade_document_extractions(document, extractions, compare_caption_text, crop
             page = true_figure.page
             if crop_extractions:
                 gray_img = Image.open(grayscale_images[page])
-                bw_img = gray_img.convert('L').point(lambda x: 0 if x<200 else 255, '1')
-                extracted_capt_box, extracted_region_box = \
-                    scale_and_crop_figure(extracted_figure, bw_img, document.dpi)
+                bw_img = gray_img.convert("L").point(
+                    lambda x: 0 if x < 200 else 255, "1"
+                )
+                extracted_capt_box, extracted_region_box = scale_and_crop_figure(
+                    extracted_figure, bw_img, document.dpi
+                )
             else:
-                extracted_capt_box, extracted_region_box = scale_figure(extracted_figure, document.dpi)
+                extracted_capt_box, extracted_region_box = scale_figure(
+                    extracted_figure, document.dpi
+                )
             true_capt_box, true_region_box = scale_figure(true_figure, document.dpi)
-            caption_correct = box_overlap(extracted_capt_box, true_capt_box)[0] >= UNION_INTERSECT_OVERLAP_THRESH
+            caption_correct = (
+                box_overlap(extracted_capt_box, true_capt_box)[0]
+                >= UNION_INTERSECT_OVERLAP_THRESH
+            )
             if not caption_correct and compare_caption_text:
-                caption_correct = compare_captions(true_figure.caption, extracted_figure.caption)
+                caption_correct = compare_captions(
+                    true_figure.caption, extracted_figure.caption
+                )
             if extracted_region_box is None:
                 if caption_correct:
                     error = Error.right_caption_no_region
                 else:
                     error = Error.wrong_caption_no_region
             else:
-                region_correct = box_overlap(extracted_region_box, true_region_box)[0] >= UNION_INTERSECT_OVERLAP_THRESH
+                region_correct = (
+                    box_overlap(extracted_region_box, true_region_box)[0]
+                    >= UNION_INTERSECT_OVERLAP_THRESH
+                )
                 if not region_correct and not caption_correct:
                     error = Error.wrong_caption_and_region
                 elif not region_correct:
@@ -107,19 +126,29 @@ def grade_document_extractions(document, extractions, compare_caption_text, crop
                 else:
                     error = Error.correct
 
-        evaluated_figures.append(EvaluatedFigure(true_figure, extracted_figure, error, document.doc_id))
+        evaluated_figures.append(
+            EvaluatedFigure(true_figure, extracted_figure, error, document.doc_id)
+        )
 
     num_missing = sum(1 for x in evaluated_figures if x.error == Error.missing)
 
     # Sanity check, one error per output minus the missing examples
     if len(extracted_figures) != (len(evaluated_figures) - num_missing):
-        raise ValueError("Have %d extractions %d errors - %d missing = %d recorded" % (len(extracted_figures),
-            len(evaluated_figures), num_missing, len(evaluated_figures) - num_missing))
+        raise ValueError(
+            "Have %d extractions %d errors - %d missing = %d recorded"
+            % (
+                len(extracted_figures),
+                len(evaluated_figures),
+                num_missing,
+                len(evaluated_figures) - num_missing,
+            )
+        )
     return evaluated_figures
 
 
-def evaluate(dataset, extractor, doc_ids_to_use,
-             compare_caption_text, crop_extractions, verbose):
+def evaluate(
+    dataset, extractor, doc_ids_to_use, compare_caption_text, crop_extractions, verbose
+):
     all_errors = []
     documents = dataset.load_doc_ids(doc_ids_to_use)
     extractor.start_batch([x.pdffile for x in documents])
@@ -127,27 +156,69 @@ def evaluate(dataset, extractor, doc_ids_to_use,
         if verbose:
             print("checking PDF %s (%d of %d)" % (doc.doc_id, i + 1, len(documents)))
         extractions = extractor.get_extractions(doc.pdffile, dataset.NAME, doc.doc_id)
-        errors = grade_document_extractions(doc, extractions, compare_caption_text, crop_extractions)
+        errors = grade_document_extractions(
+            doc, extractions, compare_caption_text, crop_extractions
+        )
         all_errors += errors
 
     return all_errors
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Evaluate a figure extractor')
-    parser.add_argument("dataset", choices=list(datasets.DATASETS.keys()), help="Name of the dataset to evaluate on")
-    parser.add_argument("extractor", choices=list(extractors.EXTRACTORS.keys()), help="Name of the extractor to test")
-    parser.add_argument("-c", "--dont-crop-extractions", action='store_true', help="Don't crop the extractions " +
-        "produced by the extractor to the same grayscale the annotations were cropped to")
-    parser.add_argument("-b", "--dont-compare-caption-text", action='store_true',
-                        help="Evaluate caption text by only comparing the caption bounding boxes, not the caption text")
-    parser.add_argument("-q", "--quiet", action='store_true', help="Reduce printed output")
-    parser.add_argument("-p", "--processes", type=int, default=1, help="Number of processes to use, defaults to one")
-    parser.add_argument("-d", "--docs", nargs="+", help="Which document ids to evaluate on, can't be used in conjunction with `which`")
-    parser.add_argument("-o", "--output", nargs="?", const=True, help="Where to store the output, " +
-        "if this -o flag is used without parameters a default filename is chosen based on the current date.")
-    parser.add_argument("-r", "--compare-non-standard", action='store_true', help="Don't skip PDF in the dataset that" +
-                                                                                  "are marked as being non-standard")
+    parser = argparse.ArgumentParser(description="Evaluate a figure extractor")
+    parser.add_argument(
+        "dataset",
+        choices=list(datasets.DATASETS.keys()),
+        help="Name of the dataset to evaluate on",
+    )
+    parser.add_argument(
+        "extractor",
+        choices=list(extractors.EXTRACTORS.keys()),
+        help="Name of the extractor to test",
+    )
+    parser.add_argument(
+        "-c",
+        "--dont-crop-extractions",
+        action="store_true",
+        help="Don't crop the extractions "
+        + "produced by the extractor to the same grayscale the annotations were cropped to",
+    )
+    parser.add_argument(
+        "-b",
+        "--dont-compare-caption-text",
+        action="store_true",
+        help="Evaluate caption text by only comparing the caption bounding boxes, not the caption text",
+    )
+    parser.add_argument(
+        "-q", "--quiet", action="store_true", help="Reduce printed output"
+    )
+    parser.add_argument(
+        "-p",
+        "--processes",
+        type=int,
+        default=1,
+        help="Number of processes to use, defaults to one",
+    )
+    parser.add_argument(
+        "-d",
+        "--docs",
+        nargs="+",
+        help="Which document ids to evaluate on, can't be used in conjunction with `which`",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        nargs="?",
+        const=True,
+        help="Where to store the output, "
+        + "if this -o flag is used without parameters a default filename is chosen based on the current date.",
+    )
+    parser.add_argument(
+        "-r",
+        "--compare-non-standard",
+        action="store_true",
+        help="Don't skip PDF in the dataset that" + "are marked as being non-standard",
+    )
     args = parser.parse_args()
 
     dataset = datasets.get_dataset(args.dataset)
@@ -174,7 +245,9 @@ def main():
             if doc_id in which:
                 doc_ids_to_use.append(doc_id)
         if len(set(which) - set(doc_ids_to_use)) > 0:
-            raise ValueError("Could not find doc ids %s" % str(set(which) - set(doc_ids_to_use)))
+            raise ValueError(
+                "Could not find doc ids %s" % str(set(which) - set(doc_ids_to_use))
+            )
         if verbose:
             print("Using %d user supplied documents" % len(doc_ids_to_use))
     else:
@@ -193,23 +266,42 @@ def main():
     extractor = extractors.get_extractor(args.extractor)
     print("Evaluating %s (%s)" % (sys.argv[2], extractor.get_version()))
     if args.processes == 1:
-        evaluated_figures = evaluate(dataset, extractor, doc_ids_to_use, compare_caption_text, crop, verbose)
+        evaluated_figures = evaluate(
+            dataset, extractor, doc_ids_to_use, compare_caption_text, crop, verbose
+        )
     else:
         pool = Pool(args.processes)
         num_docs = len(doc_ids_to_use)
         chunk_size = num_docs // args.processes + 1
-        chunks = [doc_ids_to_use[i:i + chunk_size] for i in
-                  range(0, num_docs, chunk_size)]
-        chunks_with_args = [(dataset, extractors.get_extractor(args.extractor),
-                             x, compare_caption_text, crop, verbose) for x in chunks]
+        chunks = [
+            doc_ids_to_use[i : i + chunk_size] for i in range(0, num_docs, chunk_size)
+        ]
+        chunks_with_args = [
+            (
+                dataset,
+                extractors.get_extractor(args.extractor),
+                x,
+                compare_caption_text,
+                crop,
+                verbose,
+            )
+            for x in chunks
+        ]
         evaluated_figures = []
         for evaluated_figures_in_chunk in pool.starmap(evaluate, chunks_with_args):
-                evaluated_figures += evaluated_figures_in_chunk
+            evaluated_figures += evaluated_figures_in_chunk
 
-    evaluation = Evaluation(dataset.NAME, dataset.get_version(),
-                            extractor.NAME, extractor.get_version(),
-                            extractor.get_config(), evaluated_figures,
-                            compare_caption_text, doc_ids_to_use, time())
+    evaluation = Evaluation(
+        dataset.NAME,
+        dataset.get_version(),
+        extractor.NAME,
+        extractor.get_version(),
+        extractor.get_config(),
+        evaluated_figures,
+        compare_caption_text,
+        doc_ids_to_use,
+        time(),
+    )
 
     # Save the resulting evaluation
     if output_file is not None:
@@ -218,6 +310,7 @@ def main():
             print("Evaluation saved to %s" % output_file)
 
     print_pr(evaluation, False)
+
 
 if __name__ == "__main__":
     main()
