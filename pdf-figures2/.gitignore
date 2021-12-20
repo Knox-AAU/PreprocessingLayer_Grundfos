@@ -1,0 +1,17 @@
+.idea
+__pycache__
+
+target/
+
+// Ignore the downloaded/derived data
+evaluation/datasets/**/*.pdf
+evaluation/datasets/**/*.jpeg
+evaluation/datasets/**/*.jpg
+evaluation/datasets/**/*.pgm
+
+*.pkl
+
+IO
+
+null/Coursier/cache
+
