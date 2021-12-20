@@ -4,6 +4,7 @@ Runs websockets, making the program accessable through the UI.
 
 import signal
 import copy
+import socket
 from threading import Thread, Event
 import time
 import data_acquisition.downloader as downloader
@@ -25,7 +26,11 @@ wsUtils = None
 
 
 def wsRunner():
-    server = SimpleWebSocketServer("192.38.49.149", 1337, WsHandleClients)
+    # 192.38.49.149 is AAU node 4 server.
+    if socket.gethostbyname(socket.gethostname()) == "192.38.49.149":
+        server = SimpleWebSocketServer("192.38.49.149", 1337, WsHandleClients)
+    else:
+        server = SimpleWebSocketServer("localhost", 1337, WsHandleClients)
     print("Running WS server, and waiting for commands...")
 
     while exit_event.is_set() == False:
