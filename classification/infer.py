@@ -70,8 +70,6 @@ def infer_image_from_matrix(image):
     model = __get_instance_segmentation_model__(num_classes)
     if torch.cuda.is_available():
         model.cuda()
-    else:
-        model.cpu()
 
 
     # Assure model exists and prepare it
@@ -106,8 +104,6 @@ def infer_image_from_file(image_path):
     model = __get_instance_segmentation_model__(num_classes)
     if torch.cuda.is_available():
         model.cuda()
-    else:
-        model.cpu()
 
     # Assure model exists and prepare it
     assert os.path.exists(CHECKPOINT_PATH)
@@ -146,8 +142,6 @@ def infer_image_with_mask(image_path: str, output_path: str, minimum_score: floa
     model = __get_instance_segmentation_model__(num_classes)
     if torch.cuda.is_available():
         model.cuda()
-    else:
-        model.cpu()
 
     # Assure model exists and prepare it
     assert os.path.exists(CHECKPOINT_PATH)
