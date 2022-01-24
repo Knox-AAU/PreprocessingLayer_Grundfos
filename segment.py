@@ -172,7 +172,8 @@ class Segmentation:
         print("\nALL pdf files DONE :DDDD")
 
         if args.temporary is False:
-            shutil.rmtree(tmp_folder)
+            if os.path.exists(tmp_folder) and os.path.isdir(tmp_folder):
+                shutil.rmtree(tmp_folder)
 
     def segment_document(self, file: str, args, output_path, currentPage):
         """

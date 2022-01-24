@@ -25,8 +25,9 @@ def send_data(wsUtils, url: str = "http://130.225.57.27/uploadjsonapi/uploadJson
                 IOHandler.post_json(json_file.read().encode("utf-8"), url)
         except FileNotFoundError:
             pass
-        except requests.exceptions.HTTPError:
-            print("Could not send json files to knowledge layer.")
+        #except requests.exceptions.HTTPError as httpError:
+        #    print("Could not send json files to knowledge layer.")
+        #    print(httpError)
         i = i + 1
 
 

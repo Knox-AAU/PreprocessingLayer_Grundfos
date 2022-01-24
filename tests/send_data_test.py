@@ -1,3 +1,4 @@
+from logging import exception
 import os
 import sys
 import unittest
@@ -8,6 +9,9 @@ from config_data import config
 import send_json
 import segment as seg
 
+class WsUtilsTestMock:
+    def updateJsonSent(self, currentJsonFile, currentJsonFileName, totalJsonFiles):
+        pass
 
 class SendDataTest(unittest.TestCase):
     def test_pingServer(self):
@@ -23,7 +27,7 @@ class SendDataTest(unittest.TestCase):
             os.getcwd(), "tests", "data", "emptyJsonValid"
         )
         try:
-            send_json.send_data("http://127.0.0.1:8000/uploadJsonDoc/")
+            send_json.send_data(WsUtilsTestMock(), "http://127.0.0.1:8000/uploadJsonDoc/")
         except requests.exceptions.HTTPError:
             self.fail(self.failDataToKnowledgeLayerMsg())
 
@@ -32,7 +36,7 @@ class SendDataTest(unittest.TestCase):
             os.getcwd(), "tests", "data", "jsonInvalid"
         )
         with self.assertRaises(requests.exceptions.HTTPError):
-            send_json.send_data("http://127.0.0.1:8000/uploadJsonDoc/")
+            send_json.send_data(WsUtilsTestMock(), "http://127.0.0.1:8000/uploadJsonDoc/")
 
     def failDataToKnowledgeLayerMsg(self):
         return (

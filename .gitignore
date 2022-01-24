@@ -204,5 +204,6 @@ classification/model_196000.pth
 !/tests/data/*.json
 !/tests/data/*/*.json
 !/tests/data/*/*/*.json
+!/tests/data/input/*.pdf
 
 .DS_Store
